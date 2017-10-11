@@ -1,0 +1,94 @@
+\documentclass{aiaa-pretty}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{calc}
+\usepackage{supertabular}
+\usepackage{subfigmat}
+\usepackage{array}
+\usepackage{textcomp}
+\usepackage{hyperref}
+\pagestyle{empty}
+
+\begin{document}
+
+\title{Organic integration of conceptual design and optimization using GPkit}
+\section{\bf Introduction}
+	What motivates the creation of  fast MDO tool? 
+	
+\subsection{Defining Design versus Optimization}
+\begin{itemize}
+\item What is design? 
+\begin{itemize}
+\item To conceive the look (the form) and function of something. 
+\item It is a PROCESS
+\begin{itemize}
+	\item The 'look' is the configuration
+	\item The function is oftentimes what we can quantify
+\end{itemize}
+\item Essentially a class of feasibility problems 
+\begin{itemize}
+\item Given set of requirements
+\end{itemize}
+\end{itemize}
+\item What is optimization?
+\begin{itemize}
+\item Has a rigorous mathematical definition: The selection of an element in a set of feasible solutions with the lowest desired objective function value. 
+\item It is also a process!
+\item It is sensitive to the choice of objective function, and the elements contained within the set (configuration)
+\end{itemize}
+\end{itemize}
+\subsection{Design and Optimization using Geometric Programming}
+
+\begin{itemize}
+	\item Insert Duffin quote here. 
+\end{itemize}
+\subsubsection{Inequalities help engineering understanding.}
+The mathematical constraints of geometric programming force designers to have a proper grasp of the fundamental tradeoffs in a design.
+
+Traditionally, physical relations are expressed as equalities.  
+
+There is an almost-seamless transition from fundamental physics to GP-compatible constraints.
+
+And even if the tradeoffs are not clear, we can use signomial equalities to enforce constraints. 
+
+\subsubsection{Models are extensible.}
+Models can be made arbitrarily complex.
+\subsubsection{Models are flexible and modular.}
+Underconstrained models can solve reliably, and the tightness of constraints can be monitored. 
+	
+\section{Literature Review}
+Papers to include
+\begin{itemize}
+\item Duffin, 1967
+\item Boyd GP Tutorial
+\item Hoburg, 2013
+\item Kirschen, 2015
+\item York, 2016
+\end{itemize}
+\subsection{Benefits of convex optimization}
+To an engineer, in the order of importance:
+\begin{itemize}
+\item Sensitivities
+\item Restrictive forms can be overcome using difference-of-convex programs
+\item Speed
+\item Global optimality
+\end{itemize}
+
+We have demonstrated that geometric programming is useful, but have yet to formalize why it is preferable from an engineering design standpoint. 
+
+\section{Engineering inequalities and intuition, from equalities}
+
+Example problem: Deriving the simple SP aircraft problem. 
+
+Ideas of tightness, boundedness, and pressure explained. 
+
+\section{Extensibility of geometric programming}
+
+Example problem: Creating a fuselage model for a commercial aircraft. 
+
+\section{Modularization}
+
+Example problem: Conventional aircraft tail model extended to pi-tails. 
+
+\end{document}
