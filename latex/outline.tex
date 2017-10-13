@@ -22,7 +22,8 @@
     urlcolor=black
 }
 %%
-
+\newacronym{CE}{CE}{Convex Engineering}
+\newacronym{CEG}{CEG}{Convex Engineering Group}
 \newacronym{GP}{GP}{Geometric Programming}
 \newacronym{gp}{GP}{Geometric Program}
 \newacronym{SP}{SP}{Signomial Programming}
@@ -33,28 +34,26 @@
 
 \begin{document}
 
-\title{Organic integration of conceptual design and optimization using GPkit}
+\title{Organic integration of conceptual design and optimization using geometric programming}
+\author{Berk Ozturk}
 \maketitle
 
 \section{\bf Introduction}
 
-Modern engineering design, and particularly aerospace design, has come to be synonymous with optimization. Time and time again, the importance of fast and reliable MDO tools has been stressed in the literature.  
+Modern engineering design, and particularly aerospace design, has come to rely heavily on optimization. Time and time again, the importance of fast and reliable MDO tools has been stressed in the literature. However most MDO tools have the downfalls of being slow due to the multimodal nature of many engineering design problems.  
 	
-In the Convex Engineering Group, we seek to improve the engineering design process by leveraging the mathematical guarantees of convex optimization. In much of our previous work (\cite{gp_ac_design},\cite{SP_ac_design}, York), we have demonstrated that \gls{GP} is useful for optimization, but have yet to formalize why it is preferable from an engineering design standpoint. 
+In the \gls{CEG}, we seek to improve the engineering design process by leveraging the mathematical guarantees of convex optimization, and developing open-source, object-oriented software to help build GP-compatible models and interface with solvers. In much of our previous work (\cite{gp_ac_design},\cite{SP_ac_design}, York), we have demonstrated that \gls{GP} is useful for optimization, but have yet to formalize why it facilitates design. 
  
-The mathematical restrictions on the form of constraints remains the biggest barrier in the implementation of GP in design.
+The mathematical restrictions on the form of constraints remains the biggest barrier in the implementation of convex programs in design. Firstly, this thesis will aim to show that the form of the GP actually facilitates the design process and engineering understanding, rather than impeding it. Hence it will aim to pass on some of the expertise we have developed in the \gls{CEG} building \gls{GP}-compatible models. 
 
-In the first complete description of the \gls{GP} methods in \cite{duffingp}, Duffin claims that 
+Secondly, it will aim to showcase the features of GPkit in further facilitating an engineering design process that is streamlined and collaborative, and is compatible with modern engineering design methodologies (flexibility and modularity). GPkit allows feedback between design engineers and models (speed and sensitivities). 
 
-Within CEG, we have a core of optimization engineers who fundamentally understand the ideas of tightness, boundedness, and pressure with respect to constraints. 
-
-This thesis will aim to show that the restrictions posed 
-
-It will aim to pass on some of the expertise we have developed in building \gls{GP}-compatible models, and show that the form and guarantees of the GP actually facilitates the design process, rather than impeding it. 
-	
 \subsection{Defining Design versus Optimization}
 
-In this thesis, I aim to go back to the fundamentals of design and optimization and determine why there is a barrier to entry 
+Firstly, I aim to go back to the fundamentals of design and optimization and determine why there is a barrier to entry in using convex optimization methods.
+
+(Haven't really figured out what to do with this yet.)
+
 \begin{itemize}
 \item What is design? 
 \begin{itemize}
@@ -64,10 +63,7 @@ In this thesis, I aim to go back to the fundamentals of design and optimization 
 	\item The 'look' is the configuration
 	\item The function is oftentimes what we can quantify
 \end{itemize}
-\item Essentially a class of feasibility problems 
-\begin{itemize}
-\item Given set of requirements
-\end{itemize}
+\item Essentially a class of feasibility problems, given a set of requirements. 
 \end{itemize}
 \item What is optimization?
 \begin{itemize}
@@ -85,37 +81,32 @@ In this thesis, I aim to go back to the fundamentals of design and optimization 
 \end{itemize}
 \subsection{Design and Optimization using \gls{GP}}
 
+\gls{GP} has developed "in response to a need to solve problems in the actual world".~\cite{duffingp} Quote from Duffin, 1967, main inventor of GP. 
 
+(Each section in this part of the intro has a corresponding section in the body. Each will feature an example problem that I will run through as a demonstration.) 
 
-\begin{itemize}
-	\item Insert Duffin quote here. 
-\end{itemize}
 \subsubsection{Inequalities help engineering understanding.}
-The mathematical constraints of \gls{GP} force designers to have a proper grasp of the fundamental tradeoffs in a design.
+The mathematical constraints of \gls{GP} force designers to have a proper grasp of the fundamental tradeoffs and pressures in a design.
 
-Traditionally, physical relations are expressed as equalities.  
-
-There is an almost-seamless transition from fundamental physics to GP-compatible constraints.
+Traditionally, physical relations are expressed as equalities. But there is an almost-seamless transition from fundamental physics to GP-compatible constraints.
 
 And even if the tradeoffs are not clear, we can use signomial equalities to enforce constraints. 
 
 \subsubsection{Models are extensible.}
 Models can be made arbitrarily complex. The 'bag of constraints' form of the GP means that there is no need to reformulate the optimization scheme as more constraints are added. This makes incremental modeling improvements possible and even preferable. 
 
-The traditional engineering design process is split into conceptual, preliminary and critical design segments. 
+The traditional engineering design process is split into conceptual, preliminary and critical design segments. GP modeling facilitates this process by allowing ever-increasing levels of complexity.
 
 We can effectively use sensitivity information to determine which parts of the model yield the greatest returns to improved modeling, so engineers can target their efforts. 
-\subsubsection{Models are flexible and modular.}
-\gls{GP}s make it easy to implement different sets of constraints. 
-Underconstrained models can solve reliably, and the tightness of constraints can be monitored. 
-\subsubsection{Model creation is compatible with modern engineering design }
-Think about component-based design. 
 
-Designs are made of components, and each component has associated sizing and performance variables. 
+\subsubsection{Models are flexible and modular, and compatible with modern engineering design.}
+(This is a feature of GPkit, and not GPs in general.)
+\gls{GP}s make it easy to implement component-based modeling, and build models that are shared between different design problems. Each component has associated sizing and performance variables. 
 
-Show a model hierarchy tree. 
-	
+This is helped by the fact that underconstrained \gls{GP}s can solve reliably, and the tightness of constraints can be monitored. 
+
 \section{Literature Review}
+(On GP modeling and benefits of convex programming.)
 Papers to include
 \begin{itemize}
 \item Duffin, 1967
@@ -133,7 +124,23 @@ To an engineer, in the order of importance:
 \item Global optimality
 \end{itemize}
 
-\section{Bridging Traditional Conceptual Design and \gls{GP}}
+\section{Engineering inequalities and intuition, from equalities}
+
+Example problem: Deriving the simple SP aircraft problem. 
+
+Ideas of tightness, boundedness, and pressure explained. 
+
+Explaining when \gls{SP} constraints are required. 
+
+Giving an example where signomial equalities are required. 
+
+\section{Extensibility of \gls{GP}}
+
+Example problem: Creating a fuselage model for a commercial aircraft, or adding a higher fidelity engine model for the simple SP aircraft. 
+
+\section{Flexibility and modularity of GPkit models}
+
+Example problem: Conventional aircraft tail model extended to pi-tails. 
 
 \subsection{Component breakdown}
 
@@ -141,20 +148,10 @@ To an engineer, in the order of importance:
 
 \subsection{Static vs. performance variables}
 
-\section{Engineering inequalities and intuition, from equalities}
+\section{Visual debugging of \gls{GP} models}
 
-Example problem: Deriving the simple SP aircraft problem. 
+(Potentially) Expose people to the beauty of automatic CAD generation. 
 
-Ideas of tightness, boundedness, and pressure explained. 
-
-Giving an example where signomial equalities are required. 
-
-\section{Extensibility of geometric programming}
-
-Example problem: Creating a fuselage model for a commercial aircraft. 
-
-\section{Modularization}
-
-Example problem: Conventional aircraft tail model extended to pi-tails. 
+\section{Conclusion}
 
 \end{document}
