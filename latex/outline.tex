@@ -46,7 +46,9 @@ In the \gls{CEG}, we seek to improve the engineering design process by leveragin
  
 The mathematical restrictions on the form of constraints remains the biggest barrier in the implementation of convex programs in design. Firstly, this thesis will aim to show that the form of the GP actually facilitates the design process and engineering understanding, rather than impeding it. Hence it will aim to pass on some of the expertise we have developed in the \gls{CEG} building \gls{GP}-compatible models. 
 
-Secondly, it will aim to showcase the features of GPkit in further facilitating an engineering design process that is streamlined and collaborative, and is compatible with modern engineering design methodologies (flexibility and modularity). GPkit allows feedback between design engineers and models (speed and sensitivities). 
+Secondly, it will aim to showcase the features of GPkit in further facilitating an engineering design process that is streamlined and collaborative, and is compatible with modern engineering design methodologies (flexibility and modularity). GPkit allows feedback between design engineers and models (speed and sensitivities) which allows targeted efforts by engineers to improve models. 
+
+(NED Comment: What about conceptual design? Collaboration?)
 
 \subsection{Defining Design versus Optimization}
 
@@ -58,6 +60,7 @@ Firstly, I aim to go back to the fundamentals of design and optimization and det
 \item What is design? 
 \begin{itemize}
 \item To conceive the look (the form) and function of something. 
+\item Ned's comment: Parametrization and physics. Hard to agree on a representation that we all agree on. 
 \item It is a PROCESS
 \begin{itemize}
 	\item The 'look' is the configuration
@@ -88,7 +91,9 @@ Firstly, I aim to go back to the fundamentals of design and optimization and det
 \subsubsection{Inequalities help engineering understanding.}
 The mathematical constraints of \gls{GP} force designers to have a proper grasp of the fundamental tradeoffs and pressures in a design.
 
-Traditionally, physical relations are expressed as equalities. But there is an almost-seamless transition from fundamental physics to GP-compatible constraints.
+Inequalities make feasible sets explicit. ADD A DIAGRAM OF FEASIBLE SETS using SimPleAC HERE. 
+
+Traditionally, physical relations are expressed as equalities. But there is an almost-seamless transition from fundamental physics to GP-compatible constraints. ENGINEERS LIKE +VE QUANTITIES. eg. downforce vs. negative lift. 
 
 And even if the tradeoffs are not clear, we can use signomial equalities to enforce constraints. 
 
@@ -97,9 +102,11 @@ Models can be made arbitrarily complex. The 'bag of constraints' form of the GP 
 
 The traditional engineering design process is split into conceptual, preliminary and critical design segments. GP modeling facilitates this process by allowing ever-increasing levels of complexity.
 
+Gradient based optimization methods for multimodal systems often involves converge loops, which have to be reengineered when new constraints are introduced. VS. adding constraints to a bag...
+
 We can effectively use sensitivity information to determine which parts of the model yield the greatest returns to improved modeling, so engineers can target their efforts. 
 
-\subsubsection{Models are flexible and modular, and compatible with modern engineering design.}
+\subsubsection{Models are flexible and modular, and compatible with modern engineering design (similar to extensible?)}
 (This is a feature of GPkit, and not GPs in general.)
 \gls{GP}s make it easy to implement component-based modeling, and build models that are shared between different design problems. Each component has associated sizing and performance variables. 
 
