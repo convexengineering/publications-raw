@@ -32,26 +32,47 @@
 \usepackage{cmap}
 \usepackage[T1]{fontenc}
 \pagestyle{plain}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{calc}
+\usepackage{supertabular}
+\usepackage{subfigmat}
+\usepackage{array}
+\usepackage{textcomp}
+\usepackage{hyperref}
+\usepackage[acronym]{glossaries}
+\makeglossaries
 
-%% This bit allows you to either specify only the files which you wish to
-%% process, or `all' to process all files which you \include.
-%% Krishna Sethuraman (1990).
-
-%\typein [\files]{Enter file names to process, (chap1,chap2 ...), or `all' to
-%process all files:}
-%\def\all{all}
-%\ifx\files\all \typeout{Including all files.} \else \typeout{Including only \files.} \includeonly{\files} \fi
+%% Create hyperlinks
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+%%
+\newacronym{CE}{CE}{Convex Engineering}
+\newacronym{CEG}{CEG}{Convex Engineering Group}
+\newacronym{GP}{GP}{Geometric Programming}
+\newacronym{gp}{GP}{Geometric Program}
+\newacronym{SP}{SP}{Signomial Programming}
+\newacronym{sp}{SP}{Signomial Program}
+\newacronym{mdo}{MDO}{Multidisciplinary Design Optimization}
+\newacronym{NLP}{NLP}{Nonlinear Programming}
 
 \begin{document}
 
-\include{cover}
+%\include{cover}
 % Some departments (e.g. 5) require an additional signature page.  See
 % signature.tex for more information and uncomment the following line if
 % applicable.
 % \include{signature}
-\pagestyle{plain}
+
 \include{contents}
-\include{chap1}
+\include{intro}
 \include{chap2}
 \appendix
 \include{appa}
