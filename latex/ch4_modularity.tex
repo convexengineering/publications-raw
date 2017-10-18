@@ -1,17 +1,19 @@
 \chapter{Flexibility and modularity of GPkit models}
 
-This section will focus on
+In this section, we will abandon the SimPleAC, and move to examine one of the most sophisticated models and largest models to come out of the CEG, SPaircraft. SPaircraft is a commercial aircraft design tool that makes use of component-based performance modeling to optimize different configurations of aircraft in both single- and multi-mission scenarios. 
 
 \section{Component-based design}
-
-\section{Sizing vs. performance variables}
 
 \section{Example problem: Creating a modular tail structural model}
 
 Consider the set of equations considered in \cite{SP_ac_design} to size
 the structure of a conventional horizontal tail. 
 
-INSERT EQUATIONS. 
+\begin{align}
+    0.92 w\tau_{\rm{ht}} t_{\rm{cap}}^2 + I_{\rm{cap}} &\leq \frac{0.92^2}{2}w\tau_{\rm{ht}}^2t_{\rm{cap}}\\
+    8 &\geq N_{\rm{lift}}M_{\rm{r}}(\AR_{\rm{ht}})q_{\rm{ht}}^2\frac{\tau_{\rm{ht}}}{S_{\rm{ht}} I_{\rm{cap}}\sigma_{\rm{max}}}\\
+    12 &\geq \frac{L_{\rm{max}} N_{\rm{lift}} q^2}{\tau_{\rm{ht}} S t_{\rm{web}} \sigma_{\rm{max-shear}}}
+\end{align}
 
 Now, using a set of variables that includes the original parametrization of the wing, 
 we would like to extend this structural model to be able to design a pi horizontal tail
@@ -21,7 +23,45 @@ This section will derive a new set of constraints, which are compatible with
 both conventional tail and pi-tail architectures, and in the process demonstrate the 
 capabilities of \gls{GP} in incremental design. 
 
-\section{Horizontal Tail }
+\subsection{Thinking about pi-tail loading}
+
+\subsubsection{Sample Free Body Diagram and Load Distributions}
+\label{s:loadDistributions}
+
+With the aforementioned assumptions, the free body diagram diagram of the 
+pi-tail is shown at the top of Figure~\ref{fig:HTFBD}. 
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.8\textwidth,natwidth=585,natheight=442]{HTFBD.eps}
+\caption{Free body diagram of the forces on the horizontal tail. The distributed 
+lift force, which is assumed to be proportional to local chord, is partitioned 
+into triangular and rectangular components.}
+\label{fig:HTFBD}
+\end{figure}
+
+Shear and moment diagrams are presented in Figures~\ref{fig:HTshear} and 
+\ref{fig:HTmoment} respectively. The diagrams include both the distributed lift 
+loads (green arrows in Figure \ref{fig:HTFBD}) and the point loads of imposed on 
+the pin joints by the vertical tails.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width = 0.7\linewidth,natwidth=621,natheight=428]{HTshear.eps}
+    \caption{Shear diagram of the pi-tail. The blue line shows the actual 
+loading, while the yellow line with infill shows the assumed load distribution.}
+    \label{fig:HTshear}
+\end{figure}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width = 0.7\linewidth,natwidth=627,natheight=437]{HTmoment.eps}
+    \caption{Moment diagram of the pi-tail. The blue line shows the actual 
+loading, and the yellow line shows the assumed load distribution}
+    \label{fig:HTmoment}
+\end{figure}
+
+After seeing these load distributions, an experienced \gls{GP} modeler would immediately think about linearization. 
 
 \subsubsection{Assumptions}
 \begin{enumerate}
@@ -39,41 +79,7 @@ linearized.
 The pin-joint assumption ensures the vertical tail structural constraints do not 
 need to be modified for the pi-tail configuration. 
 
-\subsubsection{Sample Free Body Diagram and Load Distributions}
-\label{s:loadDistributions}
 
-With the aforementioned assumptions, the free body diagram diagram of the 
-pi-tail is shown at the top of Figure~\ref{fig:HTFBD}. 
-
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=.8\textwidth,natwidth=585,natheight=442]{figures/HTFBD.eps}
-\caption{Free body diagram of the forces on the horizontal tail. The distributed 
-lift force, which is assumed to be proportional to local chord, is partitioned 
-into triangular and rectangular components.}
-\label{fig:HTFBD}
-\end{figure}
-
-Shear and moment diagrams are presented in Figures~\ref{fig:HTshear} and 
-\ref{fig:HTmoment} respectively. The diagrams include both the distributed lift 
-loads (green arrows in Figure \ref{fig:HTFBD}) and the point loads of imposed on 
-the pin joints by the vertical tails.
-
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width = 0.7\linewidth,natwidth=621,natheight=428]{figures/HTshear.eps}
-    \caption{Shear diagram of the pi-tail. The blue line shows the actual 
-loading, while the yellow line with infill shows the assumed load distribution.}
-    \label{fig:HTshear}
-\end{figure}
-
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width = 0.7\linewidth,natwidth=627,natheight=437]{figures/HTmoment.eps}
-    \caption{Moment diagram of the pi-tail. The blue line shows the actual 
-loading, and the yellow line shows the assumed load distribution}
-    \label{fig:HTmoment}
-\end{figure}
 
 \subsubsection{Horizontal Tail Terminology}
 \begin{tabbing}
