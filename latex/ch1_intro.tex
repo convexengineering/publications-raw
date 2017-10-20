@@ -7,8 +7,8 @@ have the downfalls of being slow due to the multimodal nature of many
 engineering design problems.
 	
 In the \gls{CEG}, we seek to improve the engineering design process by
-leveraging the mathematical guarantees of convex optimization, and developing
-open-source, object-oriented software to help build GP-compatible models and
+leveraging the mathematical guarantees and speed of convex optimization. We develop
+open-source, object-oriented software to help build \gls{GP}-compatible models and
 interface with solvers. In much of our previous work
 (\cite{gp_ac_design},\cite{SP_ac_design}, \cite{turbofan}), we have demonstrated that
 \gls{GP} is useful for optimization, but have yet to formalize why it
@@ -17,17 +17,24 @@ facilitates design.
 The mathematical restrictions on the form of constraints remains the biggest
 barrier in the implementation of convex programs in design. Firstly, this thesis
 will aim to show that the form of the GP actually facilitates the design process
-and engineering understanding, rather than impeding it. Hence it will aim to
+and engineering understanding, rather than impeding it, through the disciplined use
+of inequalities to express constraints. Hence it will aim to
 pass on some of the expertise we have developed in the \gls{CEG} building
-\gls{GP}-compatible models.
+\gls{GP}-compatible models from general non-linear physical models. 
 
-Secondly, it will aim to showcase the features of GPkit in further facilitating
+Secondly, it will aim to showcase the extensibility of \gls{GP} that is superior 
+to other optimization formulations. The formulation of the \gls{GP} as a 'bag of 
+constraints' instead of a hierarchial set of relations confers advantages 
+when trying to expand the fidelity and scope of models, especially in the 
+conceptual design stage. 
+
+Finally, this thesis will discuss the features specific to GPkit in facilitating
 an engineering design process that is streamlined and collaborative, and is
-compatible with modern engineering design methodologies (flexibility and
-modularity). GPkit allows feedback between design engineers and models (speed
-and sensitivities) which allows targeted efforts by engineers to improve models.
-
-(NED Comment: What about conceptual design? Collaboration?)
+compatible with modern engineering design methodologies. The modularity of the 
+models allows for a component-based design approach that ensures that designs 
+satisfy the requirements both at the sub-system and complete-system levels. 
+Furthermore, GPkit allows feedback between design engineers and models
+which allows targeted efforts by engineers to collaboratively improve models.
 
 \section{Defining Design versus Optimization} \label{sec:DesVsOpt}
 
