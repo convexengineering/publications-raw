@@ -10,7 +10,7 @@ In the \gls{CEG}, we seek to improve the engineering design process by
 leveraging the mathematical guarantees and speed of convex optimization. We develop
 open-source, object-oriented software to help build \gls{GP}-compatible models and
 interface with solvers. In much of our previous work
-(\cite{gp_ac_design},\cite{SP_ac_design}, \cite{turbofan}), we have demonstrated that
+(\cite{gp_ac_design},\cite{SP_ac_design}, \cite{sp_engine}), we have demonstrated that
 \gls{GP} is useful for optimization, but have yet to formalize why it
 facilitates design.
  
@@ -38,32 +38,49 @@ which allows targeted efforts by engineers to collaboratively improve models.
 
 \section{Defining Design versus Optimization} \label{sec:DesVsOpt}
 
+It is difficult to find rigorous definitions of design and optimization that
+try to identify the similarities and differences between the terms. For us to be
+able to understand why \gls{GP}s facilitate design, we have to determine what 
+features of optimization create barriers to entry for its use in design. 
+
 \subsection{What is design?}
 
+In the context of this paper, I will define design as the following:
+	To design is to conceive the form and function of something. 
+
+In the engineering sense, we think about the form as the configuration. 
+In the product development sense, the form has more of an esthetic quality. 
+
+The function is the actual purpose of the things being designed. It is oftentimes 
+the aspect of the design that we can quantify (i.e. the performance). 
+
+An important aspect of design is that it is a process. 
+
+The underlying conclusion is that, to an optimization engineer, the classical 
+definition of design implies a class of feasibility problems, given a set
+of functional requirements. 
+
 \begin{itemize}
-\item To conceive the look (the form) and function of something. 
 \item Ned's comment: Parametrization and physics. Hard to agree on a representation 
 that we all agree on. 
-\item It is a PROCESS
-\begin{itemize}
-	\item The 'look' is the configuration
-	\item The function is oftentimes what we can quantify
-\end{itemize}
-\item Essentially a class of feasibility problems, given a set of requirements. 
 \end{itemize}
 
 \subsection{What is optimization?}
 
-\begin{itemize}
-\item Has a rigorous mathematical definition: The selection of an element in a set 
-of feasible solutions with the lowest desired objective function value. 
-\item It is also a process!
-\item It is sensitive to the choice of objective function, and the elements 
-contained within the set (configuration)
-\item To many engineers, design and optimization are one and the same. 
-\end{itemize}
+Optimization has a rigorous mathematical definition: To optimize is to select an 
+element in a set of feasible solutions with the lowest desired objective
+function value. 
 
-\subsection{What are the fundamental differences?}
+It is also a process, which is sensitive to the elements contained within the set
+(related to the form), and the choice of objective function (related to the 
+function).
+
+In many ways, optimization is a natural extension of design, because it allows 
+for an explicit mathematical representation of the form and function.
+
+\subsection{The fundamental differences}
+
+To many engineers, design and optimization are one and the same. However, 
 
 \begin{itemize}
 \item Design is human-driven. Optimization is computational. 
@@ -74,7 +91,6 @@ done in specific mathematical forms that take advantage of structure.
 \end{itemize}
 
 \section{Unifying design and optimization using gls{GP}}
-
 
 \gls{GP} has developed "in response to a need to solve problems in the actual 
 world".~\cite{duffingp} Quote from Duffin, 1967, main inventor of GP.
