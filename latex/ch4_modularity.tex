@@ -1,6 +1,10 @@
 \chapter{Flexibility and modularity of GPkit models}
 
-In this section, we will abandon the SimPleAC, and move to examine one of the most sophisticated models and largest models to come out of the CEG, SPaircraft. SPaircraft is a commercial aircraft design tool that makes use of component-based performance modeling to optimize different configurations of aircraft in both single- and multi-mission scenarios. 
+In this section, we will abandon the SimPleAC, and move to examine one of the
+most sophisticated models and largest models to come out of the CEG, SPaircraft.
+SPaircraft is a commercial aircraft design tool that makes use of component-
+based performance modeling to optimize different configurations of aircraft in
+both single- and multi-mission scenarios.
 
 \section{Component-based design}
 
@@ -23,7 +27,46 @@ This section will derive a new set of constraints, which are compatible with
 both conventional tail and pi-tail architectures, and in the process demonstrate the 
 capabilities of \gls{GP} in incremental design. 
 
-\subsection{Thinking about pi-tail loading}
+\subsection{Assumptions}
+
+But firstly, we have to make assumptions about the structure of the problem to be able to 
+model 
+
+Furthermore, we would like to err on the side of conservatism always, since we would
+rather be in a more restricted and realistic subset of the design space, rather than 
+expanding our feasible set to include solutions that are optimistic and infeasible. 
+
+\begin{enumerate}
+    \item \textbf{The lift per unit span is proportional to local chord.} This allows 
+    us to neglect the effects of lift rolloff towards the wingtips, which is difficult
+    to model in a \gls{GP} framework.  Since the horizontal tail model will 
+    be more heavily loaded towards its wingtips than an actual tail, the loads
+    on the tail model are conservative. 
+    \item \textbf{The horizontal tail has a constant taper ratio.} This geometry 
+    assumption is made we would like to start with a basic parametrization first. 
+    Constant taper tail sections are also observed in real aircraft. 
+    Higher degrees of freedom in horizontal tail chord are considered unnecessary 
+    (although they could be modeled, explained further in Section~\ref{sec:HTExtensions}). 
+    \item \textbf{The horizontal and vertical tail joint is a fuselage width away from 
+the centerline of the aircraft.} In the pi-tail configuration the vertical tails are 
+often canted outward for aerodynamic benefits. However, we would like to avoid making 
+assumptions about this, and make the conservative approximation that the vertical tails
+are perfectly vertical, and join the fuselage and the horizontal tail at $w_{fuse}$, the
+width of the fuselage.
+    \item \textbf{The horizontal and vertical tail interface is a pin joint.} This implies 
+    that the joint does not exert a moment on the horizontal tail, and a conservative 
+    assumption from an engineering perspective. We do not want to expose such a fine 
+    interface to moments that may cause failure. \label{item:pinjoint}
+    \item \textbf{The shear and moment distributions on the horizontal tail are 
+    linearized.} The reasons for this assumption will become more clear in 
+    Section~\ref{sec:HTloads}.
+\end{enumerate}
+
+\subsection{Loads on a horizontal tail}
+\label{sec:HTloads}
+
+As with a majority of \gls{GP} formulations, we have to consider the fundamental physics to 
+be able to derive a new set of constraints. 
 
 \subsubsection{Sample Free Body Diagram and Load Distributions}
 \label{s:loadDistributions}
@@ -33,7 +76,7 @@ pi-tail is shown at the top of Figure~\ref{fig:HTFBD}.
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=.8\textwidth]{HTFBD.pdf}
+\includegraphics[width=.8\textwidth,natwidth=585,natheight=442]{HTFBD.pdf}
 \caption{Free body diagram of the forces on the horizontal tail. The distributed 
 lift force, which is assumed to be proportional to local chord, is partitioned 
 into triangular and rectangular components.}
@@ -47,7 +90,7 @@ the pin joints by the vertical tails.
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width = 0.7\linewidth]{HTshear.pdf}
+    \includegraphics[width = 0.7\linewidth,natwidth=621,natheight=428]{HTshear.pdf}
     \caption{Shear diagram of the pi-tail. The blue line shows the actual 
 loading, while the yellow line with infill shows the assumed load distribution.}
     \label{fig:HTshear}
@@ -55,26 +98,20 @@ loading, while the yellow line with infill shows the assumed load distribution.}
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width = 0.7\linewidth]{HTmoment.pdf}
+    \includegraphics[width = 0.7\linewidth,natwidth=627,natheight=437]{HTmoment.pdf}
     \caption{Moment diagram of the pi-tail. The blue line shows the actual 
 loading, and the yellow line shows the assumed load distribution}
     \label{fig:HTmoment}
 \end{figure}
 
+After having seen these diagrams, we can make 
+
+The pi horizontal tail becomes a conventional tail in the limit where $w_{fuse} \xrightarrow[]{} 0$. 
+
+
 After seeing these load distributions, an experienced \gls{GP} modeler would immediately think about linearization. 
 
-\subsubsection{Assumptions}
-\begin{enumerate}
-    \item The lift per unit span is proportional to local chord.
-    \item The horizontal tail has a constant taper ratio.
-    \item The horizontal and vertical tail joint is a fuselage width away from 
-the centerline of the aircraft. 
-    \item The horizontal and vertical tail interface is a pin joint. Therefore, 
-the joint does not exert a moment on the horizontal tail. 
-    \label{item:pinjoint}
-    \item The shear and moment distributions on the horizontal tail are 
-linearized. 
-\end{enumerate}
+
 
 The pin-joint assumption ensures the vertical tail structural constraints do not 
 need to be modified for the pi-tail configuration. 
@@ -249,3 +286,6 @@ c_{\rm{attach}}$) as a pi-tail. With a similar reasoning as for the shear loads,
 $\pi_{\rm{M-fac}} t_{\rm{cap}}$ for a pi-tail is strictly smaller than the $t_{\rm{cap}}$ for a 
 conventional tail of the same geometry and loading, making the pi-tail more 
 efficient in bending than a traditional tail. 
+
+\subsection{Further potential horizontal tail model extensions}
+\label{sec:HTExtensions}
