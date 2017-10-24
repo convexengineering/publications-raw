@@ -1,12 +1,10 @@
 \chapter{Flexibility and modularity of GPkit models}
 
 In this section, we will abandon the SimPleAC, and move to examine one of the
-most sophisticated models and largest models to come out of the CEG, SPaircraft.
+most sophisticated models and largest models to come out of the \gls{CEG}, SPaircraft.
 SPaircraft is a commercial aircraft design tool that makes use of component-
 based performance modeling to optimize different configurations of aircraft in
 both single- and multi-mission scenarios.
-
-\section{Component-based design}
 
 \section{Example problem: Creating a modular tail structural model}
 
@@ -27,12 +25,17 @@ This section will derive a new set of constraints, which are compatible with
 both conventional tail and pi-tail architectures, and in the process demonstrate the 
 capabilities of \gls{GP} in incremental design. 
 
-\subsection{Assumptions}
 
-But firstly, we have to make assumptions about the structure of the problem to be able to 
-model 
 
-Furthermore, we would like to err on the side of conservatism always, since we would
+\subsection{Assumptions: Why, when and how}
+
+We have to make assumptions about the structure of the problem to be able
+to determine the loading on the horizontal tail, and use our intuitions about the 
+loading to tune the assumptions. This can be quite the chicken-and-egg problem
+nd it is often not clear how to proceed. But here is an 
+intuitive description of the approach for the current example. 
+
+Note that in our derivation we would like to err on the side of conservatism always, since we would
 rather be in a more restricted and realistic subset of the design space, rather than 
 expanding our feasible set to include solutions that are optimistic and infeasible. 
 
@@ -42,17 +45,19 @@ expanding our feasible set to include solutions that are optimistic and infeasib
     to model in a \gls{GP} framework.  Since the horizontal tail model will 
     be more heavily loaded towards its wingtips than an actual tail, the loads
     on the tail model are conservative. 
-    \item \textbf{The horizontal tail has a constant taper ratio.} This geometry 
-    assumption is made we would like to start with a basic parametrization first. 
+    \item \textbf{The horizontal tail has a constant taper ratio.} We would like to 
+    capture the effects of geometry on the problem with a good 
+    accuracy, but without making the physical relations unwieldy. This basic parametrization
+    gives a good representation of the horizontal tail planform.  
     Constant taper tail sections are also observed in real aircraft. 
     Higher degrees of freedom in horizontal tail chord are considered unnecessary 
     (although they could be modeled, explained further in Section~\ref{sec:HTExtensions}). 
     \item \textbf{The horizontal and vertical tail joint is a fuselage width away from 
-the centerline of the aircraft.} In the pi-tail configuration the vertical tails are 
-often canted outward for aerodynamic benefits. However, we would like to avoid making 
-assumptions about this, and make the conservative approximation that the vertical tails
-are perfectly vertical, and join the fuselage and the horizontal tail at $w_{fuse}$, the
-width of the fuselage.
+    the centerline of the aircraft.} In the pi-tail configuration the vertical tails are 
+    often canted outward for aerodynamic benefits. However, we would like to avoid making 
+    assumptions about this, and make the conservative approximation that the vertical tails
+    are perfectly vertical, and join the fuselage and the horizontal tail at $w_{fuse}$, the
+    width of the fuselage.
     \item \textbf{The horizontal and vertical tail interface is a pin joint.} This implies 
     that the joint does not exert a moment on the horizontal tail, and a conservative 
     assumption from an engineering perspective. We do not want to expose such a fine 

@@ -1,10 +1,11 @@
-\chapter{Extensibility of \gls{GP}}
+\chapter{Extensibility of GP}
 
 Traditional engineering design optimization tools (eg. TASOPT) implement convergence loops that assume structure within a given design problem. 
 
 The 'bag of constraints' form of the GP means that constraints can be added to the problem without 
 
 \section{Improving fidelity: Adding a simple engine model to the SimPleAC}
+\label{sec:engine}
 
 The SimPleAC currently has an engine that weighs nothing and magically supplies unlimited power. This is obviously unphysical, and since one of the variables with the highest sensitivity is TSFC, requires refinement. 
 
