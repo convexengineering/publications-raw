@@ -2,6 +2,46 @@
 
 In this section, we will derive a simple aircraft problem that will serve as a demonstration of the intuitive structure of geometric programs. 
 
+\section{Defining the aircraft design problem}
+
+Aircraft epitomize the nature of complex engineering problems. The physical 
+relations describing their motion are nonlinear, and all of their subsystems are 
+coupled through the primary forces in flight (thrust, weight, lift, drag). 
+
+\subsection{Functional definition}
+
+The goal of the aircraft that we are designing will be to carry a given payload
+over a distance while minimizing an objective function. 
+
+\subsection{Component definition}
+
+We can also think about the different components that make an aircraft function. 
+
+For the basic example, the aircraft will need:
+\begin{itemize}
+	\item \textbf{A wing}: For generating lift. 
+	\item \textbf{A fuselage}: For storing fuel. 
+	\item \textbf{A payload}:
+\end{itemize}
+
+In the basic example, I choose not to model engines, and leave this as an exercise
+to complete in Section~\ref{sec:engine}
+
+\subsection{}
+
+\subsection{Objective functions}
+
+Objective functions are the way that a designer puts pressure on the variables 
+in the constraints. 
+
+In many design problems
+formulated as \gls{GP}s, many different objectives will put pressure on design 
+in the same direction
+
+For example, an aircraft designed for fuel weight will look different than one 
+that has been designed for total weight or payload-fuel consumption, but all of
+these different objective will put a downward pressure on
+
 \section{Limits of GP and Convexity} \label{sec:GPLimits}
 
 Even with the demonstrated strengths of \gls{GP}'s in solving certain classes of problems, it is important to recognize that the mathematical framework has limits. 
