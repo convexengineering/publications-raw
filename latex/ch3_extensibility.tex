@@ -3,23 +3,59 @@
 Traditional engineering design optimization tools (eg. TASOPT) implement convergence loops that assume structure within a given design problem. 
 
 The 'bag of constraints' form of the GP means that constraints can be added to the problem without 
+having to restructure the optimization formulation. 
 
 \section{Improving fidelity: Adding a simple engine model to the SimPleAC}
 \label{sec:engine}
 
-The SimPleAC currently has an engine that weighs nothing and magically supplies unlimited power. This is obviously unphysical, and since one of the variables with the highest sensitivity is TSFC, requires refinement. 
+The SimPleAC currently has an engine that weighs nothing and magically supplies
+unlimited power. This is obviously unphysical, and since one of the variables
+with the highest sensitivity is \TSFC, requires refinement.
 
-If we think of an engine as an input-output system, we can determine how it would interact with the SimPleAC system, and create the appropriate variables. 
+\subsection{Creating an engine submodel}
 
-\begin{itemize}
-\item Inputs: Fuel
-\item Outputs: Power, noise, thrust, weight
-\end{itemize}
+Before even thinking about modeling, we would like to leverage the object-oriented 
+GPkit models to put the variables describing the engine into a submodel (currently only 
+TSFC). We do this by creating a new class called \textbf{Engine} and creating a \textit{setup}
+method with the 
+
+\begin{python}
+class Engine(Model):
+    def setup(self):
+        # Dimensional constants
+        TSFC      = Variable("TSFC", 0.6, "1/hr", "thrust specific fuel consumption")
+        constraints = []
+        return constraints    
+\end{python}
+
+We allow the SimPleAC model to contain the variables and constraints of the engine
+as follows:
+
+\begin{python}
+class SimPleAC(Model):
+    def setup(self):
+        self.engine = Engine()
+        # Env. constants
+        ...
+\end{python}
+
+If we think of an engine as an input-output system, we can determine how it
+would interact with the SimPleAC system, and create the appropriate variables. 
+At the most basic level, the engine provides thrust power, consumes fuel, 
+and has weight. 
+
+\subsection{Fitting existing engine data on power vs. weight}
+
+\subsection{Converting all subsystems into submodels}
+
+Within this framework, we can modularize also add a separate wing and fuselage module to
+SimPleAC as well
 
 \section{Expanding scope: Converting the SimPleAC to performance modeling form}
 
-The SimPleAC that I have defined so far works well to demonstrate the capabilities of \gls{SP} in helping explore tradeoffs in engineering design. 
+The SimPleAC that I have defined so far works well to demonstrate the
+capabilities of \gls{SP} in helping explore tradeoffs in engineering design.
 
-However, often in the design process, we will want to test the performance of a design in all
-
-The performance modeling framework of GPkit was developed to facilitate the creation of vectorized variables and constraints to capture these effects. 
+However, often in the design process, we will want to test the performance of a
+design in different flight conditions. This requires the vectorization of 
+constraints that relate to the performance of the design. 
