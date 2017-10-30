@@ -10,6 +10,33 @@ both single- and multi-mission scenarios.
 
 In a similar fashion to the hierarchy described
 
+\begin{figure}[!h]\centering\small\sffamily
+\begin{forest}
+        [\textit{\textbf{Mission}}
+            [\textit{Mission Profile}]
+            [\textit{Atmosphere}]
+            [\textit{\textbf{\shortstack{Aircraft\\Performance}}}
+                [\textbf{Aircraft}
+                    [\textbf{Wing}]
+                    [\textbf{VT}]
+                    [\textbf{HT}]
+                    [\textbf{Fuselage}]
+                    [\textbf{Engine}]
+                ]
+                [\textit{\shortstack{Wing\\Performance}}]
+                [\textit{\shortstack{VT\\Performance}}]
+                [\textit{\shortstack{HT\\Performance}}]
+                [\textit{\shortstack{Fuselage\\Performance}}]
+                [\textit{\shortstack{Engine\\Performance}}]
+            ]
+        ]
+    \end{forest}
+    \caption{Hierarchy of the presented aircraft model. Models that include sizing variables are 
+bolded while models that include performance variables are italicized. 
+There are models that contain both kinds of variables.}
+\label{fig:componenttree}
+\end{figure}
+
 \section{Example problem: Creating a modular tail structural model}
 
 Consider the set of equations considered in \cite{SP_ac_design} to size
