@@ -39,12 +39,28 @@ class SimPleAC(Model):
         ...
 \end{python}
 
+This restructuring of the model yields the exact same overall GP formulation 
+as the unstructured problem, but gives us the flexibility to develop submodels
+collaboratively in a disciplined manner.  
+
 If we think of an engine as an input-output system, we can determine how it
 would interact with the SimPleAC system, and create the appropriate variables. 
-At the most basic level, the engine provides thrust power, consumes fuel, 
-and has weight. 
+At the most basic level, the engine provides shaft power, consumes fuel, 
+and has weight. The model is missing both the shaft power and weight description
+of the engine, if we abstract away the propeller, which converts the shaft power 
+to thrust power. 
 
-\subsection{Fitting existing engine data on power vs. weight}
+\subsection{Data-based modeling: engine power vs. weight}
+
+We can imagine that, for a specific kind of engine, there is a relation between the 
+maximum shaft power available and the mass of the engine, somewhat related to the 
+cube-square law, which describes the relation between the surface area and volume 
+of objects. And let's say that our knowledge of the internal workings of engines
+is limited, but we have some knowledge of the technology available in the market
+and have data to support it. Using GPfit, we will try to fit the data to find
+GP compatible relations between engine weight and maximum power. This section 
+will try to highlight the best practices when making data-based models. 
+
 
 \subsection{Converting all subsystems into submodels}
 

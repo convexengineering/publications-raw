@@ -31,8 +31,9 @@ conceptual design stage.
 Finally, this thesis will discuss the features specific to GPkit in facilitating
 an engineering design process that is streamlined and collaborative, and is
 compatible with modern engineering design methodologies. The modularity of the 
-models allows for a component-based design approach that ensures that designs 
-satisfy the requirements both at the sub-system and complete-system levels. 
+models, as well as tools within GPkit to test tightness and boundedness
+allows for a component-based design approach that ensures that
+requirements both at the sub-system and complete-system levels are satisfied. 
 Furthermore, GPkit allows feedback between design engineers and models
 which allows targeted efforts by engineers to collaboratively improve models.
 
@@ -112,17 +113,18 @@ SimPleAC HERE.
 
 Traditionally, physical relations are expressed as equalities. But there is an
 almost-seamless transition from fundamental physics to GP-compatible
-constraints. ENGINEERS LIKE +VE QUANTITIES. eg. downforce vs. negative lift.
+constraints. 
 
-And even if the tradeoffs are not clear, we can use signomial equalities to
-enforce constraints.
+Furthermore, ENGINEERS LIKE +VE QUANTITIES. eg. downforce vs. negative lift.
+
+And even if the direction of pressure on a constraint is not clear, 
+we can use signomial equalities to explicitly enforce constraints.
 
     \item \textit{Models are extensible.}
     
 Models can be made arbitrarily complex. The 'bag of constraints' form of the GP
 means that there is no need to reformulate the optimization scheme as more
-constraints are added. This makes incremental modeling improvements possible and
-even preferable.
+constraints are added. This makes incremental modeling improvements possibl
 
 The traditional engineering design process is split into conceptual, preliminary
 and critical design segments. GP modeling facilitates this process by allowing
