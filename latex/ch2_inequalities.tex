@@ -9,12 +9,8 @@ Aircraft epitomize the nature of complex engineering problems. The physical
 relations describing their motion are nonlinear, and all of their subsystems are 
 coupled through the primary forces in flight (thrust, weight, lift, drag). 
 
-\subsection{Functional definition}
-
 The goal of the aircraft that we are designing will be to carry a given payload
 over a distance while minimizing an objective function. 
-
-\subsection{Component definition}
 
 We can also think about the different components that make an aircraft function. 
 
@@ -40,6 +36,136 @@ in the same direction
 For example, an aircraft designed for fuel weight will look different than one 
 that has been designed for total weight or payload-fuel consumption, but all of
 these different objective will put a downward pressure on TSFC and wing weight. 
+
+To begin with, we will consider total fuel weight $W_f$ as our objective. 
+
+\subsection{Beginning to model: weight and lift}
+
+Modeling in GP often begins with a set of assumptions about the configuration 
+of the problem. In this case, let's assume that our aircraft has weight, 
+which consists of the payload, wing, and fuel weights. 
+
+\begin{equation}
+    W \geq W_0 + W_w + W_f
+\end{equation}
+
+We would like the aircraft to be able to sustain steady level flight, which means 
+that it needs to generate enough lift to carry itself. We use the naive $W \leq L$ 
+model below for steady state flight:
+
+\begin{equation}
+    W_0 + W_w + 0.5 W_f \leq \frac{1}{2} \rho S C_L V^2
+\end{equation}
+
+where the lift of the aircraft is equal to weight of the aircraft with half-fuel, 
+which is a crude estimate of the average weight of the aircraft throughout the flight. 
+We would also like the fully-fueled aircraft to be able to fly at a minimum speed 
+of $V_{min}$ without stalling , so we add the following constraint:
+
+\begin{equation}
+    W \leq \frac{1}{2} \rho V_{min}^2 S C_{L_{max}}
+\end{equation}
+
+The time of flight of the aircraft, which is a useful metric of performance, is simply the range over velocity:
+
+\begin{equation}
+    T_{flight} \geq \frac{Range}{V}
+\end{equation}
+
+The lift-to-drag ratio is also defined: 
+
+\begin{equation}
+    L/D = \frac{C_L}{C_D}    
+\end{equation}
+
+\begin{python}
+        # Weight and lift model
+        constraints += [W >= W_0 + W_w + W_f,
+                W_0 + W_w + 0.5 * W_f <= 
+                        0.5 * rho * S * C_L * V ** 2,
+                W <= 0.5 * rho * S * C_Lmax * V_min ** 2,
+                T_flight >= Range / V,
+                LoD == C_L/C_D]
+\end{python}
+
+\subsection{More physics: thrust and drag model}
+
+We assume a constant thrust specific fuel consumption (TSFC) for the 'engine' of the aircraft, which is assumed to provide as much thrust as needed. Since $T \geq D$:
+
+\begin{equation}
+    W_f \geq TSFC \times T_{flight} \times D
+\end{equation}
+
+the fuel weight required is the product of the TSFC, time of flight, and the total drag on the aircraft. The drag of the aircraft is the product of dynamic pressure ($\frac{1}{2} \rho V^2$), the planform area $S$, and the coefficient of drag of the aircraft:
+
+\begin{equation} 
+    D \geq \frac{1}{2}  \rho V^2 S  C_D
+\label{e:d}
+\end{equation}
+
+The drag coefficient of the aircraft is assumed to be the sum of the fuselage drag, the wing profile drag, and the wing induced drag coefficients: 
+
+\begin{equation}
+    C_D \geq C_{D_{fuse}} + C_{D_{wpar}} + C_{D_{ind}}
+\label{e:cd}
+\end{equation}
+
+The fuselage drag is a function of its drag area $CDA_0$ and the planform area of the wing:
+
+\begin{equation}
+    C_{D_{fuse}} = \frac{CDA_0}{S}
+\label{e:cdfuse}
+\end{equation}
+
+where the $CDA_0$ is linearly proportional to the volume of fuel in the fuselage:
+
+\begin{equation}
+    V_{f_{fuse}} \leq CDA_0 \times 10 ~\mathrm{[meters]}
+\label{e:vffuse}
+\end{equation}
+
+Note that we correct the dimensionality of the volume here, since GPkit automatically checks units. 
+
+The wing profile drag is the product of the form factor, the friction drag coefficient, and the wetted area ratio of the wing, 
+
+\begin{equation}
+    C_{D_{wpar}} = k C_f S_{wetratio}
+\label{e:cdwpar}
+\end{equation}
+
+The Reynolds number of the aircraft wing is approximated
+
+\begin{equation}
+    Re \leq \frac{\rho}{\mu} V \sqrt{\frac{S}{AR}}
+\label{e:re}
+\end{equation}
+
+and used to find the friction drag coefficient of wing. We approximate the $C_f$ by assuming a turbulent Blasius flow over a flat plate as below:
+
+\begin{equation}
+    C_f \geq \frac{0.074} {Re^{0.2}}
+\end{equation}
+
+The induced drag of the wing is calculated with a span efficiency factor e, and is a function of the $C_L$ and aspect ratio $AR$ of the wing.
+
+\begin{equation}
+    C_{D_{induced}} = \frac{C_L^2}{\pi AR e}
+\label{e:cdinduced}
+\end{equation}
+
+\begin{python}
+        # Thrust and drag model
+        C_D_fuse = CDA0 / S
+        C_D_wpar = k * C_f * S_wetratio
+        C_D_ind  = C_L ** 2 / (np.pi * A * e)
+        constraints += [W_f >= TSFC * T_flight * D,
+                    D >= 0.5 * rho * S * C_D * V ** 2,
+                    C_D >= C_D_fuse + C_D_wpar + C_D_ind,
+                    V_f_fuse <= 10*units('m')*CDA0,
+                    Re <= (rho / mu) * V * (S / A) ** 0.5,
+                    C_f >= 0.074 / Re ** 0.2]
+\end{python}
+
 
 \section{Limits of GP and Convexity} \label{sec:GPLimits}
 
@@ -94,8 +220,8 @@ aspect ratio \AR and thickness ratio $\tau$ only, without having to define $b$ a
 Using the additional relation $S \propto b c$, we can express $V_{f_{wing}}$. 
 
 \begin{equation}
-	V_{f_{wing}} \propto \tau (\frac{AR}{S})^{0.5} (\frac{S}{b})^2 = 
-		(\frac{AR}{S})^{0.5} \frac{S^2}{S \AR} = \frac{\sqrt{S}\tau}{\sqrt{AR}}
+	V_{f_{wing}} \propto \tau (\frac{AR}{S})^{0.5} (\frac{S}{b})^2 \propto
+		(\frac{AR}{S})^{0.5} \frac{S^2}{S \AR} \propto \frac{\sqrt{S}\tau}{\sqrt{AR}}
 \end{equation}
 
 \begin{equation}
