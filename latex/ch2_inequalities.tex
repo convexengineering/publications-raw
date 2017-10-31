@@ -27,8 +27,6 @@ For the basic example, the aircraft will need:
 In the basic example, I choose not to model engines, and leave this as an exercise
 to complete in Section~\ref{sec:engine}
 
-\subsection{}
-
 \subsection{Objective functions}
 
 Objective functions are the way that a designer puts pressure on the variables 
@@ -40,19 +38,46 @@ in the same direction
 
 For example, an aircraft designed for fuel weight will look different than one 
 that has been designed for total weight or payload-fuel consumption, but all of
-these different objective will put a downward pressure on
+these different objective will put a downward pressure on TSFC and wing weight. 
 
 \section{Limits of GP and Convexity} \label{sec:GPLimits}
 
-Even with the demonstrated strengths of \gls{GP}'s in solving certain classes of problems, it is important to recognize that the mathematical framework has limits. 
-
-It takes engineering intuition to recognize where and when the model needs to become non-log-convex for improved modeling. 
-
-Even the addition of a single signomial constraint turns the problem from a \gls{GP} to a \gls{SP}, which means that the problems loses convexity and all of the mathematical guarantees associated with it. 
-
-As an example, 
+Even with the demonstrated strengths of \gls{GP}'s in solving certain classes of 
+problems, it is important to recognize that the mathematical framework has limits. 
+Certain constraints can only be expressed as signomial constraints, which are 
+non-log-convex extensions of posynomial constraints. Even the addition of a single 
+signomial constraint turns the problem from a \gls{GP} to a \gls{SP}, which means 
+that the problems loses convexity and all of the mathematical guarantees associated with it. 
+It takes engineering intuition to recognize where and when improved modeling is worth
+the loss of the mathematical guarantees.
 
 \subsection{Introducing fuel volume constraints to a GP aircraft model}
+
+To demonstrate a model that requires the addition of signomial constraints, we will 
+be adding a fuel volume model to SimPleAC, where fuel can be stored in the wing or
+in the fuselage. The reason why this model is GP-incompatible is because of the 
+following constraint which follows logically:
+
+\begin{equation}
+	V_{f_{avail}} \leq V_{f_{wing}} + V_{f_{fuse}}
+	\label{vfavail}
+\end{equation}
+
+The fuel volume available must be less than the sum of the fuel volume available in the
+wing and the fuselage. As such, it turns out that volumes that 'contain' free variables
+can create signomial constraints. (One way around this is potentially creating fuel
+fraction variables to denote how much fuel is stored in each volume, but I will not 
+explore other potential parametrizations here.)
+
+As such, we can continue to develop the model. We know that fuel weight is going 
+to influence the lift required of the aircraft, so we must determine the weight of the fuel 
+using a density parameter $\rho_{f}$. 
+
+\begin{equation}
+    V_f = \frac{W_f } {\rho_f g}
+    \label{e:vf}
+\end{equation}
+
 
 \subsection{What is the proper use case of the signomial equality?} 
 
