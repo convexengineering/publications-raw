@@ -1,6 +1,7 @@
 \chapter{Engineering inequalities and intuition, from equalities}
 
-In this section, we will derive a simple aircraft problem that will serve as a demonstration of the intuitive structure of geometric programs. 
+In this section, we will derive a simple aircraft problem that will serve as 
+a demonstration of the intuitive structure of geometric programs. 
 
 \section{Defining the aircraft design problem}
 
@@ -78,7 +79,35 @@ using a density parameter $\rho_{f}$.
     \label{e:vf}
 \end{equation}
 
+We need a model of how much fuel volume there is in a wing. If we think about the total
+volume in a wing, it is related linearly to its thickness ratio ($\tau$) and span ($b$), 
+and to the square of its chord ($c$). 
+
+\begin{equation}
+	V_{f_{wing}} \propto \tau b c^2
+	\label{e:vfwingpre}
+\end{equation} 
+
+In aerospace engineering, we like dimensionless quantities and planform areas, 
+so we would like to express relation~\ref{e:vfwingpre} with respect to the planform area $S$
+aspect ratio \AR and thickness ratio $\tau$ only, without having to define $b$ and $c$. 
+Using the additional relation $S \propto b c$, we can express $V_{f_{wing}}$. 
+
+\begin{equation}
+	V_{f_{wing}} \propto \tau (\frac{AR}{S})^{0.5} (\frac{S}{b})^2 = 
+		(\frac{AR}{S})^{0.5} \frac{S^2}{S \AR} = \frac{\sqrt{S}\tau}{\sqrt{AR}}
+\end{equation}
+
+\begin{equation}
+    V_{f_{wing}}^2 \leq 0.0009 \frac{S \tau^2}{AR}
+	\label{e:vfwing}
+\end{equation}
+
+(In the final form of the equation (\ref{e:vfwing}) I picked $0.009$ as the coefficient in front of the relation by tuning it after I had developed
+the model, since this seems to give interesting results while doing trade studies.)
 
 \subsection{What is the proper use case of the signomial equality?} 
 
-Signomial equalities must be used as a last resort. The signomial equality is the only place where the feasibility set of individual \gls{GP}'s within a \gls{SP} solve are not guaranteed to be subsets of the feasibility set of the \gls{SP}. 
+Signomial equalities must be used as a last resort. The signomial equality is the only place 
+where the feasibility set of individual \gls{GP}'s within a \gls{SP} solve are not guaranteed 
+to be subsets of the feasibility set of the \gls{SP}. 
