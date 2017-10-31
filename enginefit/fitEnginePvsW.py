@@ -29,7 +29,7 @@ indices = np.delete(np.linspace(0,len(logP)-1,len(logP)),[indP0,indW0])
 logPin = np.array(logP[indices])
 logWin = np.array(logW[indices])
 
-Type = 'ISMA'
+Type = 'SMA'
 K = 2
 
-cstrt, rms_error = fit(logWin,logPin,K,Type)
+cstrt, rms_error = fit(logPin,logWin,K,Type)
