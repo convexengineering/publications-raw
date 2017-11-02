@@ -1,10 +1,12 @@
 from gpkit import Model, Variable, SignomialsEnabled, VarKey, units
+from gpkit.constraints.bounded import Bounded
 import numpy as np
 import matplotlib.pyplot as plt
 
 class SimPleAC(Model):
     def setup(self):
         self.engine = Engine()
+        self.components = [self.engine]
         # Env. constants
         g          = Variable("g", 9.81, "m/s^2", "gravitational acceleration")
         mu         = Variable("\\mu", 1.775e-5, "kg/m/s", "viscosity of air", pr=4.)
@@ -55,8 +57,8 @@ class SimPleAC(Model):
         constraints = []
   
         # Weight and lift model
-        constraints += [W >= W_0 + W_w + W_f,
-                    W_0 + W_w + 0.5 * W_f <= 0.5 * rho * S * C_L * V ** 2,
+        constraints += [W >= W_0 + W_w + W_f + self.engine['W_e'],
+                    W_0 + W_w + 0.5 * W_f + self.engine['W_e'] <= 0.5 * rho * S * C_L * V ** 2,
                     W <= 0.5 * rho * S * C_Lmax * V_min ** 2,
                     T_flight >= Range / V,
                     LoD == C_L/C_D]
@@ -65,7 +67,9 @@ class SimPleAC(Model):
         C_D_fuse = CDA0 / S
         C_D_wpar = k * C_f * S_wetratio
         C_D_ind  = C_L ** 2 / (np.pi * A * e)
-        constraints += [W_f >= self.engine['TSFC'] * T_flight * D,
+        constraints += [W_f >= self.engine['TSFC'] * self.engine['T']* T_flight,
+                    self.engine['T'] >= D,
+                    self.engine['T']*V == self.engine['\\eta_{prop}']*self.engine['P_{shaft}'],
                     D >= 0.5 * rho * S * C_D * V ** 2,
                     C_D >= C_D_fuse + C_D_wpar + C_D_ind,
                     V_f_fuse <= 10*units('m')*CDA0,
@@ -85,14 +89,27 @@ class SimPleAC(Model):
                     W_w_strc**2. >= W_W_coeff1**2. / tau**2. * (N_ult**2. * A ** 3. * ((W_0+V_f_fuse*g*rho_f) * W * S)),
                     W_w >= W_w_surf + W_w_strc]
 
-        return constraints
+        return constraints,self.components
 
 
 class Engine(Model):
     def setup(self):
         # Dimensional constants
-        TSFC      = Variable("TSFC", 0.6, "1/hr", "thrust specific fuel consumption")
-        constraints = []
+        eta_prop    = Variable("\\eta_{prop}",0.8,'-',"propeller efficiency")
+        P_shaft_ref = Variable("P_{shaft_{ref}}",257,"kW","reference MSL maximum shaft power")
+        TSFC        = Variable("TSFC", 0.6, "1/hr", "thrust specific fuel consumption")
+        W_e_ref     = Variable("W_{e_{ref}}",1220,"N","reference engine weight")
+
+        # Free variables
+        P_shaft     = Variable("P_{shaft}","kW","shaft power")
+        P_shaft_max = Variable("P_{shaft_{max}}","kW","MSL maximum shaft power")
+        Thrust      = Variable("T","N","propeller thrust")
+        W_e         = Variable("W_e","N","engine weight")
+
+        constraints = [P_shaft == 0.2*P_shaft_max,
+                       (W_e/W_e_ref)**0.789 >= 0.0336 * (P_shaft_max/P_shaft_ref)**0.157
+                                + 1.57 * (P_shaft_max/P_shaft_ref)**1.34
+                    ]
         return constraints        
 
 if __name__ == "__main__":
