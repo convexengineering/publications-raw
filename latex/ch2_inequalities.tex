@@ -9,35 +9,44 @@ Aircraft epitomize the nature of complex engineering problems. The physical
 relations describing their motion are nonlinear, and all of their subsystems are 
 coupled through the primary forces in flight (thrust, weight, lift, drag). 
 
-The goal of the aircraft that we are designing will be to carry a given payload
-over a distance while minimizing an objective function. 
-
-We can also think about the different components that make an aircraft function. 
-
-For the basic example, the aircraft will need:
-\begin{itemize}
-	\item \textbf{A wing}: For generating lift. 
-	\item \textbf{A fuselage}: For storing fuel. 
-	\item \textbf{A payload}:
-\end{itemize}
-
-In the basic example, I choose not to model engines, and leave this as an exercise
-to complete in Section~\ref{sec:engine}
-
 \subsection{Objective functions}
 
 Objective functions are the way that a designer puts pressure on the variables 
-in the constraints. 
-
-In many design problems
+in the constraints. The goal of the aircraft that we are designing will be to carry a given payload
+over a distance while minimizing an objective function. In many design problems
 formulated as \gls{GP}s, many different objectives will put pressure on design 
-in the same direction
-
-For example, an aircraft designed for fuel weight will look different than one 
+in the same direction. For example, an aircraft designed for fuel weight will look different than one
 that has been designed for total weight or payload-fuel consumption, but all of
 these different objective will put a downward pressure on TSFC and wing weight. 
 
-To begin with, we will consider total fuel weight $W_f$ as our objective. 
+To begin with, we will consider total fuel weight $W_f$ as our objective.
+
+\subsection{Functional description: constraining the problem}
+
+The typical process for designing anything usually involves doing either a
+component decomposition or a functional decomposition of the problem. In
+this case, we will think about the functional decomposition to create of a
+basic list of constraints that our aircraft will need to fulfill to be
+able to capture the tradeoffs in an aircraft design problem. (In future
+sections, we will examine how thinking about the component decomposition
+can help structure large problems.)
+
+What does an aircraft need to be able to do to deliver payload of a distance?
+\begin{itemize}
+	\item It will need to be able to sustain steady
+    level flight with itself and the payload.
+    \item It will need to overcome drag.
+	\item It will need to contain enough fuel to complete its mission.
+	\item The wing will need to be able to sustain the loads it is
+    subjected to.
+\end{itemize}
+
+Note that these are in now way presented in order of importance, which is part of
+the beauty of \gls{GP}.
+
+In the basic example, I choose not to model engines, and leave this as an exercise
+to complete in Section~\ref{sec:engine} to improve the model.
+
 
 \subsection{Beginning to model: weight and lift}
 
