@@ -72,20 +72,20 @@ To be able to fit the engine power vs. weight data
 
 The relation we obtain for the one-term approximation is as follows:
 \begin{equation}
-	(\frac{W_{eng}}{W_{eng_{max}}})^{0.100} = 0.989 (\frac{P_{shaft}}{P_{shaft_{max}}})^{0.117}
+	(\frac{W_{eng}}{W_{eng_{max}}})^{0.100} = 0.988 (\frac{P_{shaft}}{P_{shaft_{max}}})^{0.117}
 \end{equation}
 
-Note that the root mean square error of this fit is 0.42, but this has to do with 
+Note that the root mean square error of this fit is 0.414, but this has to do with 
 the level of variation in the data. Since engine weight will have downward pressure
 on it from the objective, we can easily use a two-term posynomial approximation to 
 improve its error. 
 
 \begin{equation}
-	(\frac{W_{eng}}{W_{eng_{max}}})^{1.93} \geq 2.26 (\frac{P_{shaft}}{P_{shaft_{max}}})^{2.90} 
-												+0.00215 (\frac{P_{shaft}}{P_{shaft_{max}}})^{0.760}
+	(\frac{W_{eng}}{W_{eng_{max}}})^{0.801} \geq 0.0330 (\frac{P_{shaft}}{P_{shaft_{max}}})^{0.167} 
+												+1.59 (\frac{P_{shaft}}{P_{shaft_{max}}})^{1.36}
 \end{equation}
 
-This relation has an r.m.s. error of 0.34, which is a significant improvement. 
+This relation has an r.m.s. error of 0.346, which is a significant improvement. 
 
 It turns out that with a softmax affine approximation, more terms do not improve the r.m.s.
 error of the fit on the given data. As such, we will proceed with the 2-term posynomial fit. 
