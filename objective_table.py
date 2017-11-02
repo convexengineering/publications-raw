@@ -2,7 +2,7 @@ from SimPleAC_eng import *
 from gpkit import units
 import numpy as np
 
-objectives = ['W_f','W','D','T_{flight}']#,'W_f/T_{flight}','W_f+c*T_{flight}']
+objectives = ['W_f','W','D','T_{flight}','W_f/T_{flight}','W_f+c*T_{flight}']
 solDict = {}
 splitList = ['/','+','*']
 baseObj = 'W_f'
@@ -20,10 +20,21 @@ def parseObj(i,m):
     else:
         return m[i]
 
+# Parses objective string and returns that objective for solution
+def parseSol(i,sol):
+    # i is objective, sol is the solution
+    if '/' in i:
+        return sol(i.split('/')[0]).magnitude/ sol(i.split('/')[1]).magnitude
+    elif 'W_f+c*T_{flight}' in i:
+        c = 200
+        return  sol('W_f').magnitude + c*sol('T_{flight}').magnitude
+    else:
+        return sol(i).magnitude
+
 # Generates a row of the objectives for a particular solve,
 # normalized by the base objective
 def genNormalizedRow(sol, baseSol, baseObj, objectives):
-        return [sol(i) / baseSol(i) for i in objectives]
+        return [np.around(parseSol(i,sol) / parseSol(i,baseSol),2) for i in objectives]
 
 # Prints latex table of np.array
 def printTable(table):
