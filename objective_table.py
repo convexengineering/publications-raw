@@ -1,5 +1,6 @@
 from SimPleAC_eng import *
 from gpkit import units
+import numpy as np
 
 objectives = ['W_f','W','D','T_{flight}']#,'W_f/T_{flight}','W_f+c*T_{flight}']
 solDict = {}
@@ -8,23 +9,58 @@ baseObj = 'W_f'
 
 m = SimPleAC()
 
-for i in objectives:
+# Parses objective string and returns objective function
+def parseObj(i,m):
+    # i is objective, m is model
     if '/' in i:
-        m.cost = m[i.split('/')[0]]/ m[i.split('/')[1]]
+        return m[i.split('/')[0]]/ m[i.split('/')[1]]
     elif 'W_f+c*T_{flight}' in i:
         c = 200
-        m.cost = m['W_f'] + c*units('N/hr')*m['T_{flight}']
+        return  m['W_f'] + c*units('N/hr')*m['T_{flight}']
     else:
-        m.cost = m[i]
+        return m[i]
+
+# Generates a row of the objectives for a particular solve,
+# normalized by the base objective
+def genNormalizedRow(sol, baseSol, baseObj, objectives):
+        return [sol(i) / baseSol(i) for i in objectives]
+
+# Prints latex table of np.array
+def printTable(table):
+    n = table.shape[0]
+    print '\\begin{table}'
+    print '\\begin{center}'
+    print '\\begin{tabular}' + '{' + n*'c' + '}'
+    for i in range(0,n):
+        row = ''
+        for j in range(0,n):
+            row = row + str(table[i,j])
+            if j < n-1:
+                row = row + '&'
+            else:
+                row = row + '\\\\'
+        print row
+    print '\\end{tabular}'
+    print '\\end{center}'
+    print '\\end{table}'
+
+# Loop to find solution for each objective
+for i in objectives:
+    m.cost = parseObj(i,m)
     solDict[i] = m.localsolve(verbosity=0)
     if i == baseObj:
         baseSol = solDict[i]
 
-def genNormalizedRow(sol,baseSol,baseObj,objectives):
-    return [sol(i)/baseSol(i) for i in objectives]
-
+# Normalized objective table
+normTable = np.zeros([len(objectives),len(objectives)])
+count = 0;
 
 for i in objectives:
-    print genNormalizedRow(solDict[i],baseSol,baseObj,objectives)
+    normTable[count,:] = genNormalizedRow(solDict[i],baseSol,baseObj,objectives)
+    count += 1
+
+printTable(normTable)
+
+
 
 
