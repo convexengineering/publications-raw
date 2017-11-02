@@ -41,9 +41,12 @@ To begin with, we will consider total fuel weight $W_f$ as our objective.
 
 \subsection{Beginning to model: weight and lift}
 
-Modeling in GP often begins with a set of assumptions about the configuration 
-of the problem. In this case, let's assume that our aircraft has weight, 
-which consists of the payload, wing, and fuel weights. 
+Oftentimes, GP model creation starts haphazardly, with the designer having a
+vague idea about the kind of physics that governs a problem, and some basic
+set of assumptions about the configuration 
+of the problem. In this case, let's assume that we would like to think about 
+weight and lift, since the fundamental function of the aircraft is to stay aloft.
+The aircraft has weight, which consists of the payload, wing, and fuel weights. 
 
 \begin{equation}
     W \geq W_0 + W_w + W_f
@@ -65,6 +68,17 @@ of $V_{min}$ without stalling , so we add the following constraint:
 \begin{equation}
     W \leq \frac{1}{2} \rho V_{min}^2 S C_{L_{max}}
 \end{equation}
+
+At this point, we have introduced the following set of variables:
+
+\begin{tabular}{ l c c r }
+	Variable & Units & Value & Description
+\end{tabular}
+
+
+
+
+\subsection{Adding additional performance metrics}
 
 The time of flight of the aircraft, which is a useful metric of performance, is simply the range over velocity:
 
