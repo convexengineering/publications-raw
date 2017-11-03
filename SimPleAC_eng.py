@@ -29,7 +29,7 @@ class SimPleAC(Model):
         # Dimensional constants
         Range     = Variable("Range",3000, "km", "aircraft range")
         V_min     = Variable("V_{min}", 25, "m/s", "takeoff speed", pr=20.)
-        W_0       = Variable("W_0", 6250, "N", "aircraft weight excluding wing", pr=20.)
+        W_p       = Variable("W_p", 6250, "N", "payload weight", pr=20.)
         
         # Free Variables
         LoD       = Variable('L/D','-','lift-to-drag ratio')
@@ -57,8 +57,8 @@ class SimPleAC(Model):
         constraints = []
   
         # Weight and lift model
-        constraints += [W >= W_0 + W_w + W_f + self.engine['W_e'],
-                    W_0 + W_w + 0.5 * W_f + self.engine['W_e'] <= 0.5 * rho * S * C_L * V ** 2,
+        constraints += [W >= W_p + W_w + W_f + self.engine['W_e'],
+                    W_p + W_w + 0.5 * W_f + self.engine['W_e'] <= 0.5 * rho * S * C_L * V ** 2,
                     W <= 0.5 * rho * S * C_Lmax * V_min ** 2,
                     T_flight >= Range / V,
                     LoD == C_L/C_D]
@@ -86,7 +86,7 @@ class SimPleAC(Model):
 
         # Wing weight model
         constraints += [W_w_surf >= W_W_coeff2 * S,
-                    W_w_strc**2. >= W_W_coeff1**2. / tau**2. * (N_ult**2. * A ** 3. * ((W_0+V_f_fuse*g*rho_f) * W * S)),
+                    W_w_strc**2. >= W_W_coeff1**2. / tau**2. * (N_ult**2. * A ** 3. * ((W_p+V_f_fuse*g*rho_f) * W * S)),
                     W_w >= W_w_surf + W_w_strc]
 
         return constraints,self.components
@@ -116,5 +116,5 @@ if __name__ == "__main__":
     # Most basic way to execute the model 
     m = SimPleAC()
     m.cost = m['W_f'] 
-    sol = m.localsolve(verbosity = 4)
+    sol = m.localsolve(verbosity = 1)
     print sol.table()
