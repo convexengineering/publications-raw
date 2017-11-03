@@ -42,23 +42,24 @@ What does an aircraft need to be able to do to deliver payload of a distance?
 \end{itemize}
 
 Note that these are in now way presented in order of importance, which is part of
-the beauty of \gls{GP}.
-
-In the basic example, I choose not to model engines, and leave this as an exercise
+the beauty of \gls{GP}. In the basic example, I will choose not to model engines,
+and leave this as an exercise
 to complete in Section~\ref{sec:engine} to improve the model.
-
 
 \subsection{Beginning to model: weight and lift}
 
 Oftentimes, GP model creation starts haphazardly, with the designer having a
 vague idea about the kind of physics that governs a problem, and some basic
-set of assumptions about the configuration 
-of the problem. In this case, let's assume that we would like to think about 
+set of assumptions about the configuration. In this initial section, we will
+generate variables and constraints with abandon, and think about how to make
+sure each variable is adequately constrained later.
+
+For this particular design problem, let's assume that we would like to think about
 weight and lift, since the fundamental function of the aircraft is to stay aloft.
 The aircraft has weight, which consists of the payload, wing, and fuel weights. 
 
 \begin{equation}
-    W \geq W_0 + W_w + W_f
+    W \geq W_p + W_w + W_f
 \end{equation}
 
 We would like the aircraft to be able to sustain steady level flight, which means 
@@ -66,26 +67,42 @@ that it needs to generate enough lift to carry itself. We use the naive $W \leq 
 model below for steady state flight:
 
 \begin{equation}
-    W_0 + W_w + 0.5 W_f \leq \frac{1}{2} \rho S C_L V^2
+    W_p + W_w + 0.5 W_f \leq \frac{1}{2} \rho S C_L V^2
 \end{equation}
 
 where the lift of the aircraft is equal to weight of the aircraft with half-fuel, 
 which is a crude estimate of the average weight of the aircraft throughout the flight. 
 We would also like the fully-fueled aircraft to be able to fly at a minimum speed 
-of $V_{min}$ without stalling , so we add the following constraint:
+of $V_{min}$ without stalling, so we add the following constraint:
 
 \begin{equation}
     W \leq \frac{1}{2} \rho V_{min}^2 S C_{L_{max}}
 \end{equation}
 
-At this point, we have introduced the following set of variables:
+At this point, we have introduced a large set of variables.
 
-\begin{tabular}{ l c c r }
-	Variable & Units & Value & Description
-\end{tabular}
+We have to determine which set are constant parameters, and which set are free variables.
+We set the lift coefficient and takeoff speed to be constants since we would need
+more detailed modeling to determine their values. Payload weight is also set
+because it would always be unbounded towards zero due to the downward pressure from
+the objective.
 
-
-
+\footnotesize
+\centering
+\begin{supertabular}{ l c l c }
+    \toprule
+	Variable & Units & Description & Free \\
+    \midrule
+    $C_L$ & $$ & lift coefficient of wing & N \\
+    $S$ & $~\mathrm{m^{2}}$ & total wing area & Y \\
+    $V$ & $~\mathrm{\tfrac{m}{s}}$ & cruising speed & Y \\
+    $V_{min}$ & $~\mathrm{\tfrac{m}{s}}$ & takeoff speed & N \\
+    $W$ & $~\mathrm{N}$ & total aircraft weight & Y \\
+    $W_f$ & $~\mathrm{N}$ & fuel weight & Y \\
+    $W_w$ & $~\mathrm{N}$ & wing weight & Y \\
+    $W_p$ & $~\mathrm{N}$ & payload weight & N \\
+    \bottomrule
+\end{supertabular}
 
 \subsection{Adding additional performance metrics}
 
@@ -103,8 +120,8 @@ The lift-to-drag ratio is also defined:
 
 \begin{python}
         # Weight and lift model
-        constraints += [W >= W_0 + W_w + W_f,
-                W_0 + W_w + 0.5 * W_f <= 
+        constraints += [W >= W_p + W_w + W_f,
+                W_p + W_w + 0.5 * W_f <=
                         0.5 * rho * S * C_L * V ** 2,
                 W <= 0.5 * rho * S * C_Lmax * V_min ** 2,
                 T_flight >= Range / V,
