@@ -25,7 +25,7 @@ To begin with, we will consider total fuel weight $W_f$ as our objective.
 
 The typical process for designing anything usually involves doing either a
 component decomposition or a functional decomposition of the problem. In
-this case, we will think about the functional decomposition to create of a
+this case, we will think about the functional decomposition to create a
 basic list of constraints that our aircraft will need to fulfill to be
 able to capture the tradeoffs in an aircraft design problem. (In future
 sections, we will examine how thinking about the component decomposition
@@ -54,7 +54,7 @@ set of assumptions about the configuration. In this initial section, we will
 generate variables and constraints with abandon, and think about how to make
 sure each variable is adequately constrained later.
 
-For this particular design problem, let's assume that we would like to think about
+For this particular design problem, we start by modeling
 weight and lift, since the fundamental function of the aircraft is to stay aloft.
 The aircraft has weight, which consists of the payload, wing, and fuel weights. 
 
@@ -79,37 +79,48 @@ of $V_{min}$ without stalling, so we add the following constraint:
     W \leq \frac{1}{2} \rho V_{min}^2 S C_{L_{max}}
 \end{equation}
 
-At this point, we have introduced a large set of variables.
+At this point, we have introduced a large set of variables, some of which are input
+parameters, and the others free variables. This decision is often the first decision
+that
+and can shape the whole model development process.
 
-We have to determine which set are constant parameters, and which set are free variables.
-We set the lift coefficient and takeoff speed to be constants since we would need
+The decision of whether to keep variables fixed or variable can be determined by many
+factors. In this case, we set the lift coefficient and takeoff speed to be constants since
+(1) we would need
 more detailed modeling to determine their values. Payload weight is also set
-because it would always be unbounded towards zero due to the downward pressure from
-the objective.
+because (2) it would always be unbounded towards zero due to the downward pressure from
+the objective. A designer may also fix variables (3) if he/she knows their values with
+certainty (eg. gravitational acceleration $g$) or (4) the variable is a normalizing
+coefficient (which we will see in Section~\ref{sec:datafit}). We will set the values
+to those defined in Table~\ref{tab:vars_WandL}.
 
 \footnotesize
 \centering
-\begin{supertabular}{ l c l c }
+\begin{tabular}{ l c l c c}
     \toprule
-	Variable & Units & Description & Free \\
+	Variable & Units & Description & Free & Value \\
     \midrule
-    $C_L$ & $$ & lift coefficient of wing & N \\
-    $S$ & $~\mathrm{m^{2}}$ & total wing area & Y \\
-    $V$ & $~\mathrm{\tfrac{m}{s}}$ & cruising speed & Y \\
-    $V_{min}$ & $~\mathrm{\tfrac{m}{s}}$ & takeoff speed & N \\
-    $W$ & $~\mathrm{N}$ & total aircraft weight & Y \\
-    $W_f$ & $~\mathrm{N}$ & fuel weight & Y \\
-    $W_w$ & $~\mathrm{N}$ & wing weight & Y \\
-    $W_p$ & $~\mathrm{N}$ & payload weight & N \\
+    $C_L$ & $~\mathrm{-}$ & lift coefficient of wing & Y & - \\
+    $S$ & $~\mathrm{m^{2}}$ & total wing area & Y & - \\
+    $V$ & $~\mathrm{\tfrac{m}{s}}$ & cruising speed & Y & - \\
+    $V_{min}$ & $~\mathrm{\tfrac{m}{s}}$ & takeoff speed & N & 25 \\
+    $W$ & $~\mathrm{N}$ & total aircraft weight & Y & -\\
+    $W_f$ & $~\mathrm{N}$ & fuel weight & Y & -\\
+    $W_w$ & $~\mathrm{N}$ & wing weight & Y & - \\
+    $W_p$ & $~\mathrm{N}$ & payload weight & N & 6250\\
     \bottomrule
-\end{supertabular}
+    \label{tab:vars_WandL}
+\end{tabular}
 
 \subsection{Adding additional performance metrics}
 
-The time of flight of the aircraft, which is a useful metric of performance, is simply the range over velocity:
+As multi-objective designers, we may also be interested in knowing about additional performance metrics. A
+few that are particularly relevant to aircraft will be introduced here.
+
+The time of flight of the aircraft, which is a useful metric to calculate cost, is simply the range over velocity:
 
 \begin{equation}
-    T_{flight} \geq \frac{Range}{V}
+    T_{flight} \geq \frac{\mathrm{Range}}{V}
 \end{equation}
 
 The lift-to-drag ratio is also defined: 
@@ -128,7 +139,38 @@ The lift-to-drag ratio is also defined:
                 LoD == C_L/C_D]
 \end{python}
 
+\footnotesize
+\centering
+\begin{tabular}{ l c l c c }
+    \toprule
+	Variable & Units & Description & Free & Value \\
+    \midrule
+    $C_D$ & $~\mathrm{-}$ & drag coefficient & Y & - \\
+    $C_L$ & $~\mathrm{-}$ & lift coefficient of wing & Y & - \\
+    $L/D$ & $~\mathrm{-}$ & lift-to-drag ratio & Y & - \\
+    $Range$ & $~\mathrm{km}$ & aircraft range & N & 3000 \\
+    \bottomrule
+\label{tab:vars_perfMetrics}
+\end{tabular}
+
 \subsection{More physics: thrust and drag model}
+
+If we attempt to run our current model, we would find that it is unbounded in many variables.
+The results are as follows:
+
+\footnotesize
+\begin{tabular}{ l c l }
+    \toprule
+	Unbounded variable & Units & Direction \\
+    \midrule
+    $S$ & $~\mathrm{m^{2}}$ & $\inf$ \\
+    $T_{flight}$ & $~\mathrm{hr}$ & $\inf$ \\
+    $V$ &  $~\mathrm{\tfrac{m}{s}}$  & $\inf$ \\
+    $W_f$ & $~\mathrm{N}$ & $0$ \\
+    $W_w$ & $~\mathrm{N}$  & $0$ \\
+    \bottomrule
+\label{tab:WandL_unbounded}
+\end{tabular}
 
 We assume a constant thrust specific fuel consumption (TSFC) for the 'engine' of the aircraft, which is assumed to provide as much thrust as needed. Since $T \geq D$:
 
