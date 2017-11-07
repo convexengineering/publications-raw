@@ -34,10 +34,10 @@ class SimPleAC(Model):
         D         = Variable("D", "N", "total drag force")
         V         = Variable("V", "m/s", "cruising speed")
         W         = Variable("W", "N", "total aircraft weight")
-        Re        = Variable("Re", "-", "Reynold's number")
+        Re        = Variable("Re", "-", "Reynolds number")
         CDA0      = Variable("(CDA0)", "m^2", "fuselage drag area") #0.035 originally
         C_D       = Variable("C_D", "-", "drag coefficient")
-        C_L       = Variable("C_L", "-", "lift coefficient of wing")
+        C_L       = Variable("C_L", "-", "wing lift coefficient")
         C_f       = Variable("C_f", "-", "skin friction coefficient")
         W_f       = Variable("W_f", "N", "fuel weight")
         V_f       = Variable("V_f", "m^3", "fuel volume")
