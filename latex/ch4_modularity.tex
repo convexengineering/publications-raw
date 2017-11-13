@@ -41,6 +41,47 @@ There are models that contain both kinds of variables.}
 
 \section{Example problem: Creating a modular tail structural model}
 
+\subsection{Horizontal Tail Terminology}
+\begin{tabbing}
+$I_{\rm{cap}}$ = non-dimensional spar cap area moment of inertia \\
+$L_{\rm{ht}}$ = horizontal tail downforce \\
+$L_{\rm{ht}_{\rm{max}}}$ = maximum horizontal tail downforce \\
+$L_{\rm{ht}_{rect}}$ = rectangular horizontal tail load \\
+$L_{\rm{ht}_{\rm{rect}_{\rm{out}}}}$ = rectangular horizontal tail load outboard\\
+$L_{\rm{ht}_{\rm{tri}}}$ = triangular horizontal tail load \\
+$L_{\rm{ht}_{tri_{\rm{out}}}}$ = triangular horizontal tail load outboard\\
+$L_{\rm{shear}}$ = maximum shear load at pin-joint\\
+$M_{\rm{r}}$ = moment per chord at horizontal tail root \\
+$M_{\rm{r}_{\rm{out}}}$ = moment per chord at pin-joint\\
+$N_{\rm{lift}}$ = horizontal tail loading multiplier \\
+$S_{\rm{ht}}$ = horizontal tail area \\
+$W_{\rm{cap}}$ = weight of spar caps \\
+$W_{\rm{struct}}$ = horizontal tail wingbox weight \\
+$W_{\rm{web}}$ = weight of shear web \\
+$\lambda_{\rm{ht}}$ = horizontal tail taper ratio \\
+$\nu$ = dummy variable = $(t^2 + t + 1)/(t+1)^2$ \\
+$\pi_{\rm{M-fac}}$ = pi-tail bending structural factor \\
+$\rho_{\rm{cap}}$ = density of spar cap material \\
+$\rho_{\rm{web}}$ = density of shear web material \\
+$\sigma_{max,shear}$ = allowable shear stress \\
+$\sigma_{\rm{max}}$ = allowable tensile stress \\
+$\tau_{\rm{ht}}$ = horizontal tail thickness/chord ratio \\
+$b_{\rm{ht}}$ = horizontal tail span \\
+$b_{\rm{ht}_{\rm{out}}}$ = horizontal tail outboard half-span\\
+$c_{\rm{attach}}$ = horizontal tail chord at the pin-joint \\
+$c_{\rm{root}_{\rm{ht}}}$ = horizontal tail root chord \\
+$c_{\rm{tip}_{\rm{ht}}}$ = horizontal tail tip chord \\
+$g$ = gravitational acceleration \\
+$q_{\rm{ht}}$ = substituted variable = 1 + taper \\
+$r_h$ = fractional wing thickness at spar web \\
+$t_{\rm{cap}}$ = non-dim. spar cap thickness \\
+$t_{\rm{web}}$ = non-dim. shear web thickness \\
+$w$ = wingbox width-to-chord ratio \\
+$w_{\textrm{fuse}}$ = fuselage half-width \\
+\end{tabbing}
+
+\subsection{Conventional horizontal tail model}
+
 Consider the set of equations considered in \cite{SP_ac_design} to size
 the structure of a conventional horizontal tail. 
 
@@ -152,46 +193,6 @@ After seeing these load distributions, an experienced \gls{GP} modeler would imm
 The pin-joint assumption ensures the vertical tail structural constraints do not 
 need to be modified for the pi-tail configuration. 
 
-
-
-\subsubsection{Horizontal Tail Terminology}
-\begin{tabbing}
-$I_{\rm{cap}}$ = non-dimensional spar cap area moment of inertia \\
-$L_{\rm{ht}}$ = horizontal tail downforce \\
-$L_{\rm{ht}_{\rm{max}}}$ = maximum horizontal tail downforce \\
-$L_{\rm{ht}_{rect}}$ = rectangular horizontal tail load \\
-$L_{\rm{ht}_{\rm{rect}_{\rm{out}}}}$ = rectangular horizontal tail load outboard\\
-$L_{\rm{ht}_{\rm{tri}}}$ = triangular horizontal tail load \\
-$L_{\rm{ht}_{tri_{\rm{out}}}}$ = triangular horizontal tail load outboard\\
-$L_{\rm{shear}}$ = maximum shear load at pin-joint\\
-$M_{\rm{r}}$ = moment per chord at horizontal tail root \\
-$M_{\rm{r}_{\rm{out}}}$ = moment per chord at pin-joint\\
-$N_{\rm{lift}}$ = horizontal tail loading multiplier \\
-$S_{\rm{ht}}$ = horizontal tail area \\
-$W_{\rm{cap}}$ = weight of spar caps \\
-$W_{\rm{struct}}$ = horizontal tail wingbox weight \\
-$W_{\rm{web}}$ = weight of shear web \\
-$\lambda_{\rm{ht}}$ = horizontal tail taper ratio \\
-$\nu$ = dummy variable = $(t^2 + t + 1)/(t+1)^2$ \\
-$\pi_{\rm{M-fac}}$ = pi-tail bending structural factor \\
-$\rho_{\rm{cap}}$ = density of spar cap material \\
-$\rho_{\rm{web}}$ = density of shear web material \\
-$\sigma_{max,shear}$ = allowable shear stress \\
-$\sigma_{\rm{max}}$ = allowable tensile stress \\
-$\tau_{\rm{ht}}$ = horizontal tail thickness/chord ratio \\
-$b_{\rm{ht}}$ = horizontal tail span \\
-$b_{\rm{ht}_{\rm{out}}}$ = horizontal tail outboard half-span\\
-$c_{\rm{attach}}$ = horizontal tail chord at the pin-joint \\
-$c_{\rm{root}_{\rm{ht}}}$ = horizontal tail root chord \\
-$c_{\rm{tip}_{\rm{ht}}}$ = horizontal tail tip chord \\
-$g$ = gravitational acceleration \\
-$q_{\rm{ht}}$ = substituted variable = 1 + taper \\
-$r_h$ = fractional wing thickness at spar web \\
-$t_{\rm{cap}}$ = non-dim. spar cap thickness \\
-$t_{\rm{web}}$ = non-dim. shear web thickness \\
-$w$ = wingbox width-to-chord ratio \\
-$w_{\textrm{fuse}}$ = fuselage half-width \\
-\end{tabbing}
 
 \subsubsection{Load Derivation}
 
