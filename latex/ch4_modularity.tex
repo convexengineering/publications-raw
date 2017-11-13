@@ -8,7 +8,9 @@ both single- and multi-mission scenarios.
 
 \section{Describing the component-based design framework of SPaircraft}
 
-In a similar fashion to the hierarchy described
+In a similar fashion to SimPleAC,
+SPaircraft has a strict maintenance of variables and constraint hierarchy
+as shown in Figure~\ref{forest:SPaircrafttree}, with some additional components.
 
 \begin{figure}[!h]\centering\small\sffamily
 \begin{forest}
@@ -34,7 +36,7 @@ In a similar fashion to the hierarchy described
     \caption{Hierarchy of the presented aircraft model. Models that include sizing variables are 
 bolded while models that include performance variables are italicized. 
 There are models that contain both kinds of variables.}
-\label{fig:componenttree}
+\label{forest:SPaircrafttree}
 \end{figure}
 
 \section{Example problem: Creating a modular tail structural model}
