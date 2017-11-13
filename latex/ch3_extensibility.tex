@@ -6,7 +6,7 @@ The 'bag of constraints' form of the GP means that constraints can be added to t
 having to restructure the optimization formulation. 
 
 \section{Improving fidelity: Adding a simple engine model to the SimPleAC}
-\label{sec:engine}
+\label{s:engine}
 
 The SimPleAC currently has an engine that weighs nothing and magically supplies
 unlimited power. This is obviously unphysical, and since one of the variables
@@ -51,7 +51,7 @@ of the engine, if we abstract away the propeller, which converts the shaft power
 to thrust power. 
 
 \subsection{Data-based modeling: engine power vs. weight}
-\label{sec:datafit}
+\label{s:datafit}
 
 We can imagine that, for a specific kind of engine, there is a relation between the 
 maximum shaft power available and the mass of the engine, somewhat related to the 
@@ -92,7 +92,7 @@ It turns out that with a softmax affine approximation, more terms do not improve
 error of the fit on the given data. As such, we will proceed with the 2-term posynomial fit. 
 
 \subsection{Converting all subsystems into submodels}
-\label{sec:submodels}
+\label{s:submodels}
 
 Within this framework, we can modularize also add a separate wing and fuselage module to
 SimPleAC as well, with very little additional work. This creates the variable and constraint
@@ -138,5 +138,5 @@ constraints that relate to the performance of the design.
     \caption{Variable and constraint hierarchy of the presented aircraft model. Models that include sizing variables are
 bolded while models that include performance variables are italicized.
 There are models that contain both kinds of variables.}
-\label{fig:componenttree}
+\label{f:componenttree}
 \end{figure}

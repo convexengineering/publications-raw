@@ -44,7 +44,7 @@ What does an aircraft need to be able to do to deliver payload of a distance?
 Note that these are in now way presented in order of importance, which is part of
 the beauty of \gls{GP}. In the basic example, I will choose not to model engines,
 and leave this as an exercise
-to complete in Section~\ref{sec:engine} to improve the model.
+to complete in Section~\ref{s:engine} to improve the model.
 
 \subsection{Beginning to model: weight and lift}
 
@@ -91,11 +91,11 @@ more detailed modeling to determine their values. Payload weight is also set
 because (2) it would always be unbounded towards zero due to the downward pressure from
 the objective. A designer may also fix variables (3) if he/she knows their values with
 certainty (eg. gravitational acceleration $g$) or (4) the variable is a normalizing
-coefficient (which we will see in Section~\ref{sec:datafit}). We will set the values
+coefficient (which we will see in Section~\ref{s:datafit}). We will set the values
 to those defined in Table~\ref{tab:vars_WandL}.
 
 \footnotesize
-\centering
+\begin{center}
 \begin{tabular}{ l c l c c}
     \toprule
 	Variable & Units & Description & Free & Value \\
@@ -111,6 +111,7 @@ to those defined in Table~\ref{tab:vars_WandL}.
     \bottomrule
     \label{tab:vars_WandL}
 \end{tabular}
+\end{center}
 
 
 \subsection{Adding additional performance metrics}
@@ -141,7 +142,7 @@ The lift-to-drag ratio is also defined:
 \end{python}
 
 \footnotesize
-\centering
+\begin{center}
 \begin{tabular}{ l c l c c }
     \toprule
 	Variable & Units & Description & Free & Value \\
@@ -153,6 +154,7 @@ The lift-to-drag ratio is also defined:
     \bottomrule
 \label{tab:vars_perfMetrics}
 \end{tabular}
+\end{center}
 
 \subsection{More physics: thrust and drag model}
 
@@ -250,7 +252,7 @@ The induced drag of the wing is calculated with a span efficiency factor e, and 
 \end{python}
 
 
-\section{Limits of GP and Convexity} \label{sec:GPLimits}
+\section{Limits of GP and Convexity} \label{s:GPLimits}
 
 Even with the demonstrated strengths of \gls{GP}'s in solving certain classes of 
 problems, it is important to recognize that the mathematical framework has limits. 
