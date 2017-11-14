@@ -161,8 +161,8 @@ class Engine(Model):
         W_e         = Variable("W_e","N","engine weight")
 
         constraints = []
-        constraints += [(W_e/W_e_ref)**0.801 >= 0.0330 * (P_shaft_max/P_shaft_ref)**0.167
-                                + 1.59 * (P_shaft_max/P_shaft_ref)**1.36]
+        constraints += [(W_e/W_e_ref)**1.92 >= 0.00441 * (P_shaft_max/P_shaft_ref)**0.759
+                                + 1.44 * (P_shaft_max/P_shaft_ref)**2.90]
         return constraints
 
     def dynamic(self,state):
