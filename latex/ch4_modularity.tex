@@ -86,9 +86,12 @@ Consider the set of equations considered in \cite{SP_ac_design} to size
 the structure of a conventional horizontal tail. 
 
 \begin{align}
+\label{e:HTorig}
+\begin{split}
     0.92 w\tau_{\rm{ht}} t_{\rm{cap}}^2 + I_{\rm{cap}} &\leq \frac{0.92^2}{2}w\tau_{\rm{ht}}^2t_{\rm{cap}}\\
     8 &\geq N_{\rm{lift}}M_{\rm{r}}(\AR_{\rm{ht}})q_{\rm{ht}}^2\frac{\tau_{\rm{ht}}}{S_{\rm{ht}} I_{\rm{cap}}\sigma_{\rm{max}}}\\
     12 &\geq \frac{L_{\rm{max}} N_{\rm{lift}} q^2}{\tau_{\rm{ht}} S t_{\rm{web}} \sigma_{\rm{max-shear}}}
+\end{split}
 \end{align}
 
 Now, using a set of variables that includes the original parametrization of the wing, 
@@ -96,8 +99,8 @@ we would like to extend this structural model to be able to design a pi horizont
 with the same loading. 
 
 This section will derive a new set of constraints, which are compatible with 
-both conventional tail and pi-tail architectures, and in the process demonstrate the 
-capabilities of \gls{GP} in incremental design. 
+both conventional tail and pi-tail architectures, and in the process demonstrate the
+capabilities of \gls{GP} in incremental design.
 
 \subsection{Assumptions}
 
@@ -181,18 +184,21 @@ loading, and the yellow line shows the assumed load distribution}
     \label{f:HTmoment}
 \end{figure}
 
-After having seen these diagrams, we can make 
+After having seen these diagrams, we can make an important observation.
+The first is that the pi horizontal tail becomes a conventional tail in
+the limit where $w_{fuse} \xrightarrow[]{} 0$. This gives us the clue that we can
+have a model that can accurately represent the structural constraints on both kinds
+of tails.
 
-The pi horizontal tail becomes a conventional tail in the limit where $w_{fuse} \xrightarrow[]{} 0$. 
+Another important feature of the load distributions that they can be represented
+with relatively high accuracy using a linearization of the load distributions,
+an approximation that is strictly conservative.
+Figures~\ref{f:HTshear} and \ref{f:HTmoment} show how the loads are approximated
+in this case. The linear approximation will help us in leveraging Equations
+~\ref{e:HTorig} to size both horizontal tail configurations.
 
-
-After seeing these load distributions, an experienced \gls{GP} modeler would immediately think about linearization. 
-
-
-
-The pin-joint assumption ensures the vertical tail structural constraints do not 
+As a final note, the pin-joint assumption ensures the vertical tail structural constraints do not
 need to be modified for the pi-tail configuration. 
-
 
 \subsubsection{Load Derivation}
 
