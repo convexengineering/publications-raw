@@ -121,9 +121,9 @@ class Engine(Model):
     def setup(self):
         # Dimensional constants
         eta_prop    = Variable("\\eta_{prop}",0.8,'-',"propeller efficiency")
-        P_shaft_ref = Variable("P_{shaft_{ref}}",257,"kW","reference MSL maximum shaft power")
+        P_shaft_ref = Variable("P_{shaft_{ref}}",149,"kW","reference MSL maximum shaft power")
         TSFC        = Variable("TSFC", 0.6, "1/hr", "thrust specific fuel consumption")
-        W_e_ref     = Variable("W_{e_{ref}}",1220,"N","reference engine weight")
+        W_e_ref     = Variable("W_{e_{ref}}",681,"N","reference engine weight")
 
         # Free variables
         P_shaft     = Variable("P_{shaft}","kW","shaft power")
