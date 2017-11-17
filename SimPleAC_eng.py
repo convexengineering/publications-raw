@@ -53,7 +53,7 @@ class SimPleAC(Model):
         W_w_strc  = Variable('W_{w_{strc}}','N','wing structural weight', fix = True)
         W_w_surf  = Variable('W_{w_{surf}}','N','wing skin weight', fix = True)
         V_f_wing  = Variable("V_{f_{wing}}",'m^3','fuel volume in the wing', fix = True)
-        V_f_fuse  = Variable('V__{f_{fuse}}','m^3','fuel volume in the fuselage', fix = True)
+        V_f_fuse  = Variable('V_{f_{fuse}}','m^3','fuel volume in the fuselage', fix = True)
         constraints = []
   
         # Weight and lift model

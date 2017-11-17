@@ -35,7 +35,7 @@ class SimPleAC(Model):
         T_flight  = Variable("T_{flight}", "hr", "flight time")
         
         # Free variables (fixed for performance eval.)
-        V_f_fuse  = Variable('V__{f_{fuse}}','m^3','fuel volume in the fuselage', fix = True)
+        V_f_fuse  = Variable('V_{f_{fuse}}','m^3','fuel volume in the fuselage', fix = True)
 
         constraints = []
   

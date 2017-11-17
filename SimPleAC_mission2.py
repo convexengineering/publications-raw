@@ -4,6 +4,9 @@ from gpkit import Vectorize
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Importing models
+from atmosphere import Atmosphere
+
 class SimPleAC(Model):
     def setup(self):
         self.engine = Engine()
@@ -47,12 +50,6 @@ class SimPleAC(Model):
 
     def dynamic(self,state):
         return SimPleACP(self,state)
-
-class Atmosphere(Model):
-    def setup(self):
-        # Env. constants
-        mu         = Variable("\\mu", 1.775e-5, "kg/m/s", "viscosity of air", pr=4.)
-        rho        = Variable("\\rho", 1.23, "kg/m^3", "density of air", pr=5.)
 
 class SimPleACP(Model):
     def setup(self,aircraft,state):
