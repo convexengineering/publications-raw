@@ -1,6 +1,7 @@
-from gpkit import Model, Variable, SignomialsEnabled, SignomialEquality, VarKey, units
+from gpkit import Model, Variable, SignomialsEnabled, SignomialEquality, VarKey, units,Vectorize
 from gpkit.constraints.bounded import Bounded
-from gpkit import Vectorize
+from relaxed_constants import relaxed_constants, post_process
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -192,15 +193,16 @@ class Mission(Model):
             dhdt = Variable('\\frac{\\Delta h}{dt}','m/hr','Climb rate')
             W_f_segment = Variable('W_{f_{segment}}','N', 'Segment fuel burn')
             t_segment = Variable('t_{segment}','hr','Time spent in flight segment')
-            R_segment = Variable('R_{segment}','nmi','Range flown in segment')
+            R_segment = Variable('R_{segment}','km','Range flown in segment')
             state = Atmosphere()
             self.aircraftP = self.aircraft.dynamic(state)
 
         self.cost = self.aircraft[objective]
 
         # Mission variables
-        Range     = Variable("Range",500, "km", "aircraft range")
-        V_min     = Variable("V_{min}", 25, "m/s", "takeoff speed", pr=20.)
+        Range      = Variable("Range",3000, "km", "aircraft range")
+        V_min      = Variable("V_{min}", 25, "m/s", "takeoff speed", pr=20.)
+        cost_index = Variable("Cost Index",'1/hr','hourly cost index')
 
         constraints = []
 
@@ -213,14 +215,14 @@ class Mission(Model):
                         Wstart >= Wend + W_f_segment, # Making sure fuel gets burnt!
                         Wstart[1:Nsegments] == Wend[:Nsegments-1],
                         h[0] == t_segment[0]*dhdt[0], # Starting altitude
-                        h[0] >= 15.*units('ft'),
+                        dhdt >= 1.*units('m/hr'),
                         SignomialEquality(h[1:Nsegments],h[:Nsegments-1] + t_segment[1:Nsegments]*dhdt[1:Nsegments]),
                         Wavg == Wstart**0.5*Wend**0.5,
                         W_f_segment >= self.aircraftP.engineP['TSFC'] * self.aircraftP.engineP['T'] * t_segment,
                         t_segment == R_segment/self.aircraftP['V'],
                         # Aggregating segment variables
                         self.aircraft['W_f'] == W_f_mission,
-                        Range == R_segment/Nsegments, # Dividing into equal range segments
+                        R_segment == Range/Nsegments, # Dividing into equal range segments
                         W_f_mission >= sum(W_f_segment),
                         t_flight >= sum(t_segment)
                         ]
@@ -235,13 +237,14 @@ class Mission(Model):
         constraints += [self.aircraft['W'] <= 0.5 * state['\\rho'] *
                             self.aircraft['S'] * self.aircraft['C_{L,max}'] * V_min ** 2]
 
-
         return constraints, state, self.aircraft, self.aircraftP
 
 if __name__ == "__main__":
     # Most basic way to execute the model 
-    m = Mission('W_f',15)
-    m.cost = m['W_f']*units('1/N') + m['t_{flight}']*units('1/hr')
-    m = Model(m.cost, Bounded(m))
+    m = Mission('W_f',5)
+    m.cost = m['W_f']*units('1/N') + 360*m['t_{flight}']*units('1/hr')
+    #m = Model(m.cost, Bounded(m))
+    #m_relax = relaxed_constants(m,None,None)
     sol = m.localsolve(verbosity = 4)
+    #post_process(sol)
     #print sol.table()
