@@ -1,9 +1,10 @@
 \chapter{Extensibility of GP}
 
-Traditional engineering design optimization tools (eg. TASOPT) implement convergence loops that assume structure within a given design problem. 
-
-The 'bag of constraints' form of the GP means that constraints can be added to the problem without 
-having to restructure the optimization formulation. 
+Traditional engineering design optimization tools (eg. TASOPT) implement
+convergence loops that assume structure within a given design problem.
+The 'bag of constraints' form of the GP means that constraints can be
+added to the problem without
+having to restructure the optimization formulation.
 
 \section{Improving fidelity: Adding a simple engine model to the SimPleAC}
 \label{s:engine}
@@ -17,7 +18,7 @@ with the highest sensitivity is \TSFC, requires refinement.
 Before even thinking about modeling, we would like to leverage the object-oriented 
 GPkit models to put the variables describing the engine into a submodel (currently only 
 TSFC). We do this by creating a new class called \textbf{Engine} and creating a \textit{setup}
-method with the 
+method that returns the constraints within it.
 
 \begin{python}
 class Engine(Model):
@@ -35,20 +36,23 @@ as follows:
 class SimPleAC(Model):
     def setup(self):
         self.engine = Engine()
+        self.components = [self.engine]
         # Env. constants
         ...
+        return constraints, self.components
 \end{python}
 
 This restructuring of the model yields the exact same overall GP formulation 
 as the unstructured problem, but gives us the flexibility to develop submodels
-collaboratively in a disciplined manner.  
+collaboratively and in a disciplined manner.
 
 If we think of an engine as an input-output system, we can determine how it
 would interact with the SimPleAC system, and create the appropriate variables. 
 At the most basic level, the engine provides shaft power, consumes fuel, 
 and has weight. The model is missing both the shaft power and weight description
-of the engine, if we abstract away the propeller, which converts the shaft power 
-to thrust power. 
+of the engine. If we abstract away the propeller (the relation between shaft
+power and thrust power) for the moment, we can perhaps find a way to relate
+power to weight
 
 \subsection{Data-based modeling: engine power vs. weight}
 \label{s:datafit}
@@ -59,15 +63,35 @@ cube-square law, which describes the relation between the surface area and volum
 of objects. And let's say that our knowledge of the internal workings of engines
 is limited, but we have some knowledge of the technology available in the market
 and have data to support it. Using GPfit, we will try to fit the data to find
-GP compatible relations between engine weight and maximum power. This section 
+\gls{GP} compatible relations between engine weight and maximum power. This section
 will try to highlight the best practices when making data-based models. 
 
-To be able to fit the engine power vs. weight data
-
+To be able to fit the engine power vs. weight data, we take several important steps.
 \begin{itemize}
-	\item \textbf{Normalize the data.} It is very important to normalize the data
-	by some known quantity, since we would not want our fit to be dependent on the 
-	units that we had on our points while performing it. 
+    \item \textbf{Comb the data.} Since we are essentially projecting
+    data with potentially high standard deviation into a single line,
+    it is important to fit the ranges of data we care about.
+    \item \textbf{Normalize the data.} It is very important to normalize the data
+	by some known quantity, since we would not want our fit to be dependent on the
+	units that we used while performing it. This also helps the fit integrate
+    seamlessly into GPkit, since dimensional fits would require units manipulation
+    to avoid errors. The data can be normalized by any
+    reference quantities (in this case using the maximum power and weight values
+    from the data set).
+    \item \textbf{Choose the type of fit.} In~\cite{gpfitpaper}, \textit{softmax-affine}
+    (SMA) and \textit{implicit softmax-affine} (ISMA)
+    functions are proposed as convex approximations
+    to data. Depending on the behavior of the data, one or the other
+    may be appropriate. For engineering relations that are expected to be smooth, SMA
+    functions are often good approximations. However, if kinks are expected in the
+    functions, ISMA functions can locally adjust the softness of the fit to
+    reduce the error of the fit.
+    \item \textbf{Choose the number of posynomial terms in the fit.} The number of
+    terms will likely depend on the root-mean square (RMS) error of the fit, and
+    the kind of pressure on the variable. RMS error can be reduced by including
+    more posynomial terms, but only if the variable of interest has downward
+    pressure on it from the objective function (since it is on the greater side
+    of the inequality).
 \end{itemize}
 
 
@@ -140,3 +164,9 @@ bolded while models that include performance variables are italicized.
 There are models that contain both kinds of variables.}
 \label{f:componenttree}
 \end{figure}
+
+\section{Creating a mission}
+
+Having transformed the models into performance form
+
+\section{Multimission design}
