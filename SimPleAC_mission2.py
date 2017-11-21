@@ -177,7 +177,7 @@ class Mission(Model):
         t_m     = Variable('t_m','hr','Total mission time')
 
         with Vectorize(Nsegments):
-            Wavg   = Variable(' W_{avg}','N','Segment average weight')
+            Wavg   = Variable('W_{avg}','N','Segment average weight')
             Wstart = Variable('W_{start}', 'N', 'Weight at the beginning of flight segment')
             Wend   = Variable('W_{end}', 'N','Weight at the end of flight segment')
             h      = Variable('h','m','Flight altitude')
@@ -201,7 +201,7 @@ class Mission(Model):
             constraints += [h == state['h'], # Linking states
 
                         # Weights at beginning and end of mission
-                        Wstart[0] == self.aircraft['W'],
+                        Wstart[0] >= W_p + self.aircraft.wing['W_w'] + self.aircraft.engine['W_e'] + W_f_m,
                         Wend[Nsegments-1] >= W_p + self.aircraft.wing['W_w'] + self.aircraft.engine['W_e'],
 
                         # Lift, and linking segment start and end weights
