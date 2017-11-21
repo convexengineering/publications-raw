@@ -19,20 +19,14 @@ class SimPleAC(Model):
         g         = Variable("g", 9.81, "m/s^2", "gravitational acceleration")
         rho_f     = Variable("\\rho_f", 817, "kg/m^3", "density of fuel")
 
-        # Dimensional constants
-        W_p       = Variable("W_p", 6250, "N", "payload weight", pr=20.)
-
         # Free Variables
-        W         = Variable("W", "N", "total aircraft weight")
-        W_f       = Variable("W_f", "N", "fuel weight")
-        V_f       = Variable("V_f", "m^3", "fuel volume")
+        W         = Variable("W", "N", "maximum takeoff weight")
+        W_f       = Variable("W_f", "N", "maximum fuel weight")
+        V_f       = Variable("V_f", "m^3", "maximum fuel volume")
         V_f_avail = Variable("V_{f_{avail}}", "m^3", "fuel volume available")
 
         constraints = []
   
-        # Weight and lift model
-        constraints += [W >= W_p + self.wing['W_w'] + W_f + self.engine['W_e']]
-
         # Thrust and drag model
         constraints += [self.fuse['C_{D_{fuse}}'] == self.fuse['(CDA0)'] / self.wing['S']]
 
@@ -41,11 +35,6 @@ class SimPleAC(Model):
             constraints += [V_f == W_f / g / rho_f,
                     V_f_avail <= self.wing['V_{f_{wing}}'] + self.fuse['V_{f_{fuse}}'], #[SP]
                     V_f_avail >= V_f]
-
-        # Wing weight model
-        constraints += [self.wing['W_{w_{strc}}']**2. >= self.wing['W_{W_{coeff1}}']**2. /
-                        self.wing['\\tau']**2. * (self.wing['N_{ult}']**2. * self.wing['A'] ** 3. *
-                                                  ((W_p+self.fuse['V_{f_{fuse}}']*g*rho_f) * W * self.wing['S']))]
 
         return constraints, self.components
 
@@ -201,6 +190,7 @@ class Mission(Model):
 
         # Mission variables
         Range      = Variable("Range",3000, "km", "aircraft range")
+        W_p        = Variable("W_p", 6250, "N", "payload weight", pr=20.)
         V_min      = Variable("V_{min}", 25, "m/s", "takeoff speed", pr=20.)
         cost_index = Variable("Cost Index",360,'1/hr','hourly cost index')
 
@@ -212,7 +202,7 @@ class Mission(Model):
 
                         # Weights at beginning and end of mission
                         Wstart[0] == self.aircraft['W'],
-                        Wend[Nsegments-1] >= self.aircraft['W_p'] + self.aircraft.wing['W_w'] + self.aircraft.engine['W_e'],
+                        Wend[Nsegments-1] >= W_p + self.aircraft.wing['W_w'] + self.aircraft.engine['W_e'],
 
                         # Lift, and linking segment start and end weights
                         Wavg <= 0.5 * state['\\rho'] * self.aircraft['S'] * self.aircraftP.wingP['C_L'] * self.aircraftP['V'] ** 2,
@@ -233,15 +223,25 @@ class Mission(Model):
                         t_s == R_s/self.aircraftP['V'],
 
                         # Aggregating segment variables
-                        self.aircraft['W_f'] == W_f_m,
+                        self.aircraft['W_f'] >= W_f_m,
                         R_s == Range/Nsegments, # Dividing into equal range segments
                         W_f_m >= sum(W_f_s),
                         t_m >= sum(t_s)
                         ]
 
+        # Maximum takeoff weight
+        constraints += [self.aircraft['W'] >= W_p + self.aircraft.wing['W_w'] + self.aircraft['W_f'] + self.aircraft.engine['W_e']]
+
         # Stall constraint
         constraints += [self.aircraft['W'] <= 0.5 * state['\\rho'] *
                             self.aircraft['S'] * self.aircraft['C_{L,max}'] * V_min ** 2]
+
+        # Wing weight model
+        constraints += [self.aircraft.wing['W_{w_{strc}}']**2. >=
+                        self.aircraft.wing['W_{W_{coeff1}}']**2. / self.aircraft.wing['\\tau']**2. *
+                        (self.aircraft.wing['N_{ult}']**2. * self.aircraft.wing['A'] ** 3. *
+                        ((W_p+self.aircraft.fuse['V_{f_{fuse}}']*self.aircraft['g']*self.aircraft['\\rho_f']) *
+                         self.aircraft['W'] * self.aircraft.wing['S']))]
 
         return constraints, state, self.aircraft, self.aircraftP
 
