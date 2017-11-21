@@ -16,17 +16,17 @@ class SimPleAC(Model):
         self.components = [self.engine, self.wing, self.fuse]
 
         # Environmental constants
-        g          = Variable("g", 9.81, "m/s^2", "gravitational acceleration")
-        rho_f      = Variable("\\rho_f", 817, "kg/m^3", "density of fuel")
+        g         = Variable("g", 9.81, "m/s^2", "gravitational acceleration")
+        rho_f     = Variable("\\rho_f", 817, "kg/m^3", "density of fuel")
 
         # Dimensional constants
         W_p       = Variable("W_p", 6250, "N", "payload weight", pr=20.)
-        
+
         # Free Variables
         W         = Variable("W", "N", "total aircraft weight")
         W_f       = Variable("W_f", "N", "fuel weight")
         V_f       = Variable("V_f", "m^3", "fuel volume")
-        V_f_avail = Variable("V_{f_{avail}}","m^3","fuel volume available")
+        V_f_avail = Variable("V_{f_{avail}}", "m^3", "fuel volume available")
 
         constraints = []
   
@@ -55,15 +55,15 @@ class SimPleAC(Model):
 class SimPleACP(Model):
     def setup(self,aircraft,state):
         self.aircraft = aircraft
-        self.engineP = aircraft.engine.dynamic(state)
-        self.wingP = aircraft.wing.dynamic(state)
-        self.Pmodels = [self.engineP,self.wingP]
+        self.engineP  = aircraft.engine.dynamic(state)
+        self.wingP    = aircraft.wing.dynamic(state)
+        self.Pmodels  = [self.engineP, self.wingP]
 
         # Free variables
-        C_D = Variable("C_D", "-", "drag coefficient")
+        C_D       = Variable("C_D", "-", "drag coefficient")
         D         = Variable("D", "N", "total drag force")
         LoD       = Variable('L/D','-','lift-to-drag ratio')
-        Re = Variable("Re", "-", "Reynolds number")
+        Re        = Variable("Re", "-", "Reynolds number")
         V         = Variable("V", "m/s", "cruising speed")
 
         constraints = []
@@ -99,6 +99,8 @@ class Wing(Model):
         N_ult      = Variable("N_{ult}", 3.3, "-", "ultimate load factor", pr=15.)
         S_wetratio = Variable("(\\frac{S}{S_{wet}})", 2.075, "-", "wetted area ratio", pr=3.)
         tau        = Variable("\\tau", 0.12, "-", "airfoil thickness to chord ratio", pr=10.)
+
+        # Dimensional constants
         W_W_coeff1 = Variable("W_{W_{coeff1}}", 2e-5, "1/m",
                               "wing weight coefficent 1", pr= 30.) #orig  12e-5
         W_W_coeff2 = Variable("W_{W_{coeff2}}", 60., "Pa",
@@ -180,58 +182,62 @@ class EngineP(Model):
 
 
 class Mission(Model):
-    def setup(self, objective,Nsegments):
+    def setup(self,Nsegments):
         self.aircraft = SimPleAC()
-        W_f_mission = Variable('W_{f_{mission}}','N','Total mission fuel')
-        t_flight     = Variable('t_{flight}','hr','Total mission time')
+        W_f_m   = Variable('W_{f_{m}}','N','Total mission fuel')
+        t_m     = Variable('t_m','hr','Total mission time')
 
         with Vectorize(Nsegments):
-            Wavg = Variable(' W_{avg}','N','Segment average weight')
+            Wavg   = Variable(' W_{avg}','N','Segment average weight')
             Wstart = Variable('W_{start}', 'N', 'Weight at the beginning of flight segment')
-            Wend = Variable('W_{end}', 'N','Weight at the end of flight segment')
-            h = Variable('h','m','Flight altitude')
-            dhdt = Variable('\\frac{\\Delta h}{dt}','m/hr','Climb rate')
-            W_f_segment = Variable('W_{f_{segment}}','N', 'Segment fuel burn')
-            t_segment = Variable('t_{segment}','hr','Time spent in flight segment')
-            R_segment = Variable('R_{segment}','km','Range flown in segment')
-            state = Atmosphere()
+            Wend   = Variable('W_{end}', 'N','Weight at the end of flight segment')
+            h      = Variable('h','m','Flight altitude')
+            dhdt   = Variable('\\frac{\\Delta h}{dt}','m/hr','Climb rate')
+            W_f_s  = Variable('W_{f_s}','N', 'Segment fuel burn')
+            t_s    = Variable('t_s','hr','Time spent in flight segment')
+            R_s    = Variable('R_s','km','Range flown in segment')
+            state  = Atmosphere()
             self.aircraftP = self.aircraft.dynamic(state)
-
-        self.cost = self.aircraft[objective]
 
         # Mission variables
         Range      = Variable("Range",3000, "km", "aircraft range")
         V_min      = Variable("V_{min}", 25, "m/s", "takeoff speed", pr=20.)
-        cost_index = Variable("Cost Index",'1/hr','hourly cost index')
+        cost_index = Variable("Cost Index",360,'1/hr','hourly cost index')
 
         constraints = []
 
         # Setting up the mission
         with SignomialsEnabled():
             constraints += [h == state['h'], # Linking states
-                        Wstart[0] == self.aircraft['W'], # Starting weight
-                        Wend[Nsegments-1] >= self.aircraft['W_p'] + self.aircraft.wing['W_w'] + self.aircraft.engine['W_e'],
-                                                         # Ending weight
-                        Wstart >= Wend + W_f_segment, # Making sure fuel gets burnt!
-                        Wstart[1:Nsegments] == Wend[:Nsegments-1],
-                        h[0] == t_segment[0]*dhdt[0], # Starting altitude
-                        dhdt >= 1.*units('m/hr'),
-                        SignomialEquality(h[1:Nsegments],h[:Nsegments-1] + t_segment[1:Nsegments]*dhdt[1:Nsegments]),
-                        Wavg == Wstart**0.5*Wend**0.5,
-                        W_f_segment >= self.aircraftP.engineP['TSFC'] * self.aircraftP.engineP['T'] * t_segment,
-                        t_segment == R_segment/self.aircraftP['V'],
-                        # Aggregating segment variables
-                        self.aircraft['W_f'] == W_f_mission,
-                        R_segment == Range/Nsegments, # Dividing into equal range segments
-                        W_f_mission >= sum(W_f_segment),
-                        t_flight >= sum(t_segment)
-                        ]
 
-        # Climbing flight constraints
-        constraints += [
-            self.aircraftP.engineP['T']*self.aircraftP['V'] >= self.aircraftP['D']*self.aircraftP['V'] + Wavg*dhdt,
-            Wavg <= 0.5 * state['\\rho'] * self.aircraft['S'] * self.aircraftP.wingP['C_L'] * self.aircraftP['V'] ** 2,
-        ]
+                        # Weights at beginning and end of mission
+                        Wstart[0] == self.aircraft['W'],
+                        Wend[Nsegments-1] >= self.aircraft['W_p'] + self.aircraft.wing['W_w'] + self.aircraft.engine['W_e'],
+
+                        # Lift, and linking segment start and end weights
+                        Wavg <= 0.5 * state['\\rho'] * self.aircraft['S'] * self.aircraftP.wingP['C_L'] * self.aircraftP['V'] ** 2,
+                        Wstart >= Wend + W_f_s, # Making sure fuel gets burnt!
+                        Wstart[1:Nsegments] == Wend[:Nsegments-1],
+                        Wavg == Wstart ** 0.5 * Wend ** 0.5,
+
+                        # Altitude changes
+                        h[0] == t_s[0]*dhdt[0], # Starting altitude
+                        dhdt >= 1.*units('m/hr'),
+                        SignomialEquality(h[1:Nsegments],h[:Nsegments-1] + t_s[1:Nsegments]*dhdt[1:Nsegments]),
+
+                        # Thrust and fuel burn
+                        W_f_s >= self.aircraftP.engineP['TSFC'] * self.aircraftP.engineP['T'] * t_s,
+                        self.aircraftP.engineP['T'] * self.aircraftP['V'] >= self.aircraftP['D'] * self.aircraftP['V'] + Wavg * dhdt,
+
+                        # Flight time
+                        t_s == R_s/self.aircraftP['V'],
+
+                        # Aggregating segment variables
+                        self.aircraft['W_f'] == W_f_m,
+                        R_s == Range/Nsegments, # Dividing into equal range segments
+                        W_f_m >= sum(W_f_s),
+                        t_m >= sum(t_s)
+                        ]
 
         # Stall constraint
         constraints += [self.aircraft['W'] <= 0.5 * state['\\rho'] *
@@ -241,8 +247,8 @@ class Mission(Model):
 
 if __name__ == "__main__":
     # Most basic way to execute the model 
-    m = Mission('W_f',5)
-    m.cost = m['W_f']*units('1/N') + 360*m['t_{flight}']*units('1/hr')
+    m = Mission(5)
+    m.cost = m['W_f']*units('1/N') + m['Cost Index']*m['t_m']
     #m = Model(m.cost, Bounded(m))
     #m_relax = relaxed_constants(m,None,None)
     sol = m.localsolve(verbosity = 4)
