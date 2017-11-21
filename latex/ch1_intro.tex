@@ -47,18 +47,18 @@ features of optimization create barriers to entry for its use in design.
 \subsection{What is design?}
 
 In the context of this paper, I will define design as the following:
-	To design is to conceive the form and function of something. 
+To design is to conceive the form and function of something.
 In the engineering sense, we think about the form as the configuration or
-the parametrization. 
-In the product development sense, the form has more of an esthetic quality. 
-The function is the actual purpose of the things being designed. It is oftentimes 
-the aspect of the design that we can quantify (i.e. the performance), and has some 
-physics that can be modeled. 
+the parametrization. On the other hand, the function is the actual purpose of the things
+being designed. It is oftentimes the aspect of the design that we can
+quantify (i.e. the performance), and has some physics that can be modeled.
 
-An important aspect of design is that it is a process. 
-
-The underlying conclusion is that, to an optimization engineer, the classical 
-definition of design implies a class of feasibility problems, given a set
+An important aspect of design is that it is a process that explores a space.
+We can think about the feasible set of a design as all of the designs
+that satisfy the functional requirements. But without a rigorous way of comparing
+the performances of a design, the classical
+definition of design implies a class of feasibility problems in a space defined by
+the forms that a designer can imagine, given a set
 of functional requirements. 
 
 \subsection{What is optimization?}
@@ -69,25 +69,24 @@ function value.
 
 It is also a process, which is sensitive to the elements contained within the set
 (related to the form), and the choice of objective function (related to the 
-function).
-
-In many ways, optimization is a natural extension of design, because it allows 
+function). In many ways, optimization is a natural extension of design, because it allows
 for an explicit mathematical representation of the form and function.
 
 \subsection{The fundamental differences}
 
-To many engineers, design and optimization are one and the same. However, 
+To many engineers, design and optimization are one and the same. Both design and
+optimization explore feasible and infeasible sets, but differ in two fundamental ways.
 
-\begin{itemize}
-\item Design is human-driven. Optimization is computational. 
-\item Design is based on feasibility. Optimization is based on the mathematical 
-guarantees of optimality. 
-\item Design can be done in non-restrictive mathematical forms. Optimization is 
-done in specific mathematical forms that take advantage of structure. 
-\end{itemize}
+Firstly, design is based on feasibility, whereas optimization is based on the
+mathematical guarantees of optimality.
 
-In design problems it is very hard to find a parametrization that 
-everyone can agree on. 
+Because design does not require any specific mathematical structure, it can
+be performed in non-restrictive mathematical forms. Feasibility problems are
+
+Design can be done in non-restrictive mathematical forms. Optimization is
+done in specific mathematical forms that take advantage of structure.
+
+
 
 \section{Unifying design and optimization using gls{GP}}
 
@@ -100,49 +99,46 @@ world".~\cite{duffingp} Quote from Duffin, 1967, main inventor of GP.
 
 There are three primary reasons why...
 
-\begin{enumerate}     \item \textit{Inequalities help engineering
-understanding.}
+\begin{enumerate}
+
+    \item \textit{Inequalities help engineering understanding.}
 
 The mathematical constraints of \gls{GP} force designers to have a proper grasp
-of the fundamental tradeoffs and pressures in a design.
+of the fundamental tradeoffs and pressures in a design. Inequalities make feasible
+sets explicit.
 
-Inequalities make feasible sets explicit. ADD A DIAGRAM OF FEASIBLE SETS using
-SimPleAC HERE.
+ADD A DIAGRAM OF FEASIBLE SETS SimPleAC HERE.
 
 Traditionally, physical relations are expressed as equalities. But there is an
 almost-seamless transition from fundamental physics to GP-compatible
 constraints. 
 
-Furthermore, ENGINEERS LIKE +VE QUANTITIES. eg. downforce vs. negative lift.
-
-And even if the direction of pressure on a constraint is not clear, 
+And even if the direction of pressure on a constraint is not clear,
 we can use signomial equalities to explicitly enforce constraints.
 
     \item \textit{Models are extensible.}
     
 Models can be made arbitrarily complex. The 'bag of constraints' form of the GP
 means that there is no need to reformulate the optimization scheme as more
-constraints are added. This makes incremental modeling improvements possibl
-
+constraints are added. This makes incremental modeling improvements straight-forward.
 The traditional engineering design process is split into conceptual, preliminary
 and critical design segments. GP modeling facilitates this process by allowing
-ever-increasing levels of complexity.
-
-Gradient based optimization methods for multimodal systems often involves
+ever-increasing levels of complexity. Gradient based optimization methods for
+multimodal systems often involves
 converge loops, which have to be reengineered when new constraints are
-introduced. VS. adding constraints to a bag...
+introduced.
 
-We can effectively use sensitivity information to determine which parts of the
+A big advantage of convexity is that we can effectively use sensitivity information
+to determine which parts of the
 model yield the greatest returns to improved modeling, so engineers can target
 their efforts.
 
     \item \textit{Models are flexible and modular, and compatible with modern
-    engineering design (similar to extensible?)}
+    engineering design.}
 
-(This is a feature of GPkit, and not GPs in general.) \gls{GP}s make it easy to
+The design tools available in GPkit make it easy to
 implement component-based modeling, and build models that are shared between
-different design problems. Each component has associated sizing and performance
-variables.
+different design problems.
 
 This is helped by the fact that underconstrained \gls{GP}s can solve reliably,
 and the tightness of constraints can be monitored.
