@@ -43,9 +43,9 @@ class SimPleAC(Model):
                     LoD == self.wing['C_L']/C_D]
 
         # Thrust and drag model
-        constraints += [W_f >= self.engine['TSFC'] * self.engine['T']* T_flight,
+        constraints += [W_f >= g * self.engine['BSFC'] * self.engine['P_{shaft}'] * T_flight,
                     self.engine['T'] >= D,
-                    self.engine['T']*V == self.engine['\\eta_{prop}']*self.engine['P_{shaft}'],
+                    self.engine['T']*V <= self.engine['\\eta_{prop}']*self.engine['P_{shaft}'],
                     D >= 0.5 * rho * self.wing['S'] * C_D * V ** 2,
                     self.fuse['C_{D_{fuse}}'] == self.fuse['(CDA0)'] / self.wing['S'],
                     C_D >= self.fuse['C_{D_{fuse}}'] + self.wing['C_{D_{wpar}}'] + self.wing['C_{D_{ind}}'],
@@ -128,7 +128,7 @@ class Engine(Model):
         # Dimensional constants
         eta_prop    = Variable("\\eta_{prop}",0.8,'-',"propeller efficiency")
         P_shaft_ref = Variable("P_{shaft_{ref}}",149,"kW","reference MSL maximum shaft power")
-        TSFC        = Variable("TSFC", 0.6, "1/hr", "thrust specific fuel consumption")
+        BSFC        = Variable("BSFC", 400, "g/(kW*hr)", "thrust specific fuel consumption")
         W_e_ref     = Variable("W_{e_{ref}}",681,"N","reference engine weight")
 
         # Free variables
@@ -137,7 +137,7 @@ class Engine(Model):
         Thrust      = Variable("T","N","propeller thrust")
         W_e         = Variable("W_e","N","engine weight")
 
-        constraints = [P_shaft == 0.2*P_shaft_max,
+        constraints = [P_shaft <= 0.2*P_shaft_max,
                        (W_e/W_e_ref)**1.92 >= 0.00441 * (P_shaft_max/P_shaft_ref)**0.759
                                 + 1.44 * (P_shaft_max/P_shaft_ref)**2.90
                     ]

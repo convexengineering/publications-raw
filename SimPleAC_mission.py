@@ -70,9 +70,9 @@ class SimPleACP(Model):
 
         constraints = []
 
-        constraints += [self.aircraft['W_f'] >= self.engineP['TSFC'] * self.engineP['T']* T_flight,
+        constraints += [self.aircraft['W_f'] >= self.aircraft['g'] * self.engineP['BSFC'] * self.engineP['P_{shaft}'] * T_flight,
                     self.engineP['T'] >= D,
-                    self.engineP['T']*V == self.aircraft['\\eta_{prop}']*self.engineP['P_{shaft}'],
+                    self.engineP['T']*V <= self.aircraft['\\eta_{prop}']*self.engineP['P_{shaft}'],
                     C_D >= self.aircraft['C_{D_{fuse}}'] + self.wingP['C_{D_{wpar}}'] + self.wingP['C_{D_{ind}}'],
                     D >= 0.5 * state['\\rho'] * self.aircraft['S'] * C_D * V ** 2,
                     Re <= (state['\\rho'] / state['\\mu']) * V * (self.aircraft['S'] / self.aircraft['A']) ** 0.5,
@@ -172,7 +172,7 @@ class EngineP(Model):
     def setup(self,engine,state):
         self.engine = engine
         # Dimensional constants
-        TSFC        = Variable("TSFC", 0.6, "1/hr", "thrust specific fuel consumption")
+        BSFC        = Variable("BSFC", 400, "g/(kW*hr)", "thrust specific fuel consumption")
 
         # Free variables
         P_shaft     = Variable("P_{shaft}","kW","shaft power")
@@ -180,7 +180,7 @@ class EngineP(Model):
 
         constraints = []
 
-        constraints += [P_shaft == 0.2*self.engine['P_{shaft_{max}}']]
+        constraints += [P_shaft <= 0.2*self.engine['P_{shaft_{max}}']]
 
         return constraints
 
