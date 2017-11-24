@@ -90,9 +90,9 @@ class Wing(Model):
         tau        = Variable("\\tau", 0.12, "-", "airfoil thickness to chord ratio", pr=10.)
 
         # Dimensional constants
-        W_W_coeff1 = Variable("W_{W_{coeff1}}", 2e-5, "1/m",
+        W_w_coeff1 = Variable("W_{w_{coeff1}}", 2e-5, "1/m",
                               "wing weight coefficent 1", pr= 30.) #orig  12e-5
-        W_W_coeff2 = Variable("W_{W_{coeff2}}", 60., "Pa",
+        W_w_coeff2 = Variable("W_{w_{coeff2}}", 60., "Pa",
                               "wing weight coefficent 2", pr=10.)
 
         # Free Variables (fixed for performance eval.)
@@ -106,7 +106,7 @@ class Wing(Model):
         constraints = []
 
         # Structural model
-        constraints += [W_w_surf >= W_W_coeff2 * S,
+        constraints += [W_w_surf >= W_w_coeff2 * S,
                         W_w >= W_w_surf + W_w_strc]
 
         # Wing fuel model
@@ -238,7 +238,7 @@ class Mission(Model):
 
         # Wing weight model
         constraints += [self.aircraft.wing['W_{w_{strc}}']**2. >=
-                        self.aircraft.wing['W_{W_{coeff1}}']**2. / self.aircraft.wing['\\tau']**2. *
+                        self.aircraft.wing['W_{w_{coeff1}}']**2. / self.aircraft.wing['\\tau']**2. *
                         (self.aircraft.wing['N_{ult}']**2. * self.aircraft.wing['A'] ** 3. *
                         ((W_p+self.aircraft.fuse['V_{f_{fuse}}']*self.aircraft['g']*self.aircraft['\\rho_f']) *
                          self.aircraft['W'] * self.aircraft.wing['S']))]
