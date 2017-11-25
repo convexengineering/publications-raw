@@ -65,9 +65,7 @@ of functional requirements.
 
 Optimization has a rigorous mathematical definition: To optimize is to select an 
 element in a set of feasible solutions with the lowest desired objective
-function value. 
-
-It is also a process, which is sensitive to the elements contained within the set
+function value. It is also a process, which is sensitive to the elements contained within the set
 (related to the form), and the choice of objective function (related to the 
 function). In many ways, optimization is a natural extension of design, because it allows
 for an explicit mathematical representation of the form and function.
@@ -75,46 +73,37 @@ for an explicit mathematical representation of the form and function.
 \subsection{The fundamental differences}
 
 To many engineers, design and optimization are one and the same. Both design and
-optimization explore feasible and infeasible sets, but differ in two fundamental ways.
+optimization explore feasible and infeasible sets, but differ in a fundamental way.
+Design is based on feasibility, whereas optimization is based on the
+mathematical guarantees of optimality. This allows design to be performed
+in non-restrictive mathematical forms, since non-linear feasibility problems are
+much easier to solve than non-linear optimization problems. Optimization is
+done in specific mathematical forms because
+computational time is a limited resource. These forms can prove to be
+an impediment for those unfamiliar with optimization to implement optimization
+tools in design.
 
-Firstly, design is based on feasibility, whereas optimization is based on the
-mathematical guarantees of optimality.
-
-Because design does not require any specific mathematical structure, it can
-be performed in non-restrictive mathematical forms. Feasibility problems are
-
-Design can be done in non-restrictive mathematical forms. Optimization is
-done in specific mathematical forms that take advantage of structure.
-
-
-
-\section{Unifying design and optimization using gls{GP}}
+\section{Unifying design and optimization using \gls{GP}}
 
 \gls{GP} has developed "in response to a need to solve problems in the actual 
-world".~\cite{duffingp} Quote from Duffin, 1967, main inventor of GP.
-
-(Each section in this part of the intro has a corresponding section in the body.
-(Each will feature an example problem that I will run through as a
-(demonstration.)
-
-There are three primary reasons why...
+world"~\cite{duffin_gp}. \gls{GP}s and other convex optimization methods have been
+in development for some time, but have come to the limelight thanks to the development of
+polynomial-time algorithms for convex programming~\cite{interior_point} and
+improvements in computing. There are three primary reasons why \gls{GP} and convex
+optimization naturally integrate into the design process.
 
 \begin{enumerate}
 
     \item \textit{Inequalities help engineering understanding.}
 
 The mathematical constraints of \gls{GP} force designers to have a proper grasp
-of the fundamental tradeoffs and pressures in a design. Inequalities make feasible
-sets explicit.
-
-ADD A DIAGRAM OF FEASIBLE SETS SimPleAC HERE.
-
-Traditionally, physical relations are expressed as equalities. But there is an
+of the fundamental tradeoffs and pressures in a design.
+    Traditionally, physical relations are expressed as equalities. But there is an
 almost-seamless transition from fundamental physics to GP-compatible
-constraints. 
-
+inequalities which make feasibility sets explicit.
 And even if the direction of pressure on a constraint is not clear,
-we can use signomial equalities to explicitly enforce constraints.
+we can use signomial equalities to explicitly enforce constraints when inequalities
+    are inadequate to enforce the tightness of a constraint.
 
     \item \textit{Models are extensible.}
     
@@ -139,11 +128,14 @@ their efforts.
 The design tools available in GPkit make it easy to
 implement component-based modeling, and build models that are shared between
 different design problems.
-
 This is helped by the fact that underconstrained \gls{GP}s can solve reliably,
 and the tightness of constraints can be monitored.
 
 \end{enumerate}
+
+In this thesis, I will methodically demonstrate the advantages of \gls{GP} in design,
+and attempt to pass on the expertise my colleagues and I have developed in modeling
+and exploring complex engineering trade spaces.
 
 
 
