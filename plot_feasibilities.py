@@ -66,7 +66,7 @@ def plot_feasibilities(x, y, m, rm=None, rmtype=None):
     if rm:
         a_i, b_i, a, b = map(mag, map(sol, ["x_i", "y_i", x, y]))
         for i in range(len(a)):
-            axes[0].loglog([a_i[i], a[i]], [b_i[i], b[i]], color=GPCOLORS[1], linewidth=0.2)
+            axes[0].loglog([a_i[i], a[i]], [b_i[i], b[i]], color=GPCOLORS[1], linewidth=1.)
     else:
         axes[0].loglog([orig_a[0]], [orig_b[0]], "k-")
 
@@ -74,7 +74,7 @@ def plot_feasibilities(x, y, m, rm=None, rmtype=None):
     from matplotlib.collections import PatchCollection
 
     perimeter = np.array([orig_a, orig_b]).T
-    p = Polygon(perimeter, True, color=GPBLU, linewidth=0)
+    p = Polygon(perimeter, True, color=GPBLU, linewidth=1.0)
     axes[0].add_patch(p)
     if rm:
         perimeter = np.array([a, b]).T
@@ -86,7 +86,7 @@ def plot_feasibilities(x, y, m, rm=None, rmtype=None):
     axes[0].set_ylabel(y)
 
     perimeter = np.array([orig_a, orig_b]).T
-    p = Polygon(perimeter, True, color=GPBLU, linewidth=0)
+    p = Polygon(perimeter, True, color=GPBLU, linewidth=1.0)
     axes[1].add_patch(p)
     if rm:
         perimeter = np.array([a, b]).T
@@ -98,5 +98,5 @@ def plot_feasibilities(x, y, m, rm=None, rmtype=None):
     axes[1].set_xlabel(x)
     axes[1].set_ylabel(y)
 
-    fig.suptitle("%s vs %s feasibility space" % (x, y))
+    #fig.suptitle("%s vs %s feasibility space" % (x, y))
     plt.show()
