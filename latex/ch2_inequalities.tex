@@ -1,7 +1,39 @@
 \chapter{Engineering inequalities and intuition, from equalities}
 
 In this section, we will derive a simple aircraft problem that will serve as 
-a demonstration of the intuitive structure of geometric programs. 
+a demonstration of the intuitive structure of geometric programs, and show
+how the feasibility space of the design evolves as we introduce new constraints.
+
+\section{Making feasibility sets explicit}
+
+Consider the simple design problem below, where we define a simple bilinear
+monomial equality with respect to x and y, and constrain the sum of the variables
+to be less than 2:
+
+\begin{equation*}
+\begin{aligned}
+& {\text{minimize}}
+& & x \\
+& \text{subject to}
+& & x + y \leq 2,
+    & & & xy \leq \frac{1}{2}
+\end{aligned}
+\end{equation*}
+
+We can draw the feasibility set of the above problem in both linear and log space,
+as shown in Figure~\ref{f:feas_moneq}. One expects that, given only two variables
+and a monomial equality constraint, the feasibility space is
+a finite line segment in log-space, and a finite exponential function in linear space.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{feas_moneq.png}
+    \label{f:feas_moneq}
+    \caption{The x vs y feasibility set of a simple monomial equality.}
+\end{figure}
+
+
+
 
 \section{Defining the aircraft design problem}
 
@@ -62,6 +94,12 @@ The aircraft has weight, which consists of the payload, wing, and fuel weights.
     W \geq W_p + W_w + W_f
 \end{equation}
 
+Note that we have already had to make determination about the relations between
+the two sides of the equation. Since heavier aircraft burn more fuel, we are justified
+to put total weight as greater than the sum of the component weights. Weight relations
+are especially amenable to being represented by posynomials, since higher weights
+penalize most objective functions.
+
 We would like the aircraft to be able to sustain steady level flight, which means 
 that it needs to generate enough lift to carry itself. We use the naive $W \leq L$ 
 model below for steady state flight:
@@ -71,7 +109,10 @@ model below for steady state flight:
 \end{equation}
 
 where the lift of the aircraft is equal to weight of the aircraft with half-fuel, 
-which is a crude estimate of the average weight of the aircraft throughout the flight. 
+which is a crude estimate of the average weight of the aircraft throughout the flight.
+Again, the \gls{GP} form is seamless here, since lift is related to drag.
+
+
 We would also like the fully-fueled aircraft to be able to fly at a minimum speed 
 of $V_{min}$ without stalling, so we add the following constraint:
 
