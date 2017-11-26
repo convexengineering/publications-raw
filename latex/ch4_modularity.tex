@@ -4,34 +4,42 @@ In this section, we will abandon the SimPleAC, and move to examine one of the
 most sophisticated models and largest models to come out of the \gls{CEG}, SPaircraft.
 SPaircraft is a commercial aircraft design tool that makes use of component-
 based performance modeling to optimize different configurations of aircraft in
-both single- and multi-mission scenarios.
+both single- and multi-mission scenarios. This model and its subcomponents will
+demonstrate how we can buil
 
 \section{Describing the component-based design framework of SPaircraft}
 
 In a similar fashion to SimPleAC,
 SPaircraft has a strict maintenance of variables and constraint hierarchy
-as shown in Figure~\ref{forest:SPaircrafttree}, with some additional components.
+as shown in Figure~\ref{forest:SPaircrafttree}, with additional
+aircraft components, and
+cruise and climb profile classes which differentiate between the different
+kinds of flight systems.
 
 \begin{figure}[!h]\centering\small\sffamily
 \begin{forest}
         [\textit{\textbf{Mission}}
-            [\textit{Mission Profile}]
             [\textit{Atmosphere}]
-            [\textit{\textbf{\shortstack{Aircraft\\Perf.}}}
-                [\textbf{Aircraft}
-                    [\textbf{Wing}]
-                    [\textbf{VT}]
-                    [\textbf{HT}]
-                    [\textbf{Fuselage}]
-                    [\textbf{Engine}]
-                ]
-                [\textit{\shortstack{Wing\\Perf}}]
-                [\textit{\shortstack{VT\\Perf.}}]
-                [\textit{\shortstack{HT\\Perf.}}]
-                [\textit{\shortstack{Fuselage\\Perf.}}]
-                [\textit{\shortstack{Engine\\Perf.}}]
+            [\textit{\textbf{Cruise Profile}},name=Cr]
+            [\textit{\textbf{Climb Profile}},name=Cl
+                [\textit{\textbf{\shortstack{Aircraft\\Performance}}},name=Ap
+                    [\textbf{Aircraft}
+                        [\textbf{Wing}]
+                        [\textbf{Fuselage}]
+                        [\textbf{Engine}]
+                        [\textbf{HT}]
+                        [\textbf{VT}]
+                        [\textbf{Landing Gear}]
+                    ]
+                    [\textit{\shortstack{Wing\\Perf.}}]
+                    [\textit{\shortstack{Fuselage\\Perf.}}]
+                    [\textit{\shortstack{Engine\\Perf.}}]
+                    [\textit{\shortstack{HT\\Perf.}}]
+                    [\textit{\shortstack{VT\\Perf.}}]
+               ]
             ]
         ]
+    \draw (Cr.south) -- (Ap.north);
     \end{forest}
     \caption{Hierarchy of the presented aircraft model. Models that include sizing variables are 
 bolded while models that include performance variables are italicized. 
@@ -107,12 +115,14 @@ capabilities of \gls{GP} in incremental design.
 We have to make assumptions about the structure of the problem to be able
 to determine the loading on the horizontal tail, and use our intuitions about the 
 loading to tune the assumptions. This can be quite the chicken-and-egg problem
-nd it is often not clear how to proceed. But here is an 
+and it is often not clear how to proceed. It requires engineering understanding
+from the designer, which we consider to be key in \gls{GP} based design. But here is an
 intuitive description of the approach for the current example. 
 
 Note that in our derivation we would like to err on the side of conservatism always, since we would
 rather be in a more restricted and realistic subset of the design space, rather than 
-expanding our feasible set to include solutions that are optimistic and infeasible. 
+expanding our feasible set to include solutions that are optimistic and potentially
+infeasible.
 
 \begin{enumerate}
     \item \textbf{The lift per unit span is proportional to local chord.} This allows 
@@ -122,11 +132,11 @@ expanding our feasible set to include solutions that are optimistic and infeasib
     on the tail model are conservative. 
     \item \textbf{The horizontal tail has a constant taper ratio.} We would like to 
     capture the effects of geometry on the problem with a good 
-    accuracy, but without making the physical relations unwieldy. This basic parametrization
+    accuracy, but without making the physical relations unwieldy.
+    This basic parametrization
     gives a good representation of the horizontal tail planform.  
     Constant taper tail sections are also observed in real aircraft. 
-    Higher degrees of freedom in horizontal tail chord are considered unnecessary 
-    (although they could be modeled, explained further in Section~\ref{s:HTExtensions}).
+    Higher degrees of freedom in horizontal tail chord are considered unnecessary.
     \item \textbf{The horizontal and vertical tail joint is a fuselage width away from 
     the centerline of the aircraft.} In the pi-tail configuration the vertical tails are 
     often canted outward for aerodynamic benefits. However, we would like to avoid making 
@@ -188,7 +198,9 @@ After having seen these diagrams, we can make an important observation.
 The first is that the pi horizontal tail becomes a conventional tail in
 the limit where $w_{fuse} \xrightarrow[]{} 0$. This gives us the clue that we can
 have a model that can accurately represent the structural constraints on both kinds
-of tails.
+of tails. Furthermore, in the limit, we can confirm that the new structural model
+arrives at the same solution as the original structural model, helping us debug
+potential issues in the transition.
 
 Another important feature of the load distributions that they can be represented
 with relatively high accuracy using a linearization of the load distributions,
@@ -333,6 +345,3 @@ c_{\rm{attach}}$) as a pi-tail. With a similar reasoning as for the shear loads,
 $\pi_{\rm{M-fac}} t_{\rm{cap}}$ for a pi-tail is strictly smaller than the $t_{\rm{cap}}$ for a 
 conventional tail of the same geometry and loading, making the pi-tail more 
 efficient in bending than a traditional tail. 
-
-\subsection{Further potential horizontal tail model extensions}
-\label{s:HTExtensions}
