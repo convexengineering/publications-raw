@@ -133,19 +133,25 @@ hierarchy as presented in Figure~\ref{forest:submodels}
 \label{forest:submodels}
 \end{figure}
 
-\section{Expanding scope: Converting the SimPleAC to performance modeling form}
+\section{Designing missions: Converting the SimPleAC to performance modeling form}
 
 The SimPleAC that I have defined so far works well to demonstrate the
 capabilities of \gls{SP} in helping explore tradeoffs in engineering design.
-
 However, often in the design process, we will want to test the performance of a
-design in different flight conditions. This requires the vectorization of 
+design in different conditions. This requires the vectorization of
 constraints that relate to the performance of the design.
+
+To design the mission for SimPleAC, we have to have a better understanding
+of the environment in which the aircraft operates. So far, we have assumed that
+the aircraft flies at a constant altitude (sea level) for a single mission segment,
+and is subject to the same air density and viscosity. What we'd like to do instead
+is to have a single aircraft optimize both its static sizing variables (having
+to do with the airframe), and its flight performance. This requires a major
+augmentation of the model tree defined in Figure~\ref{forest:submodels}.
 
 \begin{figure}[!h]\centering\small\sffamily
 \begin{forest}
         [\textit{\textbf{Mission}}
-            [\textit{Mission Profile}]
             [\textit{Atmosphere}]
             [\textit{\textbf{\shortstack{Aircraft\\Perf.}}}
                 [\textbf{Aircraft}
@@ -154,19 +160,23 @@ constraints that relate to the performance of the design.
                     [\textbf{Engine}]
                 ]
                 [\textit{\shortstack{Wing\\Perf}}]
-                [\textit{\shortstack{Fuselage\\Perf.}}]
                 [\textit{\shortstack{Engine\\Perf.}}]
             ]
         ]
-    \end{forest}
-    \caption{Variable and constraint hierarchy of the presented aircraft model. Models that include sizing variables are
+\end{forest}
+   \caption{Variable and constraint hierarchy of the presented aircraft model. Models that include sizing variables are
 bolded while models that include performance variables are italicized.
 There are models that contain both kinds of variables.}
 \label{f:componenttree}
 \end{figure}
 
-\section{Creating a mission}
+Within the model hierarchy we have identified, we have to determine which variables
+belong in which level of the tree. Table
 
-Having transformed the models into performance form
+\begin{center}
+\captionof{table}{Variables of SimPleAC in performance modeling, detailed in the
+variable and constraint hierarchy.}
+\input{tables/SimPleAC_missionvars.tex}
+\end{center}
 
 \section{Multimission design}
