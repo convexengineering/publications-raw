@@ -1,0 +1,143 @@
+{\footnotesize
+\begin{longtable}{lcl}
+\toprule
+Free Variables & Units & Description \\ \midrule
+\multicolumn{3}{l}{\textbf{Mission}} \\
+$W_{f_{m}}$ & $~\mathrm{N}$ & Total mission fuel \\
+$t_m$ & $~\mathrm{hr}$ & Total mission time \\
+$R_s$ & $~\mathrm{km}$ & Range flown in segment \\
+$W_{avg}$ & $~\mathrm{N}$ & Segment average weight \\
+$W_{end}$ & $~\mathrm{N}$ & Weight at the end of flight segment \\
+$W_{f_s}$ & $~\mathrm{N}$ & Segment fuel burn \\
+$W_{start}$ & $~\mathrm{N}$ & Weight at the beginning of flight segment \\
+$\frac{\Delta h}{dt}$ & $~\mathrm{\tfrac{m}{hr}}$ & Climb rate \\
+$h$ & $~\mathrm{m}$ & Flight altitude \\
+$t_s$ & $~\mathrm{hr}$ & Time spent in flight segment \\
+\hline
+\multicolumn{3}{l}{\textbf{Mission/Atmosphere}} \\
+$\mu$ & $~\mathrm{\tfrac{kg}{\left(m\cdot s\right)}}$ & dynamic viscosity \\
+$\rho$ & $~\mathrm{\tfrac{kg}{m^{3}}}$ & density of air \\
+$h$ & $~\mathrm{m}$ & altitude \\
+\hline
+\multicolumn{3}{l}{\textbf{Mission/SimPleAC}} \\
+$V_f$ & $~\mathrm{m^{3}}$ & maximum fuel volume \\
+$V_{f_{avail}}$ & $~\mathrm{m^{3}}$ & fuel volume available \\
+$W$ & $~\mathrm{N}$ & maximum takeoff weight \\
+$W_f$ & $~\mathrm{N}$ & maximum fuel weight \\
+\hline
+\multicolumn{3}{l}{\textbf{Mission/SimPleAC/Engine}} \\
+$P_{shaft_{max}}$ & $~\mathrm{kW}$ & MSL maximum shaft power \\
+$W_e$ & $~\mathrm{N}$ & engine weight \\
+\hline
+\multicolumn{3}{l}{\textbf{Mission/SimPleAC/Fuselage}} \\
+$(CDA0)$ & $~\mathrm{m^{2}}$ & fuselage drag area \\
+$C_{D_{fuse}}$ & $$ & fuselage drag coefficient \\
+$V_{f_{fuse}}$ & $~\mathrm{m^{3}}$ & fuel volume in the fuselage \\
+\hline
+\multicolumn{3}{l}{\textbf{Mission/SimPleAC/Wing}} \\
+$A$ & $$ & aspect ratio \\
+$S$ & $~\mathrm{m^{2}}$ & total wing area \\
+$V_{f_{wing}}$ & $~\mathrm{m^{3}}$ & fuel volume in the wing \\
+$W_w$ & $~\mathrm{N}$ & wing weight \\
+$W_{w_{strc}}$ & $~\mathrm{N}$ & wing structural weight \\
+$W_{w_{surf}}$ & $~\mathrm{N}$ & wing skin weight \\
+\hline
+\multicolumn{3}{l}{\textbf{Mission/SimPleACP}} \\
+$C_D$ & $$ & drag coefficient \\
+$D$ & $~\mathrm{N}$ & total drag force \\
+$L/D$ & $$ & lift-to-drag ratio \\
+$Re$ & $$ & Reynolds number \\
+$V$ & $~\mathrm{\tfrac{m}{s}}$ & cruising speed \\
+\hline
+\multicolumn{3}{l}{\textbf{Mission/SimPleACP/EngineP}} \\
+$P_{shaft}$ & $~\mathrm{kW}$ & shaft power \\
+$T$ & $~\mathrm{N}$ & propeller thrust \\
+\hline
+\multicolumn{3}{l}{\textbf{Mission/SimPleACP/WingP}} \\
+$C_L$ & $$ & wing lift coefficient \\
+$C_f$ & $$ & skin friction coefficient \\
+$C_{D_{ind}}$ & $$ & wing induced drag \\
+$C_{D_{wpar}}$ & $$ & wing profile drag \\
+\bottomrule
+\end{longtable}}
+
+{\footnotesize
+\begin{longtable}{lcl}
+\toprule
+Constants & Units & Description \\ \midrule
+\multicolumn{3}{l}{\textbf{Mission}} \\
+$Cost Index$ & $~\mathrm{\tfrac{1}{hr}}$ & hourly cost index \\
+$Range$ & $~\mathrm{km}$ & aircraft range \\
+$V_{min}$ & $~\mathrm{\tfrac{m}{s}}$ & takeoff speed \\
+$W_p$ & $~\mathrm{N}$ & payload weight \\
+\hline
+\multicolumn{3}{l}{\textbf{Mission/Atmosphere}} \\
+$P_{MSL}$ & $~\mathrm{Pa}$ & pressure at MSL \\
+$T_{MSL}$ & $~\mathrm{K}$ & temperature at MSL \\
+$\mu_{MSL}$ & $~\mathrm{\tfrac{kg}{\left(m\cdot s\right)}}$ & dynamic viscosity at MSL \\
+$\nu_{MSL}$ & $~\mathrm{\tfrac{m^{2}}{s}}$ & kinematic viscosity at MSL \\
+$\rho_{MSL}$ & $~\mathrm{\tfrac{kg}{m^{3}}}$ & density of air at MSL \\
+$a_{MSL}$ & $~\mathrm{\tfrac{m}{s}}$ & Speed of sound at MSL \\
+$h_{top}$ & $~\mathrm{m}$ & highest altitude valid \\
+\hline
+\multicolumn{3}{l}{\textbf{Mission/SimPleAC}} \\
+$\rho_f$ & $~\mathrm{\tfrac{kg}{m^{3}}}$ & density of fuel \\
+$g$ & $~\mathrm{\tfrac{m}{s^{2}}}$ & gravitational acceleration \\
+\hline
+\multicolumn{3}{l}{\textbf{Mission/SimPleAC/Engine}} \\
+$P_{shaft_{ref}}$ & $~\mathrm{kW}$ & reference MSL maximum shaft power \\
+$W_{e_{ref}}$ & $~\mathrm{N}$ & reference engine weight \\
+$\eta_{prop}$ & $$ & propeller efficiency \\
+\hline
+\multicolumn{3}{l}{\textbf{Mission/SimPleAC/Wing}} \\
+$(\frac{S}{S_{wet}})$ & $$ & wetted area ratio \\
+$C_{L,max}$ & $$ & max CL with flaps down \\
+$N_{ult}$ & $$ & ultimate load factor \\
+$W_{w_{coeff1}}$ & $~\mathrm{\tfrac{1}{m}}$ & wing weight coefficent 1 \\
+$W_{w_{coeff2}}$ & $~\mathrm{Pa}$ & wing weight coefficent 2 \\
+$\tau$ & $$ & airfoil thickness to chord ratio \\
+$e$ & $$ & Oswald efficiency factor \\
+$k$ & $$ & form factor \\
+\hline
+\multicolumn{3}{l}{\textbf{Mission/SimPleACP/EngineP}} \\
+$BSFC$ & $~\mathrm{\tfrac{g}{\left(hr\cdot kW\right)}}$ & thrust specific fuel consumption \\
+\bottomrule
+\end{longtable}}
+{\footnotesize
+\begin{longtable}{lcl}
+\toprule
+Sensitivities & Units & Description \\ \midrule
+\multicolumn{3}{l}{\textbf{Mission}} \\
+$Range$ & $~\mathrm{km}$ & aircraft range \\
+$V_{min}$ & $~\mathrm{\tfrac{m}{s}}$ & takeoff speed \\
+$Cost Index$ & $~\mathrm{\tfrac{1}{hr}}$ & hourly cost index \\
+$W_p$ & $~\mathrm{N}$ & payload weight \\
+\hline
+\multicolumn{3}{l}{\textbf{Mission/Atmosphere}} \\
+$\rho_{MSL}$ & $~\mathrm{\tfrac{kg}{m^{3}}}$ & density of air at MSL \\
+$\mu_{MSL}$ & $~\mathrm{\tfrac{kg}{\left(m\cdot s\right)}}$ & dynamic viscosity at MSL \\
+$h_{top}$ & $~\mathrm{m}$ & highest altitude valid \\
+\hline
+\multicolumn{3}{l}{\textbf{Mission/SimPleAC}} \\
+$g$ & $~\mathrm{\tfrac{m}{s^{2}}}$ & gravitational acceleration \\
+$\rho_f$ & $~\mathrm{\tfrac{kg}{m^{3}}}$ & density of fuel \\
+\hline
+\multicolumn{3}{l}{\textbf{Mission/SimPleAC/Engine}} \\
+$\eta_{prop}$ & $$ & propeller efficiency \\
+$P_{shaft_{ref}}$ & $~\mathrm{kW}$ & reference MSL maximum shaft power \\
+$W_{e_{ref}}$ & $~\mathrm{N}$ & reference engine weight \\
+\hline
+\multicolumn{3}{l}{\textbf{Mission/SimPleAC/Wing}} \\
+$(\frac{S}{S_{wet}})$ & $$ & wetted area ratio \\
+$k$ & $$ & form factor \\
+$C_{L,max}$ & $$ & max CL with flaps down \\
+$e$ & $$ & Oswald efficiency factor \\
+$\tau$ & $$ & airfoil thickness to chord ratio \\
+$W_{w_{coeff2}}$ & $~\mathrm{Pa}$ & wing weight coefficent 2 \\
+$N_{ult}$ & $$ & ultimate load factor \\
+$W_{w_{coeff1}}$ & $~\mathrm{\tfrac{1}{m}}$ & wing weight coefficent 1 \\
+\hline
+\multicolumn{3}{l}{\textbf{Mission/SimPleACP/EngineP}} \\
+$BSFC$ & $~\mathrm{\tfrac{g}{\left(hr\cdot kW\right)}}$ & thrust specific fuel consumption \\
+\bottomrule
+\end{longtable}}
