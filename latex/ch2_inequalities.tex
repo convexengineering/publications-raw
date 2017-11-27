@@ -1,6 +1,6 @@
 \chapter{Engineering inequalities and intuition, from equalities}
 
-In this section, we will derive a simple aircraft problem that will serve as 
+This section will demonstrate how inequalities derive a simple aircraft problem that will serve as
 a demonstration of the intuitive structure of geometric programs, and show
 how the feasibility space of the design evolves as we introduce new constraints.
 
@@ -16,7 +16,7 @@ to be less than 2:
 & & x \\
 & \text{subject to}
 & & x + y \leq 2,
-    & & & xy \leq \frac{1}{2}
+    & & & xy = \frac{1}{2} \label{simple_moneq}
 \end{aligned}
 \end{equation*}
 
@@ -32,8 +32,22 @@ a finite line segment in log-space, and a finite exponential function in linear 
     \caption{The x vs y feasibility set of a simple monomial equality.}
 \end{figure}
 
+However, if we had decided to impose $xy \geq \frac{1}{2}$ instead of \ref{simple_moneq},
+then we would get a new feasibility set as shown in figure~\ref{f:feas_posygeq}.
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{feas_posygeq.png}
+    \label{f:feas_posygeq}
+    \caption{The x vs y feasibility set of lower bounding monomial,
+    and upper-bonding posynomial.}
+\end{figure}
 
+Since we can always upper-bound posynomials, and lower bound both posynomials
+and monomials, we cna
+
+Note that the optimal point, which is at $x = 1 - \frac{1}{\sqrt{2}}$, $y = 1 + \frac{1}{\sqrt{2}}$,
+does not change by the relaxation of the monomial equality.
 
 \section{Defining the aircraft design problem}
 
@@ -44,12 +58,13 @@ coupled through the primary forces in flight (thrust, weight, lift, drag).
 \subsection{Objective functions}
 
 Objective functions are the way that a designer puts pressure on the variables 
-in the constraints. The goal of the aircraft that we are designing will be to carry a given payload
+in the constraints. The goal of the aircraft in question will be to carry a given payload
 over a distance while minimizing an objective function. In many design problems
 formulated as \gls{GP}s, many different objectives will put pressure on design 
 in the same direction. For example, an aircraft designed for fuel weight will look different than one
 that has been designed for total weight or payload-fuel consumption, but all of
-these different objective will put a downward pressure on TSFC and wing weight. 
+these different objective will put a downward pressure on TSFC and wing weight.
+This will become more clear as we examine sensitivity information.
 
 To begin with, we will consider total fuel weight $W_f$ as our objective.
 
@@ -110,8 +125,8 @@ model below for steady state flight:
 
 where the lift of the aircraft is equal to weight of the aircraft with half-fuel, 
 which is a crude estimate of the average weight of the aircraft throughout the flight.
-Again, the \gls{GP} form is seamless here, since lift is related to drag.
-
+Again, the \gls{GP} form is seamless here, since lift is related to fuel weight through
+induced drag, and so it is pressured downward by the objective function.
 
 We would also like the fully-fueled aircraft to be able to fly at a minimum speed 
 of $V_{min}$ without stalling, so we add the following constraint:
@@ -122,8 +137,7 @@ of $V_{min}$ without stalling, so we add the following constraint:
 
 At this point, we have introduced a large set of variables, some of which are input
 parameters, and the others free variables. This decision is often the first decision
-that
-and can shape the whole model development process.
+that and can shape the whole model development process.
 
 The decision of whether to keep variables fixed or variable can be determined by many
 factors. In this case, we set the lift coefficient and takeoff speed to be constants since
@@ -172,16 +186,6 @@ The lift-to-drag ratio is also defined:
     L/D = \frac{C_L}{C_D}    
 \end{equation}
 
-\begin{python}
-        # Weight and lift model
-        constraints += [W >= W_p + W_w + W_f,
-                W_p + W_w + 0.5 * W_f <=
-                        0.5 * rho * S * C_L * V ** 2,
-                W <= 0.5 * rho * S * C_Lmax * V_min ** 2,
-                T_flight >= Range / V,
-                LoD == C_L/C_D]
-\end{python}
-
 \footnotesize
 \begin{center}
 \begin{tabular}{ l c l c c }
@@ -207,14 +211,16 @@ The results are as follows:
     \toprule
 	Unbounded variable & Units & Direction \\
     \midrule
-    $S$ & $~\mathrm{m^{2}}$ & $\inf$ \\
-    $T_{flight}$ & $~\mathrm{hr}$ & $\inf$ \\
-    $V$ &  $~\mathrm{\tfrac{m}{s}}$  & $\inf$ \\
+    $S$ & $~\mathrm{m^{2}}$ & $\infty$ \\
+    $T_{flight}$ & $~\mathrm{hr}$ & $\infty$ \\
+    $V$ &  $~\mathrm{\tfrac{m}{s}}$  & $\infty$ \\
     $W_f$ & $~\mathrm{N}$ & $0$ \\
     $W_w$ & $~\mathrm{N}$  & $0$ \\
     \bottomrule
 \label{tab:WandL_unbounded}
 \end{tabular}
+
+
 
 We assume a constant thrust specific fuel consumption (TSFC) for the 'engine' of the aircraft, which is assumed to provide as much thrust as needed. Since $T \geq D$:
 
