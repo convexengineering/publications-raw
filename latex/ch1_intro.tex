@@ -3,8 +3,10 @@
 Modern engineering design, and particularly aerospace design, has come to rely
 heavily on optimization. Time and time again, the importance of fast and
 reliable MDO tools has been stressed in the literature. However most MDO tools
-have the downfalls of being slow due to the multimodal nature of many
-engineering design problems.
+have the downfall of being slow due to the multimodal nature of many
+engineering design problems. Furthermore, these tools act like black boxes since
+they provide point solutions without additional information about the design problem
+such as sensitivities, which can provide important engineering insight.
 	
 In the \gls{CEG}, we seek to improve the engineering design process by
 leveraging the mathematical guarantees and speed of convex optimization. We develop
@@ -46,7 +48,7 @@ features of optimization create barriers to entry for its use in design.
 
 \subsection{What is design?}
 
-In the context of this paper, I will define design as the following:
+In the context of this thesis, I will define design as the following:
 To design is to conceive the form and function of something.
 In the engineering sense, we think about the form as the configuration or
 the parametrization. On the other hand, the function is the actual purpose of the things
@@ -57,9 +59,9 @@ An important aspect of design is that it is a process that explores a space.
 We can think about the feasible set of a design as all of the designs
 that satisfy the functional requirements. But without a rigorous way of comparing
 the performances of a design, the classical
-definition of design implies a class of feasibility problems in a space defined by
-the forms that a designer can imagine, given a set
-of functional requirements. 
+definition of design implies a class of feasibility problems satisfying a set of
+functional requirements, in a space defined by
+the forms that a designer can conceive.
 
 \subsection{What is optimization?}
 
@@ -87,7 +89,7 @@ tools in design.
 
 \gls{GP} has developed "in response to a need to solve problems in the actual 
 world"~\cite{duffingp}. \gls{GP}s and other convex optimization methods have been
-in development for some time, but have come to the limelight thanks to the development of
+in development since the 1960's, but have come to the limelight thanks to the development of
 polynomial-time algorithms for convex programming~\cite{interior_point} and
 improvements in computing. There are three primary reasons why \gls{GP} and convex
 optimization naturally integrate into the design process.
@@ -102,8 +104,8 @@ of the fundamental tradeoffs and pressures in a design.
 almost-seamless transition from fundamental physics to GP-compatible
 inequalities which make feasibility sets explicit.
 And even if the direction of pressure on a constraint is not clear,
-we can use signomial equalities to explicitly enforce constraints when inequalities
-    are inadequate to enforce the tightness of a constraint.
+we can use signomial equalities to explicitly enforce the tightness of a
+    constraint.
 
     \item \textit{Models are extensible.}
     
@@ -133,8 +135,7 @@ and the tightness of constraints can be monitored.
 
 \end{enumerate}
 
-In this thesis, I will methodically demonstrate the advantages of \gls{GP} in design,
-and attempt to pass on the expertise my colleagues and I have developed in modeling
+In this thesis, I will methodically demonstrate the advantages of \gls{GP} in modeling
 and exploring complex engineering trade spaces.
 
 
