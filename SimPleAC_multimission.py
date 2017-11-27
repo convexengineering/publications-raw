@@ -59,7 +59,7 @@ class Multimission(Model):
                         SignomialEquality(h[1:Nsegments],h[:Nsegments-1] + t_s[1:Nsegments]*dhdt[1:Nsegments]),
 
                         # Thrust and fuel burn
-                        W_f_s >= self.aircraftP.engineP['TSFC'] * self.aircraftP.engineP['T'] * t_s,
+                        W_f_s >= self.aircraftP.engineP['BSFC'] * self.aircraftP.engineP['T'] * t_s,
                         self.aircraftP.engineP['T'] * self.aircraftP['V'] >= self.aircraftP['D'] * self.aircraftP['V'] + Wavg * dhdt,
 
                         # Flight time

@@ -157,7 +157,7 @@ class EngineP(Model):
     def setup(self,engine,state):
         self.engine = engine
         # Dimensional constants
-        BSFC        = Variable("BSFC", 400, "g/(kW*hr)", "thrust specific fuel consumption")
+        BSFC        = Variable("BSFC", 400, "g/(kW*hr)", "brake specific fuel consumption")
 
         # Free variables
         P_shaft     = Variable("P_{shaft}","kW","shaft power")
