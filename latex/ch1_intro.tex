@@ -17,18 +17,20 @@ interface with solvers. In much of our previous work
 facilitates design.
  
 The mathematical restrictions on the form of constraints remains the biggest
-barrier in the implementation of convex programs in design. Firstly, this thesis
-will aim to show that the form of the GP actually facilitates the design process
+barrier in using convex programs for design. Firstly, I
+aim to show that the form of the GP actually facilitates the design process
 and engineering understanding, rather than impeding it, through the disciplined use
-of inequalities to express constraints. Hence it will aim to
+of inequalities to express constraints. Hence I will
 pass on some of the expertise we have developed in the \gls{CEG} building
 \gls{GP}-compatible models from general non-linear physical models. 
 
-Secondly, it will aim to showcase the extensibility of \gls{GP} that is superior 
-to other optimization formulations. The formulation of the \gls{GP} as a 'bag of 
+Secondly, I aim to showcase the extensibility of \gls{GP}.
+The formulation of the \gls{GP} as a 'bag of
 constraints' instead of a hierarchial set of relations confers advantages 
 when trying to expand the fidelity and scope of models, especially in the 
-conceptual design stage. 
+conceptual design stage. Furthermore, the solution to the dual of the \gls{GP}
+provides optimal sensitivities which allow targeted efforts by engineers to
+collaboratively improve models.
 
 Finally, this thesis will discuss the features specific to GPkit in facilitating
 an engineering design process that is streamlined and collaborative, and is
@@ -36,12 +38,11 @@ compatible with modern engineering design methodologies. The modularity of the
 models, as well as tools within GPkit to test tightness and boundedness
 allows for a component-based design approach that ensures that
 requirements both at the sub-system and complete-system levels are satisfied. 
-Furthermore, GPkit allows feedback between design engineers and models
-which allows targeted efforts by engineers to collaboratively improve models.
+
 
 \section{Defining Design versus Optimization} \label{s:DesVsOpt}
 
-It is difficult to find rigorous definitions of design and optimization that
+It is difficult to find definitions of design and optimization that
 try to identify the similarities and differences between the terms. For us to be
 able to understand why \gls{GP}s facilitate design, we have to determine what 
 features of optimization create barriers to entry for its use in design. 
@@ -50,46 +51,50 @@ features of optimization create barriers to entry for its use in design.
 
 In the context of this thesis, I will define design as the following:
 To design is to conceive the form and function of something.
-In the engineering sense, we think about the form as the configuration or
-the parametrization. On the other hand, the function is the actual purpose of the things
+In the engineering sense, we can think about the form as the configuration or
+the parametrization. The form usually defines n, the number of degrees of freedom
+of the system, which can have a direct effect on the size of the feasibility
+space, as well as the complexity of the problem.
+On the other hand, the function is the actual purpose of the things
 being designed. It is oftentimes the aspect of the design that we can
 quantify (i.e. the performance), and has some physics that can be modeled.
 
-An important aspect of design is that it is a process that explores a space.
+An important aspect of design is that it is a process that explores an
+n-dimensional feasible space of possible solutions.
 We can think about the feasible set of a design as all of the designs
-that satisfy the functional requirements. But without a rigorous way of comparing
-the performances of a design, the classical
+that satisfy the functional requirements. But without a clear method of comparing
+the relative performances of designs, the classical
 definition of design implies a class of feasibility problems satisfying a set of
-functional requirements, in a space defined by
-the forms that a designer can conceive.
+constraints that act on the designer's parametrization of the problem.
 
 \subsection{What is optimization?}
 
-Optimization has a rigorous mathematical definition: To optimize is to select an 
+In this thesis, I give optimization the following definition: To optimize is to select an
 element in a set of feasible solutions with the lowest desired objective
 function value. It is also a process, which is sensitive to the elements contained within the set
 (related to the form), and the choice of objective function (related to the 
-function). In many ways, optimization is a natural extension of design, because it allows
-for an explicit mathematical representation of the form and function.
+function).
 
 \subsection{The fundamental differences}
 
-To many engineers, design and optimization are one and the same. Both design and
+In many ways, optimization is a natural extension of design, because it allows
+for an explicit mathematical representation of the form and function. Both design and
 optimization explore feasible and infeasible sets, but differ in a fundamental way.
-Design is based on feasibility, whereas optimization is based on the
-mathematical guarantees of optimality. This allows design to be performed
+Design is based on feasibility, whereas optimization is based on optimality.
+This observations seems banal, but gives insight as to why there is a barrier
+to entry for optimization methods (and especially so for more restrictive forms).
+The distinction allows design to be performed
 in non-restrictive mathematical forms, since non-linear feasibility problems are
 much easier to solve than non-linear optimization problems. Optimization is
-done in specific mathematical forms because
-computational time is a limited resource. These forms can prove to be
-an impediment for those unfamiliar with optimization to implement optimization
-tools in design.
+done in specific mathematical forms; since most problems of interest are complex
+computational time is a limited resource. These forms can prove
+an impediment for designers unfamiliar with optimization to use it.
 
 \section{Unifying design and optimization using \gls{GP}}
 
 \gls{GP} has developed "in response to a need to solve problems in the actual 
 world"~\cite{duffingp}. \gls{GP}s and other convex optimization methods have been
-in development since the 1960's, but have come to the limelight thanks to the development of
+in development since the 1960's, but have come into the limelight thanks to the development of
 polynomial-time algorithms for convex programming~\cite{interior_point} and
 improvements in computing. There are three primary reasons why \gls{GP} and convex
 optimization naturally integrate into the design process.
@@ -115,9 +120,10 @@ constraints are added. This makes incremental modeling improvements straight-for
 The traditional engineering design process is split into conceptual, preliminary
 and critical design segments. GP modeling facilitates this process by allowing
 ever-increasing levels of complexity. Gradient based optimization methods for
-multimodal systems often involves
+multimodal systems often involve
 converge loops, which have to be reengineered when new constraints are
 introduced.
+%TODO Ned: perhaps add a diagram about bag of constraints here.
 
 A big advantage of convexity is that we can effectively use sensitivity information
 to determine which parts of the
@@ -130,7 +136,8 @@ their efforts.
 The design tools available in GPkit make it easy to
 implement component-based modeling, and build models that are shared between
 different design problems.
-This is helped by the fact that underconstrained \gls{GP}s can solve reliably,
+This is helped by the fact that underconstrained \gls{GP}s can solve reliably as long as
+    the variables are upper- and lower-bounded,
 and the tightness of constraints can be monitored.
 
 \end{enumerate}
