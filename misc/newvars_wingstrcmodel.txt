@@ -1,0 +1,5 @@
+N_{ult}
+W_{w_{coeff1}}
+W_{w_{coeff2}}
+W_{w_{surf}}
+W_{w_{strc}}

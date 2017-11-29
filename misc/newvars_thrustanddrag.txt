@@ -1,0 +1,11 @@
+k
+(CDA0)
+\mu
+Re
+D
+(\frac{S}{S_{wet}})
+A
+V_{f_{fuse}}
+BSFC
+C_f
+e

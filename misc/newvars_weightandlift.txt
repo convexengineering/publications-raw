@@ -1,0 +1,14 @@
+V_{min}
+W_w
+\rho
+C_{L,max}
+L/D
+T_{flight}
+S
+W
+W_p
+C_L
+Range
+V
+W_f
+C_D
