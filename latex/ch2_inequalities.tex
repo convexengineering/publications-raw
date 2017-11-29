@@ -1,4 +1,5 @@
 \chapter{Engineering inequalities and intuition, from equalities}
+\label{ch2:inequalities}
 
 This section will demonstrate how inequalities
 
@@ -556,3 +557,14 @@ where the feasibility set of individual \gls{GP}'s within a \gls{SP} solve are n
 to be subsets of the feasibility set of the \gls{SP}. This is undesirable although
 the solution of the \gls{SP} with equalities is guaranteed to be in the feasibility region
 of the model.
+
+One good use case of the signomial equality is in atmospheric models. There are two reasons
+for this. The first is that it is not clear while we define a model in which direction
+the pressure on atmospheric variables of interest are. Furthermore, if we decide to make a
+make a posynomial fit for variables like density $\rho$, it is possible that these will be
+upper unbounded.
+
+The second reason is that we are not interested in the 'feasibility set' of the atmosphere,
+since this has no
+intuition behind it: at every altitude, the atmospheric quantities can only be be represented
+by singular quantities.
