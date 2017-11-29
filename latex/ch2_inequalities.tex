@@ -171,7 +171,9 @@ to those defined in Table~\ref{tab:vars_WandL}.
         \toprule
         Variable & Units & Description & Free & Value \\
         \midrule
+        $\rho$ & $~\mathrm{\tfrac{kg}{m^{3}}}$ & density of air & N & 1.23 \\
         $C_L$ & $~\mathrm{-}$ & wing lift coefficient & Y & - \\
+        $C_{L,max}$ & $$ & lift coefficient at stall & N &  1.6 \\
         $S$ & $~\mathrm{m^{2}}$ & total wing area & Y & - \\
         $V$ & $~\mathrm{\tfrac{m}{s}}$ & cruising speed & Y & - \\
         $V_{min}$ & $~\mathrm{\tfrac{m}{s}}$ & takeoff speed & N & 25 \\
@@ -181,10 +183,16 @@ to those defined in Table~\ref{tab:vars_WandL}.
         $W_p$ & $~\mathrm{N}$ & payload weight & N & 6250\\
         \bottomrule
     \end{tabular}
-    \label{tab:vars_WandL}
     \caption{Variables introduced in weight vs. lift model. Free variables,
     and constants and their values have been labeled.}
+    \label{tab:vars_WandL}
 \end{table} \end{footnotesize}
+
+Note that the atmospheric variable $\rho$ in Table~\ref{tab:vars_TandD}, and other
+atmospheric variables in the following tables are set
+to be constant. The behavior of these variables with altitude
+will be modeled in more detail in Section~\ref{s:mission} when
+I model the flight profile of the aircraft.
 
 \subsection{Adding additional performance metrics}
 
@@ -217,6 +225,7 @@ The new variables we have introduced are detailed in Table~\ref{tab:vars_perfMet
         $C_L$ & $~\mathrm{-}$ & wing lift coefficient & Y & - \\
         $L/D$ & $~\mathrm{-}$ & lift-to-drag ratio & Y & - \\
         $Range$ & $~\mathrm{km}$ & aircraft range & N & 3000 \\
+        $T_{flight}$ & $~\mathrm{hr}$ & flight time & Y & - \\
         \bottomrule
     \end{tabular}
     \caption{Variables introduced to define new performance metrics.}
@@ -281,6 +290,7 @@ the wing profile drag, and the wing induced drag coefficients:
 \label{e:cd}
 \end{equation}
 
+I will represent the individual components of the drag as monomial equalities.
 The fuselage drag is a function of its drag area $CDA_0$ and the planform area of the wing:
 
 \begin{equation}
@@ -308,7 +318,7 @@ and the wetted area ratio of the wing,
 The Reynolds number of the aircraft wing is approximated
 
 \begin{equation}
-    Re \leq \frac{\rho}{\mu} V \sqrt{\frac{S}{AR}}
+    Re \leq \frac{\rho}{\mu} V \sqrt{\frac{S}{\AR}}
 \label{e:re}
 \end{equation}
 
@@ -321,9 +331,34 @@ and used to find the friction drag coefficient of wing. We approximate the $C_f$
 The induced drag of the wing is calculated with a span efficiency factor e, and is a function of the $C_L$ and aspect ratio $AR$ of the wing.
 
 \begin{equation}
-    C_{D_{induced}} = \frac{C_L^2}{\pi AR e}
+    C_{D_{induced}} = \frac{C_L^2}{\pi \AR e}
 \label{e:cdinduced}
 \end{equation}
+
+\begin{footnotesize}
+\begin{table}
+    \centering
+    \begin{tabular}{ l c l c c }
+        \toprule
+        Variable & Units & Description & Free & Value \\
+        \midrule
+        $A$ & $-$ & aspect ratio & Y & - \\
+        $BSFC$ & $\mathrm{\frac{g}{kW*hr}}$ & brake specific fuel consumption & N & 400 \\
+        $(CDA0)$ & $~\mathrm{m^{2}}$ & fuselage drag area & Y & - \\
+        $C_f$ & $-$ & skin friction coefficient & Y & - \\
+        $D$ & $~\mathrm{N}$ & total drag force & Y & - \\
+        $e$ & $-$ & Oswald efficiency factor & N & 0.92 \\
+        $k$ & $-$ & form factor & N & 1.17 \\
+        $\mu$ & $~\mathrm{\tfrac{kg}{m\cdot s}}$ & viscosity of air & N &
+            $\mathrm{1.78 \times 10^{-5}}$ \\
+        $Re$ & $-$ & Reynolds number & Y & - \\
+        $(\frac{S}{S_{wet}})$ & $-$ & wetted area ratio & N & 2.075 \\
+        $V_{f_{fuse}}$ & $~\mathrm{m^{3}}$ & fuel volume in the fuselage & Y & - \\
+        \bottomrule
+    \end{tabular}
+    \caption{Variables introduced in thrust and drag model.}
+    \label{tab:vars_TandD}
+\end{table} \end{footnotesize}
 
 \begin{python}
         # Thrust and drag model
@@ -371,9 +406,9 @@ the loss of the mathematical guarantees.
 
 \subsection{Introducing fuel volume constraints to a GP aircraft model}
 
-To demonstrate a model that requires the addition of signomial constraints, we will 
+In an attempt to lower bound $V_{f_{fuse}}$, we will
 be adding a fuel volume model to SimPleAC, where fuel can be stored in the wing or
-in the fuselage. The reason why this model is GP-incompatible is because of the 
+in the fuselage. The reason why this model is \gls{GP}-incompatible is because of the
 following constraint which follows logically:
 
 \begin{equation}
@@ -382,12 +417,12 @@ following constraint which follows logically:
 \end{equation}
 
 The fuel volume available must be less than the sum of the fuel volume available in the
-wing and the fuselage. As such, it turns out that volumes that 'contain' free variables
+wing and the fuselage. It turns out that volumes that 'contain' free variables
 can create signomial constraints. (One way around this is potentially creating fuel
 fraction variables to denote how much fuel is stored in each volume, but I will not 
 explore other potential parametrizations here.)
 
-As such, we can continue to develop the model. We know that fuel weight is going 
+As such, we can continue to develop the model. We know that fuel weight is going
 to influence the lift required of the aircraft, so we must determine the weight of the fuel 
 using a density parameter $\rho_{f}$. 
 
@@ -396,8 +431,8 @@ using a density parameter $\rho_{f}$.
     \label{e:vf}
 \end{equation}
 
-We need a model of how much fuel volume there is in a wing. If we think about the total
-volume in a wing, it is related linearly to its thickness ratio ($\tau$) and span ($b$), 
+We need a model of how much fuel volume there is in a wing. We would expect the volume
+to be related linearly to its thickness ratio ($\tau$) and span ($b$),
 and to the square of its chord ($c$). 
 
 \begin{equation}
@@ -409,21 +444,110 @@ In aerospace engineering, we like dimensionless quantities and planform areas,
 so we would like to express relation~\ref{e:vfwingpre} with respect to the planform area $S$
 aspect ratio \AR and thickness ratio $\tau$ only, without having to define $b$ and $c$ as new
 free variables.
-Using the additional relation $S \propto b c$, we can express $V_{f_{wing}}$.
+Using the additional relations $\AR = \frac{b^2}{S}$ and $S \propto b c$, we can express $V_{f_{wing}}$.
 
 \begin{equation}
-	V_{f_{wing}} \propto \tau (\frac{AR}{S})^{0.5} (\frac{S}{b})^2 \propto
-		(\frac{AR}{S})^{0.5} \frac{S^2}{S \AR} \propto \frac{\sqrt{S}\tau}{\sqrt{AR}}
+	V_{f_{wing}} \propto \tau (\frac{\AR}{S})^{0.5} (\frac{S}{b})^2 \propto
+		(\frac{\AR}{S})^{0.5} \frac{S^2}{S \AR} \propto \frac{\sqrt{S}\tau}{\sqrt{\AR}}
 \end{equation}
 
 \begin{equation}
 \label{e:vfwing}
-V_{f_{wing}}^2 \leq 9\times10^{-4} \frac{S \tau^2}{AR}
+V_{f_{wing}}^2 \leq 9\times10^{-4} \frac{S \tau^2}{\AR}
 \end{equation}
 
 (In the final form of the Equation~\ref{e:vfwing} I picked $9\times10^{-4}$ as the coefficient in
 front of the relation by tuning it after I had developed
 the model, but any other coefficient would do.)
+
+\begin{footnotesize}
+\begin{table}
+    \centering
+    \begin{tabular}{ l c l c c }
+        \toprule
+        Variable & Units & Description & Free & Value \\
+        \midrule
+        $\rho_f$ & $~\mathrm{\tfrac{kg}{m^{3}}}$ & density of fuel & N & 817 \\
+        $g$ & $~\mathrm{\tfrac{m}{s^{2}}}$ & gravitational acceleration & N & 9.81 \\
+        $\tau$ & $$ & airfoil thickness to chord ratio & N & 0.12 \\
+        $V_f$ & $~\mathrm{m^{3}}$ & fuel volume & Y & - \\
+        $V_{f_{avail}}$ & $~\mathrm{m^{3}}$ & fuel volume available & Y & - \\
+        $V_{f_{wing}}$ & $~\mathrm{m^{3}}$ & fuel volume in the wing & Y & - \\
+        \bottomrule
+    \end{tabular}
+    \caption{Variables introduced in the fuel model.}
+    \label{tab:vars_fuelmodel}
+\end{table} \end{footnotesize}
+
+\subsection{Completing the model: wing structural model}
+
+Only one unbounded variable remains, which is wing weight $W_w$. We can think
+of wing weight having two components, the skin weight that
+only grows as a function of wing area, the structural weight which is a function of
+both the geometry and loading. The surface weight expression is straightforward.
+
+\begin{equation} W_{w_{surf}} \geq W_{w_{coeff2}} S \label{e:wwsurf} \end{equation}
+
+We would like wing structural weight to account for the loading distribution and the geometry
+of the wing. Wings experience both bending and shear, but I will size for wing root bending
+moment since it is more insightful. The wing will have to sustain a maximum bending load due
+to maximum takeoff weight,
+multiplied by an ultimate structural factor $N_{ult}$ for maneuvering.
+Back to the fundamentals: (root) bending moments are linear with (lift) force and
+quadratic with moment arm (b) for distributed loads, and
+the stiffness of a beam (wing) increases with the cube of its thickness.
+
+%TODO: integrate wing lift distribution to get these results.
+
+\begin{equation}
+W_{w_{strc}} \propto \frac{L b^2}{\tau^3}
+\end{equation}
+
+The maximum lift generated by a wing grows linearly with surface area ($S\propto bc$). But not all surface
+area is equal. Thinking about $\frac{\partial L}{\partial S}$, as surface area $S$ increases
+with constant airfoil thickness ratio $\tau$ throughout a constant span $b$, chord and
+root thickness grow linearly as S grows. This means that since $c \propto \tau$, we can cancel these out.
+
+\begin{equation}
+W_{w_{strc}} \propto \frac{b c b^2}{\tau^3} = \frac{b^3}{\tau^2} = \frac{(\AR S)^{1.5}}{\tau^2}
+\end{equation}
+
+Again, as engineers we like non-dimensional parameters, so I substitute in expression
+$\AR = \frac{b^2}{S}$ to nondimensionalize. I have substituted both
+expressions because I want to capture the effects of both.
+
+\begin{equation}
+W_{w_{strc}} \propto \frac{W \sqrt{S\AR} \frac{S}{c}}{\tau^3}
+\end{equation}
+
+
+is a complex posynomial expression that takes into account the root
+bending moment and shear relief due to presence of fuel in the wings.
+
+\begin{equation} W_{w_{strc}}^2 \geq \frac{W_{w_{coeff1}}^2}{\tau^2} (N_{ult}^2 AR ^ 3 ((W_0+\rho_fgV_{f_{fuse}}) W S)) \label{e:wwstrc} \end{equation}
+
+The total wing weight is now lower-bounded by its component weights.
+
+\begin{equation} W_w \geq W_{w_{surf}} + W_{w_{strc}} \label{e:ww} \end{equation}
+
+\begin{footnotesize}
+\begin{table}
+    \centering
+    \begin{tabular}{ l c l c c }
+        \toprule
+        Variable & Units & Description & Free & Value \\
+        \midrule
+        $N_{ult}$ & $-$ & ultimate load factor & N & 3.3 \\
+        $W_{w_{coeff1}}$ & $~\mathrm{\tfrac{1}{m}}$ & wing weight coefficient 1 & N &
+                $\mathrm{2\times 10^{-5}}$ \\
+        $W_{w_{coeff2}}$ & $~\mathrm{Pa}$ & wing weight coefficient 2 & N & 60 \\
+        $W_{w_{strc}}$ & $~\mathrm{N}$ & wing structural weight & Y & - \\
+        $W_{w_{surf}}$ & $~\mathrm{N}$ & wing skin weight & Y & - \\
+    \bottomrule
+    \end{tabular}
+    \caption{Variables introduced in the fuel model.}
+    \label{tab:vars_wingstrcmodel}
+\end{table} \end{footnotesize}
 
 \subsection{What is the proper use case of the signomial equality?} 
 
