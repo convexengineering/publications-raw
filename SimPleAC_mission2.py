@@ -82,7 +82,7 @@ class Fuselage(Model):
 class Wing(Model):
     def setup(self):
         # Non-dimensional constants
-        C_Lmax     = Variable("C_{L,max}", 1.6, "-", "max CL with flaps down", pr=5.)
+        C_Lmax     = Variable("C_{L,max}", 1.6, "-", "lift coefficient at stall", pr=5.)
         e          = Variable("e", 0.92, "-", "Oswald efficiency factor", pr=3.)
         k          = Variable("k", 1.17, "-", "form factor", pr=10.)
         N_ult      = Variable("N_{ult}", 3.3, "-", "ultimate load factor", pr=15.)
@@ -91,9 +91,9 @@ class Wing(Model):
 
         # Dimensional constants
         W_w_coeff1 = Variable("W_{w_{coeff1}}", 2e-5, "1/m",
-                              "wing weight coefficent 1", pr= 30.) #orig  12e-5
+                              "wing weight coefficient 1", pr= 30.) #orig  12e-5
         W_w_coeff2 = Variable("W_{w_{coeff2}}", 60., "Pa",
-                              "wing weight coefficent 2", pr=10.)
+                              "wing weight coefficient 2", pr=10.)
 
         # Free Variables (fixed for performance eval.)
         A         = Variable("A", "-", "aspect ratio",fix = True)
