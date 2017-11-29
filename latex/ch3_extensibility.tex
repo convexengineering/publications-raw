@@ -11,20 +11,20 @@ having to restructure the optimization formulation.
 
 The SimPleAC currently has an engine that weighs nothing and magically supplies
 unlimited power. This is obviously unphysical, and since one of the variables
-with the highest sensitivity is \TSFC, requires refinement.
+with the highest sensitivity is \BSFC, requires refinement.
 
 \subsection{Creating an engine submodel}
 
 Before even thinking about modeling, we would like to leverage the object-oriented 
 GPkit models to put the variables describing the engine into a submodel (currently only 
-TSFC). We do this by creating a new class called \textbf{Engine} and creating a \textit{setup}
+BSFC). We do this by creating a new class called \textbf{Engine} and creating a \textit{setup}
 method that returns the constraints within it.
 
 \begin{python}
 class Engine(Model):
     def setup(self):
         # Dimensional constants
-        TSFC      = Variable("TSFC", 0.6, "1/hr", "thrust specific fuel consumption")
+        BSFC      = Variable("BSFC", 0.6, "1/hr", "brake specific fuel consumption")
         constraints = []
         return constraints    
 \end{python}
@@ -120,7 +120,8 @@ error of the fit on the given data. As such, we will proceed with the 2-term pos
 
 Within this framework, we can modularize also add a separate wing and fuselage module to
 SimPleAC as well, with very little additional work. This creates the variable and constraint
-hierarchy as presented in Figure~\ref{forest:submodels}
+hierarchy as presented in Figure~\ref{forest:submodels}, which define all of the constraints
+required for SimPleAC to fly one flight segment.
 
 \begin{figure}[!h]\centering\small\sffamily
 \begin{forest}
@@ -130,6 +131,7 @@ hierarchy as presented in Figure~\ref{forest:submodels}
         [\textbf{Engine}]
     ]
 \end{forest}
+\caption{Variable and constraint hierarchy of the single mission segment SimPleAC model}
 \label{forest:submodels}
 \end{figure}
 
