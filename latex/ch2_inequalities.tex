@@ -284,7 +284,7 @@ it is a good practice to relax the equality to leave as many degrees of freedom
 in the design space as possible.
 
 The drag coefficient of the aircraft is assumed to be the sum of the fuselage drag,
-the wing profile drag, and the wing induced drag coefficients:
+the wing profile drag, and the wing induced drag coefficients \cite{gp_ac_design}:
 
 \begin{equation}
     C_D \geq C_{D_{fuse}} + C_{D_{wpar}} + C_{D_{ind}}
@@ -309,7 +309,7 @@ where the $CDA_0$ is linearly proportional to the volume of fuel in the fuselage
 Note that we correct the dimensionality of the volume here, since GPkit automatically checks units. 
 
 The wing profile drag is the product of the form factor, the friction drag coefficient,
-and the wetted area ratio of the wing,
+and the wetted area ratio of the wing \cite{gp_ac_design},
 
 \begin{equation}
     C_{D_{wpar}} = k C_f S_{wetratio}
@@ -385,8 +385,9 @@ The induced drag of the wing is calculated with a span efficiency factor e, and 
     $V_{f_{fuse}}$ &  $~\mathrm{m^3}$  & $0$ \\
     $W_w$ & $~\mathrm{N}$  & $0$ \\
     \bottomrule
-\label{tab:WLTD_unbounded}
 \end{tabular}
+\caption{Unbounded variables within the GP formulation}
+\label{tab:WLTD_unbounded}
 \end{table} \end{footnotesize}
 
 As shown in Table~\ref{tab:WLTD_unbounded} attempting to run the model as is
@@ -409,7 +410,9 @@ the loss of the mathematical guarantees.
 
 In an attempt to lower bound $V_{f_{fuse}}$, we will
 be adding a fuel volume model to SimPleAC, where fuel can be stored in the wing or
-in the fuselage. The reason why this model is \gls{GP}-incompatible is because of the
+in the fuselage. I have chosen to model the fuel volume first instead of the wing
+weight because the wing weight will be a function of the fuel stored in the fuselage.
+The reason why this model is \gls{GP}-incompatible is because of the
 following constraint which follows logically:
 
 \begin{equation}
@@ -423,8 +426,8 @@ can create signomial constraints. (One way around this is potentially creating f
 fraction variables to denote how much fuel is stored in each volume, but I will not 
 explore other potential parametrizations here.)
 
-As such, we can continue to develop the model. We know that fuel weight is going
-to influence the lift required of the aircraft, so we must determine the weight of the fuel 
+As such, we can continue to develop the model. Fuel weight is going
+to influence the lift required of the aircraft, so I determine the weight of the fuel
 using a density parameter $\rho_{f}$. 
 
 \begin{equation}
@@ -433,6 +436,7 @@ using a density parameter $\rho_{f}$.
 \end{equation}
 
 We need a model of how much fuel volume there is in a wing. We would expect the volume
+within a wing
 to be related linearly to its thickness ratio ($\tau$) and span ($b$),
 and to the square of its chord ($c$). 
 
@@ -494,11 +498,14 @@ of the wing. The wing will have to sustain a maximum bending load (I will neglec
 the two are coupled) due to maximum takeoff weight,
 multiplied by an ultimate structural factor $N_{ult}$ for maneuvering.
 I have borrowed the wing weight model from \cite{gp_ac_design}, and adapted it through a
-structural weight coefficient $W_{w_{coeff2}}$. Note that this equation captures the
-major trends in wing structural sizing. The weight grows with the cube of the span ($AR^{1.5}$, derived
+structural weight coefficient $W_{w_{coeff1}}$. Note that this equation captures the
+major trends in wing structural sizing. We can see this through looking at the partial
+derivatives of the wing weight with respect to the different free variables.
+The weight grows with the cube of the span ($AR^{1.5}$, derived
 from the integration of a quadratically increasing bending moment),
 linearly with the maximum structural factor $N_{ult}$, and inversely with the
-surface area \footnotemark.
+surface area \footnotemark. (Using similar partial-derivative based analyses, it
+is often easy to make first-order models for components.)
 
 \footnotetext{This can be difficult to see, but since $S \propto b_{constant} c$ and loading is constant, as area
 grows, the thickness of the wing grows as well at a constant $\tau$. So the weight increases linearly with S,
@@ -510,8 +517,8 @@ N_{ult} AR ^ {1.5} \sqrt{(W_0+\rho_fgV_{f_{fuse}}) WS} \label{e:wwstrc}
 \end{equation}
 
 Equation~\ref{e:wwstrc} takes into account the root
-bending moment relief due to presence of fuel in the wings by performing a geometric average
-of the total weight, and the weight excluding wing fuel and wing weight.
+bending moment relief due to presence of fuel and weight in the wings by performing a
+geometric average of the total weight, and the weight excluding wing fuel and wing weight.
 
 The total wing weight is now lower-bounded by its component weights.
 
@@ -548,9 +555,10 @@ One good use case of the signomial equality is in atmospheric models. There are 
 for this. The first is that it is not clear while we define a model in which direction
 the pressure on atmospheric variables of interest are. Furthermore, if we decide to make a
 make a posynomial fit for variables like density $\rho$, it is possible that these will be
-upper unbounded.
+upper unbounded, since lower density is beneficial for drag and most other objective functions.
 
 The second reason is that we are not interested in the 'feasibility set' of the atmosphere,
 since this has no
 intuition behind it: at every altitude, the atmospheric quantities can only be be represented
-by singular quantities.
+by singular quantities. In fact, when we add an atmospheric model to SimPleAC in
+Section~\ref{s:mission}, we will be implementing signomial equalities.
