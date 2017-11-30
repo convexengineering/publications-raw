@@ -547,18 +547,29 @@ The total wing weight is now lower-bounded by its component weights.
 
 Signomial equalities must be used as a last resort. The signomial equality is the only place 
 where the feasibility set of individual \gls{GP}'s within a \gls{SP} solve are not guaranteed 
-to be subsets of the feasibility set of the \gls{SP}. This is undesirable although
-the solution of the \gls{SP} with equalities is guaranteed to be in the feasibility region
-of the model.
+to be subsets of the feasibility set of the \gls{SP}. This is because the signomial solution
+algorithm in GPkit flattens the original signomial equality constraint,
+a concave curve in log-space in n-dimensions,
+onto a line in log-space in n-dimensions(Method C in \ref{sigeqpaper}) that intersects the
+original constraint at the optimal point of the last \gls{GP} solve. This is undesirable although
+the solutions to the \gls{GP} approximations of the \gls{SP} with equalities
+is guaranteed to be in the feasibility region of the \gls{SP}. Furthermore, \gls{SP}s
+with signomial equalities have been demonstrated to require more \gls{GP} solves
+than \gls{SP}s without signomial equalities. However, there are a few arguments
+to be made in defense of signomial equalities.
 
-One good use case of the signomial equality is in atmospheric models. There are two reasons
-for this. The first is that it is not clear while we define a model in which direction
-the pressure on atmospheric variables of interest are. Furthermore, if we decide to make a
-make a posynomial fit for variables like density $\rho$, it is possible that these will be
-upper unbounded, since lower density is beneficial for drag and most other objective functions.
+One good use case of the signomial equalities is in constraints in which the direction
+of pressure on free variables is not clear. This ensures the tightness of constraints
+that may otherwise have unbounded variables. A good example is in atmospheric models.
+Although the pressure on air density $\rho$ is almost certainly upward since it results in
+lower drag, the pressure on viscosity $\mu$ is not clear because of the complex relationship
+between Reynolds number and drag.
 
 The second reason is that we are not interested in the 'feasibility set' of the atmosphere,
-since this has no
-intuition behind it: at every altitude, the atmospheric quantities can only be be represented
-by singular quantities. In fact, when we add an atmospheric model to SimPleAC in
-Section~\ref{s:mission}, we will be implementing signomial equalities.
+since this has no intuition behind it: at every altitude, the atmospheric quantities
+can only be be represented by single quantities. Additionally, the computational penalty of
+implementing signomial equalities in atmospheric models is low, since the monomial approximation
+to the atmospheric data is not far from the monomial approximations made to the signomial equality.
+In fact, when we add an atmospheric model to SimPleAC in
+Section~\ref{s:mission}, we will be implementing signomial equalities to represent both air density
+$\rho$ and viscosity $\mu$.
