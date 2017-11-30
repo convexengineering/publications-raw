@@ -25,7 +25,7 @@ class SimPleAC(Model):
 
         # Dimensional constants
         Range     = Variable("Range",3000, "km", "aircraft range")
-        BSFC      = Variable("BSFC", 0.6, "1/hr", "brake specific fuel consumption")
+        BSFC      = Variable("BSFC", 400, "g/(kW*hr)", "brake specific fuel consumption")
         V_min     = Variable("V_{min}", 25, "m/s", "takeoff speed", pr=20.)
         W_p       = Variable("W_p", 6250, "N", "payload weight", pr=20.)
         
@@ -37,6 +37,9 @@ class SimPleAC(Model):
         Re        = Variable("Re", "-", "Reynolds number")
         CDA0      = Variable("(CDA0)", "m^2", "fuselage drag area") #0.035 originally
         C_D       = Variable("C_D", "-", "drag coefficient")
+        C_D_ind   = Variable('C_{D_{ind}}', '-', "wing induced drag")
+        C_D_wpar  = Variable('C_{D_{wpar}}', '-', 'wing profile drag')
+        C_D_fuse  = Variable('C_{D_{fuse}}','-','fuselage drag coefficient')
         C_L       = Variable("C_L", "-", "wing lift coefficient")
         C_f       = Variable("C_f", "-", "skin friction coefficient")
         W_f       = Variable("W_f", "N", "fuel weight")
@@ -62,12 +65,12 @@ class SimPleAC(Model):
                     LoD == C_L/C_D]
 
         # Thrust and drag model
-        C_D_fuse = CDA0 / S
-        C_D_wpar = k * C_f * S_wetratio
-        C_D_ind  = C_L ** 2 / (np.pi * A * e)
-        constraints += [W_f >= BSFC * T_flight * D,
+        constraints += [W_f >= g * BSFC * T_flight * D * V,
                     D >= 0.5 * rho * S * C_D * V ** 2,
                     C_D >= C_D_fuse + C_D_wpar + C_D_ind,
+                    C_D_fuse == CDA0 / S,
+                    C_D_wpar == k * C_f * S_wetratio,
+                    C_D_ind  == C_L ** 2 / (np.pi * A * e),
                     V_f_fuse <= 10*units('m')*CDA0,
                     Re <= (rho / mu) * V * (S / A) ** 0.5,
                     C_f >= 0.074 / Re ** 0.2]

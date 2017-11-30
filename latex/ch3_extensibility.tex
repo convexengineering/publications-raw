@@ -30,7 +30,7 @@ method that returns the constraints within it.
 class Engine(Model):
     def setup(self):
         # Dimensional constants
-        BSFC      = Variable("BSFC", 0.6, "1/hr", "brake specific fuel consumption")
+        BSFC      = Variable("BSFC", 400, "g/(kw*hr)", "brake specific fuel consumption")
         constraints = []
         return constraints    
 \end{python}
