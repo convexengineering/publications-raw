@@ -15,7 +15,7 @@ SPaircraft has a strict maintenance of variables and constraint hierarchy
 as shown in Figure~\ref{forest:SPaircrafttree}, with additional
 aircraft components, and
 cruise and climb profile classes which differentiate between the different
-kinds of flight systems.
+kinds of flight segments.
 
 \begin{figure}[!h]\centering\small\sffamily
 \begin{forest}
@@ -42,7 +42,7 @@ kinds of flight systems.
         ]
     \draw (Cr.south) -- (Ap.north);
     \end{forest}
-    \caption{Hierarchy of the presented aircraft model. Models that include sizing variables are 
+\caption{Hierarchy of the SPaircraft model. Models that include sizing variables are
 bolded while models that include performance variables are italicized. 
 There are models that contain both kinds of variables.}
 \label{forest:SPaircrafttree}
@@ -105,17 +105,37 @@ the structure of a conventional horizontal tail.
 
 Now, using a set of variables that includes the original parametrization of the wing, 
 we would like to extend this structural model to be able to design a pi horizontal tail
-with the same loading. 
+with the same loading as well as a conventional horizontal tail. Pi tails are prominently
+featured in the D8 configuration shown in Figure~\ref{f:D8}, and so it is important to
+be able to capture the structural benefits of a pi horizontal tail versus a conventional
+horizontal tail when designing a D8.
+
+\begin{figure*}[t!]
+    \centering
+    \begin{subfigure}[t]{0.5\linewidth}
+        \centering
+        \includegraphics[width=0.75\linewidth]{optimal_D8-1.png}
+        \caption{Isometric view}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}[t]{0.5\linewidth}
+        \centering
+        \includegraphics[width=0.75\linewidth]{optimal_D8-3.png}
+        \caption{Front view}
+    \end{subfigure}
+    \caption{The pi tail is prominently featured in the D8 configuration, with engines
+    embedded between the vertical tails.}
+    \label{f:D8}
+\end{figure*}
 
 This section will derive a new set of constraints, which are compatible with 
 both conventional tail and pi-tail architectures, and in the process demonstrate the
-capabilities of \gls{GP} in incremental design.
+capabilities of \gls{GP} in making modular component models.
 
 \subsection{Assumptions}
 
 We have to make assumptions about the structure of the problem to be able
-to determine the loading on the horizontal tail, and use our intuitions about the 
-loading to tune the assumptions. This can be quite the chicken-and-egg problem
+to determine the loading on the horizontal tail. This can be quite the chicken-and-egg problem
 and it is often not clear how to proceed. It requires engineering understanding
 from the designer, which we consider to be key in \gls{GP} based design. But here is an
 intuitive description of the approach for the current example. 
@@ -123,12 +143,13 @@ intuitive description of the approach for the current example.
 Note that in our derivation we would like to err on the side of conservatism always, since we would
 rather be in a more restricted and realistic subset of the design space, rather than 
 expanding our feasible set to include solutions that are optimistic and potentially
-infeasible.
+infeasible. The assumptions for the derivation are as follows:
 
 \begin{enumerate}
     \item \textbf{The lift per unit span is proportional to local chord.} This allows 
     us to neglect the effects of lift rolloff towards the wingtips, which is difficult
-    to model in a \gls{GP} framework.  Since the horizontal tail model will 
+    to model in a \gls{GP} framework, and allows us to have a lift distribution to base
+    our structural model on.  Since the horizontal tail model will
     be more heavily loaded towards its wingtips than an actual tail, the loads
     on the tail model are conservative. 
     \item \textbf{The horizontal tail has a constant taper ratio.} We would like to 
@@ -136,8 +157,9 @@ infeasible.
     accuracy, but without making the physical relations unwieldy.
     This basic parametrization
     gives a good representation of the horizontal tail planform.  
-    Constant taper tail sections are also observed in real aircraft. 
-    Higher degrees of freedom in horizontal tail chord are considered unnecessary.
+    Constant taper tail sections are observed in real aircraft, and
+    higher degrees of freedom in horizontal tail chord are considered unnecessary
+    at this level of fidelity.
     \item \textbf{The horizontal and vertical tail joint is a fuselage width away from 
     the centerline of the aircraft.} In the pi-tail configuration the vertical tails are 
     often canted outward for aerodynamic benefits. However, we would like to avoid making 
@@ -157,12 +179,13 @@ infeasible.
 \label{s:HTloads}
 
 As with a majority of \gls{GP} formulations, we have to consider the fundamental physics to 
-be able to derive a new set of constraints. 
+be able to derive a new set of constraints. This requires the examination of free body
+diagrams.
 
 \subsubsection{Sample Free Body Diagram and Load Distributions}
 \label{s:loadDistributions}
 
-With the aforementioned assumptions, the free body diagram diagram of the 
+With the aforementioned assumptions, the notional free body diagram diagram of the
 pi-tail is shown at the top of Figure~\ref{f:HTFBD}.
 
 \begin{figure}[!ht]
@@ -174,10 +197,13 @@ into triangular and rectangular components.}
 \label{f:HTFBD}
 \end{figure}
 
-Shear and moment diagrams are presented in Figures~\ref{f:HTshear} and
+The free body diagrams from Figure~\ref{f:HTFBD} result in the
+shear and moment distributions presented in Figures~\ref{f:HTshear} and
 \ref{f:HTmoment} respectively. The diagrams include both the distributed lift
 loads (green arrows in Figure \ref{f:HTFBD}) and the point loads of imposed on
-the pin joints by the vertical tails.
+the pin joints by the vertical tails. These diagrams allow
+us to make several important observations.
+
 
 \begin{figure}[!ht]
     \centering
@@ -195,7 +221,6 @@ loading, and the yellow line shows the assumed load distribution}
     \label{f:HTmoment}
 \end{figure}
 
-After having seen these diagrams, we can make an important observation.
 The first is that the pi horizontal tail becomes a conventional tail in
 the limit where $w_{fuse} \xrightarrow[]{} 0$. This gives us the clue that we can
 have a model that can accurately represent the structural constraints on both kinds
@@ -206,11 +231,12 @@ potential issues in the transition.
 Another important feature of the load distributions that they can be represented
 with relatively high accuracy using a linearization of the load distributions,
 an approximation that is strictly conservative.
-Figures~\ref{f:HTshear} and \ref{f:HTmoment} show how the loads are approximated
+The yellow-outlined load distributions in Figures~\ref{f:HTshear} and \ref{f:HTmoment}
+show how the loads are approximated
 in this case. The linear approximation will help us in leveraging Equations
 ~\ref{e:HTorig} to size both horizontal tail configurations.
 
-As a final note, the pin-joint assumption ensures the vertical tail structural constraints do not
+As a note, the pin-joint assumption ensures the vertical tail structural constraints do not
 need to be modified for the pi-tail configuration. 
 
 \subsubsection{Load Derivation}
