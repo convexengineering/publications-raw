@@ -146,13 +146,15 @@ and the tightness of constraints can be monitored.
 
 \begin{figure*}[!b]
 \begin{subfigure}[b]{0.5\linewidth}
+    \begin{center}
+    \resizebox{0.75\textwidth}{!}{
 \begin{tikzpicture}[node distance=1.5cm, align=center]
     \node (start)        [activityStarts]                   {Initialize variables};
-    \node (guess)        [process, below of=start]          {Make an initial guess};
+    \node (guess)        [process, below of=start]          {Make a feasible initial guess};
     \node (evaluate)     [process, below of=guess]          {Evaluate design};
     \node (gradient)     [process, below of=evaluate]       {Calculate gradients};
     \node (optimal)      [process, below of=gradient]       {Check optimality condition};
-    \node (solution)     [activityRuns, below of=optimal]   {Present solution};
+    \node (solution)     [activityRuns, below of=optimal]   {Solution};
     \node (genNew)       [process, left of=gradient, xshift=-3cm]        {Generate new guess};
 
     \draw[->] (start) -- (guess);
@@ -162,16 +164,35 @@ and the tightness of constraints can be monitored.
     \draw[->] (optimal)  -- (solution);
     \draw[->] (optimal) -| (genNew);
     \draw[->]  (genNew) |- (evaluate);
-\end{tikzpicture}
+\end{tikzpicture}}
+    \end{center}
+    \caption{Gradient-based optimization}
 \end{subfigure}
 \begin{subfigure}[b]{0.5\linewidth}
+    \begin{center}
+    \resizebox{0.75\textwidth}{!}{
 \begin{tikzpicture}[node distance=1.5cm, align=center, scale=0.5]
     \node (start)        [activityStarts]               {Initialize variables};
     \node (guess)        [process, below of=start]      {Make an initial guess};
-    \node (evaluate)     [process, below of=guess]      {Evaluate design};
-    \node (gradient)     [process, below of=evaluate]   {Calculate gradients};
-\end{tikzpicture}
+    \node (convexify)    [process, below of=guess]      {Convexify};
+    \node (optimize)     [process, below of=convexify]  {Optimize convex problem};
+    \node (condition)    [process, below of=optimize]   {Check primal/dual condition};
+    \node (solution)     [activityRuns, below of=condition]   {Solution};
+    \node (sens)         [activityRuns, left of=solution, xshift=-3cm] {Sensitivities};
+
+    \draw[->] (start) -- (guess);
+    \draw[->] (guess) -- (convexify);
+    \draw[->] (convexify) -- (optimize);
+    \draw[->] (optimize) -- (condition);
+    \draw[->] (condition) -- (solution);
+    \draw[->] (condition) -| (sens);
+\end{tikzpicture}}
+    \end{center}
+    \caption{Convex optimization}
 \end{subfigure}
+    \caption{The flow diagrams of two methods of optimization. The 'bag of constraints'
+    form of the GP facilitates the addition of variables and constraints while extending
+    model capabilities, and provides sensitivities to guide modeling efforts.}
 \end{figure*}
 
 %\begin{figure*}[!b]
@@ -186,8 +207,7 @@ and the tightness of constraints can be monitored.
 %        \end{tikzpicture}
 %        \caption{Convex program}
 %    \end{subfigure}
-%    \caption{The flow diagrams of two methods of optimization. The 'bag of constraints'
-%    form of the GP facilitates the addition of variables and constraints while extending
+
 %    model capabilities.}
 %\end{figure*}
 
