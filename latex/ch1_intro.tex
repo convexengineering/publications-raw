@@ -41,7 +41,7 @@ allows for a component-based design approach that ensures that
 requirements both at the sub-system and complete-system levels are satisfied. 
 
 
-\section{Defining Design versus Optimization} \label{s:DesVsOpt}
+\section{Defining design versus optimization} \label{s:DesVsOpt}
 
 It is difficult to find definitions of design and optimization that
 try to identify the similarities and differences between the terms. For us to be
@@ -120,11 +120,12 @@ means that there is no need to reformulate the optimization scheme as more
 constraints are added. This makes incremental modeling improvements straight-forward.
 The traditional engineering design process is split into conceptual, preliminary
 and critical design segments. GP modeling facilitates this process by allowing
-ever-increasing levels of complexity. Gradient based optimization methods for
+ever-increasing levels of complexity. Gradient-based optimization methods for
 multimodal systems often involve
 converge loops, which have to be reengineered when new constraints are
 introduced.
-%TODO Ned: perhaps add a diagram about bag of constraints here.
+
+
 
 A big advantage of convexity is that we can effectively use sensitivity information
 to determine which parts of the
@@ -142,6 +143,53 @@ This is helped by the fact that underconstrained \gls{GP}s can solve reliably as
 and the tightness of constraints can be monitored.
 
 \end{enumerate}
+
+\begin{figure*}[!b]
+\begin{subfigure}[b]{0.5\linewidth}
+\begin{tikzpicture}[node distance=1.5cm, align=center]
+    \node (start)        [activityStarts]                   {Initialize variables};
+    \node (guess)        [process, below of=start]          {Make an initial guess};
+    \node (evaluate)     [process, below of=guess]          {Evaluate design};
+    \node (gradient)     [process, below of=evaluate]       {Calculate gradients};
+    \node (optimal)      [process, below of=gradient]       {Check optimality condition};
+    \node (solution)     [activityRuns, below of=optimal]   {Present solution};
+    \node (genNew)       [process, left of=gradient, xshift=-3cm]        {Generate new guess};
+
+    \draw[->] (start) -- (guess);
+    \draw[->] (guess) -- (evaluate);
+    \draw[->] (evaluate) -- (gradient);
+    \draw[->] (gradient) -- (optimal);
+    \draw[->] (optimal)  -- (solution);
+    \draw[->] (optimal) -| (genNew);
+    \draw[->]  (genNew) |- (evaluate);
+\end{tikzpicture}
+\end{subfigure}
+\begin{subfigure}[b]{0.5\linewidth}
+\begin{tikzpicture}[node distance=1.5cm, align=center, scale=0.5]
+    \node (start)        [activityStarts]               {Initialize variables};
+    \node (guess)        [process, below of=start]      {Make an initial guess};
+    \node (evaluate)     [process, below of=guess]      {Evaluate design};
+    \node (gradient)     [process, below of=evaluate]   {Calculate gradients};
+\end{tikzpicture}
+\end{subfigure}
+\end{figure*}
+
+%\begin{figure*}[!b]
+%    \begin{subfigure}[b]
+%        \begin{tikzpicture}[scale=0.8]
+%        \end{tikzpicture}
+%        \caption{Gradient-based program}
+%    \end{subfigure}
+%    \begin{subfigure}[b]
+%        \begin{tikzpicture}[scale=0.8]
+%            \draw (0,0) ellipse (1.0 and 0.5)
+%        \end{tikzpicture}
+%        \caption{Convex program}
+%    \end{subfigure}
+%    \caption{The flow diagrams of two methods of optimization. The 'bag of constraints'
+%    form of the GP facilitates the addition of variables and constraints while extending
+%    model capabilities.}
+%\end{figure*}
 
 In this thesis, I will methodically demonstrate the advantages of \gls{GP} in modeling
 and exploring complex engineering trade spaces.

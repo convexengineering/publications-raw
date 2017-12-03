@@ -51,6 +51,22 @@
 \usepackage{supertabular}
 \usepackage{textcomp}
 \usepackage{tikz}
+\usetikzlibrary{shapes,arrows.meta,chains}
+\usepackage{verbatim}
+
+% More code for tikz
+\tikzset{%
+  >={Latex[width=2mm,length=2mm]},
+  % Specifications for style of nodes:
+            base/.style = {rectangle, rounded corners, draw=black,
+                           minimum width=4cm, minimum height=0.75cm,
+                           text centered, font=\footnotesize\rmfamily},
+  activityStarts/.style = {base, fill=blue!30},
+       startstop/.style = {base, fill=red!30},
+    activityRuns/.style = {base, fill=green!30},
+         process/.style = {base, minimum width=2.5cm, fill=white!30,
+                           font=\footnotesize\rmfamily},
+}
 
 \makeglossaries
 
@@ -129,12 +145,12 @@ showstringspaces=false            %
 \include{contents}
 \include{ch1_intro}
 \include{ch2_inequalities}
-\include{ch3_extensibility}
-\include{ch4_modularity}
-\include{ch5_conclusion}
+%\include{ch3_extensibility}
+%\include{ch4_modularity}
+%\include{ch5_conclusion}
 \appendix
-\include{appa}
-\include{appb}
+%\include{appa}
+%\include{appb}
 \include{biblio}
 \end{document}
 
