@@ -133,7 +133,7 @@ class Engine(Model):
 
         # Free variables
         P_shaft     = Variable("P_{shaft}","kW","shaft power")
-        P_shaft_max = Variable("P_{shaft_{max}}","kW","MSL maximum shaft power")
+        P_shaft_max = Variable("P_{shaft,max}","kW","MSL maximum shaft power")
         Thrust      = Variable("T","N","propeller thrust")
         W_e         = Variable("W_e","N","engine weight")
 

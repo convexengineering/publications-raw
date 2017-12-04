@@ -104,7 +104,7 @@ To be able to fit the engine power vs. weight data, we take several important st
 After having performed these intermediate steps on the engine data,
 the relation we obtain for the one-term approximation is as follows:
 \begin{equation}
-	(\frac{W_{eng}}{W_{eng_{max}}})^{0.100} = 0.988 (\frac{P_{shaft}}{P_{shaft_{max}}})^{0.117}
+	(\frac{W_{eng}}{W_{eng_{max}}})^{0.100} = 0.988 (\frac{P_{shaft}}{P_{shaft,max}})^{0.117}
 \end{equation}
 
 Note that the root mean square error of this fit is 0.414, but this has to do with 
@@ -113,14 +113,19 @@ on it from the objective, we can easily use a two-term posynomial approximation 
 improve its error. 
 
 \begin{equation}
-	(\frac{W_{eng}}{W_{eng_{max}}})^{0.801} \geq 0.0330 (\frac{P_{shaft}}{P_{shaft_{max}}})^{0.167} 
-												+1.59 (\frac{P_{shaft}}{P_{shaft_{max}}})^{1.36}
+	(\frac{W_{eng}}{W_{eng_{max}}})^{0.801} \geq 0.0330 (\frac{P_{shaft}}{P_{shaft,max}})^{0.167}
+												+1.59 (\frac{P_{shaft}}{P_{shaft,max}})^{1.36}
 \end{equation}
 
 This relation has an r.m.s. error of 0.346, which is a significant improvement. 
 
 It turns out that with a SMA approximation, more terms do not improve the r.m.s.
-error of the fit on the given data. As such, we will proceed with the 2-term posynomial fit. 
+error of the fit on the given data. As such, we will proceed with the 2-term posynomial fit.
+
+\subsubsection{Other constraints in engine model}
+
+I constrain the cruise shaft power to be 20\% of the maximum shaft power of the engine,
+to account for engine surge power demands, and the
 
 \subsection{Converting all subsystems into submodels}
 \label{s:submodels}

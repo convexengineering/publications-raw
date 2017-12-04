@@ -142,7 +142,7 @@ class Engine(Model):
         W_e_ref     = Variable("W_{e_{ref}}",681,"N","reference engine weight")
 
         # Free variables
-        P_shaft_max = Variable("P_{shaft_{max}}","kW","MSL maximum shaft power")
+        P_shaft_max = Variable("P_{shaft,max}","kW","MSL maximum shaft power")
         W_e         = Variable("W_e","N","engine weight")
 
         constraints = []
@@ -165,7 +165,7 @@ class EngineP(Model):
 
         constraints = []
 
-        constraints += [P_shaft <= 0.2*self.engine['P_{shaft_{max}}']]
+        constraints += [P_shaft <= 0.2*self.engine['P_{shaft,max}']]
 
         return constraints
 
