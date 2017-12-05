@@ -181,6 +181,7 @@ class Mission(Model):
             Wstart = Variable('W_{start}', 'N', 'Weight at the beginning of flight segment')
             Wend   = Variable('W_{end}', 'N','Weight at the end of flight segment')
             h      = Variable('h','m','Flight altitude')
+            havg   = Variable('h_{avg}','m','average segment flight altitude')
             dhdt   = Variable('\\frac{\\Delta h}{dt}','m/hr','Climb rate')
             W_f_s  = Variable('W_{f_s}','N', 'Segment fuel burn')
             t_s    = Variable('t_s','hr','Time spent in flight segment')
@@ -192,13 +193,13 @@ class Mission(Model):
         Range      = Variable("Range",3000, "km", "aircraft range")
         W_p        = Variable("W_p", 6250, "N", "payload weight", pr=20.)
         V_min      = Variable("V_{min}", 25, "m/s", "takeoff speed", pr=20.)
-        cost_index = Variable("Cost Index",360,'1/hr','hourly cost index')
+        cost_index = Variable("Cost Index",120,'1/hr','hourly cost index')
 
         constraints = []
 
         # Setting up the mission
         with SignomialsEnabled():
-            constraints += [h == state['h'], # Linking states
+            constraints += [havg == state['h'], # Linking states
 
                         # Weights at beginning and end of mission
                         Wstart[0] >= W_p + self.aircraft.wing['W_w'] + self.aircraft.engine['W_e'] + W_f_m,
@@ -213,6 +214,8 @@ class Mission(Model):
                         # Altitude changes
                         h[0] == t_s[0]*dhdt[0], # Starting altitude
                         dhdt >= 1.*units('m/hr'),
+                        havg[0] == 0.5 * h[0],
+                        havg[1:Nsegments] == (h[1:Nsegments] * h[0:Nsegments - 1]) ** (0.5),
                         SignomialEquality(h[1:Nsegments],h[:Nsegments-1] + t_s[1:Nsegments]*dhdt[1:Nsegments]),
 
                         # Thrust and fuel burn

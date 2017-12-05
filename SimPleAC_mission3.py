@@ -198,7 +198,7 @@ class Mission(Model):
         W_p        = Variable("W_p", 6250, "N", "payload weight", pr=20.)
         V_min      = Variable("V_{min}", 25, "m/s", "takeoff speed", pr=20.)
         TOfac      = Variable('T/O factor',2.,'-','takeoff thrust factor')
-        cost_index = Variable("Cost Index",360,'1/hr','hourly cost index')
+        cost_index = Variable("Cost Index",120,'1/hr','hourly cost index')
 
         constraints = []
 
