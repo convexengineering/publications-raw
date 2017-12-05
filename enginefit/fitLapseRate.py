@@ -4,7 +4,7 @@ from numpy import logspace, log, log10
 import matplotlib.pyplot as plt
 from gpfit.fit import fit
 
-# This maps (1-Power Lapse %) to altitude
+# This maps power lapse % to altitude
 
 df = pd.read_csv('DF35_maxPvh.csv')
 
@@ -32,26 +32,5 @@ K = 1
 Type = 'SMA'
 
 cstrt, rms_error = fit(logh[1:-1],logL[1:-1],K,Type)
-
-# Doing the power curve fit
-
-# RPM = df['RPM'] #RPM
-# P = df['P'] #kW
-# BSFC = df['BSFC'] #kg/kWhr
-#
-# RPM = RPM[0:6]
-# P = P[0:6]
-# BSFC = BSFC[0:6]
-#
-# BSFCmin = min(BSFC)
-# RPMmax = max(RPM)
-# Pmax = max(P)
-#
-# BSFC = BSFC/BSFCmin
-# RPM = RPM/RPMmax
-# P = P/Pmax
-
-
-# cstrt, rms_error = fit(log(RPM),log(P),K,Type)
 
 
