@@ -181,23 +181,24 @@ class Mission(Model):
         t_m     = Variable('t_m','hr','total mission time')
 
         with Vectorize(Nsegments):
-            Wavg   = Variable('W_{avg}','N','segment average weight')
-            Wstart = Variable('W_{start}', 'N', 'weight at the beginning of flight segment')
-            Wend   = Variable('W_{end}', 'N', 'weight at the end of flight segment')
-            h      = Variable('h','m','final segment flight altitude')
-            havg   = Variable('h_{avg}','m','average segment flight altitude')
-            dhdt   = Variable('\\frac{\\Delta h}{dt}','m/hr','climb rate')
-            W_f_s  = Variable('W_{f_s}','N', 'segment fuel burn')
-            t_s    = Variable('t_s','hr','time spent in flight segment')
-            R_s    = Variable('R_s','km','range flown in segment')
-            state  = Atmosphere()
+            Wavg    = Variable('W_{avg}','N','segment average weight')
+            Wstart  = Variable('W_{start}', 'N', 'weight at the beginning of flight segment')
+            Wend    = Variable('W_{end}', 'N', 'weight at the end of flight segment')
+            h       = Variable('h','m','final segment flight altitude')
+            havg    = Variable('h_{avg}','m','average segment flight altitude')
+            dhdt    = Variable('\\frac{\\Delta h}{dt}','m/hr','climb rate')
+            W_f_s   = Variable('W_{f_s}','N', 'segment fuel burn')
+            t_s     = Variable('t_s','hr','time spent in flight segment')
+            R_s     = Variable('R_s','km','range flown in segment')
+            state   = Atmosphere()
             self.aircraftP = self.aircraft.dynamic(state)
 
         # Mission variables
-        Range      = Variable("Range",3000, "km", "aircraft range")
+        hcruise = Variable('h_{cruise}', 5000, 'm', 'minimum cruise altitude')
+        Range      = Variable("Range", 3000, "km", "aircraft range")
         W_p        = Variable("W_p", 6250, "N", "payload weight", pr=20.)
         V_min      = Variable("V_{min}", 25, "m/s", "takeoff speed", pr=20.)
-        TOfac      = Variable('T/O factor',2.,'-','takeoff thrust factor')
+        TOfac      = Variable('T/O factor', 2.,'-','takeoff thrust factor')
         cost_index = Variable("Cost Index",120,'1/hr','hourly cost index')
 
         constraints = []
@@ -205,6 +206,7 @@ class Mission(Model):
         # Setting up the mission
         with SignomialsEnabled():
             constraints += [havg == state['h'], # Linking states
+                        h[1:Nsegments-1] >= hcruise,  # Adding minimum cruise altitude
 
                         # Weights at beginning and end of mission
                         Wstart[0] >= W_p + self.aircraft.wing['W_w'] + self.aircraft.engine['W_e'] + W_f_m,
