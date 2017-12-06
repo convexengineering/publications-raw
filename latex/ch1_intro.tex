@@ -38,8 +38,7 @@ an engineering design process that is streamlined and collaborative, and is
 compatible with modern engineering design methodologies. The modularity of the 
 models, as well as tools within GPkit to test tightness and boundedness
 allows for a component-based design approach that ensures that
-requirements both at the sub-system and complete-system levels are satisfied. 
-
+requirements both at the sub-system and complete-system levels are satisfied.
 
 \section{Defining design versus optimization} \label{s:DesVsOpt}
 
@@ -97,8 +96,11 @@ an impediment for designers unfamiliar with optimization to use it.
 world"~\cite{duffingp}. \gls{GP}s and other convex optimization methods have been
 in development since the 1960's, but have come into the limelight thanks to the development of
 polynomial-time algorithms for convex programming~\cite{interior_point} and
-improvements in computing. There are three primary reasons why \gls{GP} and convex
-optimization naturally integrate into the design process.
+improvements in computing. I do not make
+the claim that the form of \gls{GP} makes it applicable to every design
+problem. Instead, I argue that, for certain kinds of problems, \gls{GP} and convex
+optimization naturally integrate into the conceptual design process
+for three primary reasons.
 
 \begin{enumerate}
 
@@ -108,41 +110,30 @@ The mathematical constraints of \gls{GP} force designers to have a proper grasp
 of the fundamental tradeoffs and pressures in a design.
     Traditionally, physical relations are expressed as equalities. But there is an
 almost-seamless transition from fundamental physics to GP-compatible
-inequalities which make feasibility sets explicit.
-And even if the direction of pressure on a constraint is not clear,
-we can use signomial equalities to explicitly enforce the tightness of a
-    constraint.
+inequalities for certain kinds of problems, and the \gls{GP}-compatible
+    form makes feasibility sets explicit. Furthermore, the difference-of-convex
+    extension of \gls{GP} called \gls{SP} gives us the flexibility to model
+    non-log-convex functions as well. Within a \gls{SP},
+    we can use signomial equalities to explicitly enforce the tightness of a
+    constraint when the direction of pressure is not clear.
 
-    \item \textit{Models are extensible.}
+    \item \textit{Models are extensible and modular.}
     
-Models can be made arbitrarily complex. The 'bag of constraints' form of the GP
+Models in \gls{GP} can be made arbitrarily complex. The 'bag of constraints' form of the \gls{GP}
 means that there is no need to reformulate the optimization scheme as more
 constraints are added. This makes incremental modeling improvements straight-forward.
 The traditional engineering design process is split into conceptual, preliminary
 and critical design segments. GP modeling facilitates this process by allowing
-ever-increasing levels of complexity. Gradient-based optimization methods for
-multimodal systems often involve
-converge loops, which have to be reengineered when new constraints are
-introduced.
+ever-increasing levels of complexity.
 
-
-
-A big advantage of convexity is that we can effectively use sensitivity information
-to determine which parts of the
-model yield the greatest returns to improved modeling, so engineers can target
-their efforts.
-
-    \item \textit{Models are flexible and modular, and compatible with modern
-    engineering design.}
-
-The design tools available in GPkit make it easy to
-implement component-based modeling, and build models that are shared between
-different design problems.
-This is helped by the fact that underconstrained \gls{GP}s can solve reliably as long as
-    the variables are upper- and lower-bounded,
-and the tightness of constraints can be monitored.
-
-\end{enumerate}
+Gradient-based optimization methods for
+multimodal, multicomponent systems often involve
+converge loops, as shown in Figure~\ref{f:optflow}, which have to be reengineered
+    when new constraints are introduced. Furthermore, the designer often has to tune
+    the module for generating new guesses from gradient information, which is unreliable
+    at best. \gls{GP}s (and the \gls{GP} approximations
+    of \gls{SP}s) are solved all-at-once, which means that there are no constraint
+    convergence loops to worry about or parameters to tune.
 
 \begin{figure*}[!b]
 \begin{subfigure}[b]{0.5\linewidth}
@@ -173,43 +164,47 @@ and the tightness of constraints can be monitored.
     \resizebox{0.75\textwidth}{!}{
 \begin{tikzpicture}[node distance=1.5cm, align=center, scale=0.5]
     \node (start)        [activityStarts]               {Initialize variables};
-    \node (guess)        [process, below of=start]      {Make an initial guess};
+    \node (guess)        [process, left of=start, xshift=-3cm] {Make an initial guess};
     \node (convexify)    [process, below of=guess]      {Convexify};
-    \node (optimize)     [process, below of=convexify]  {Optimize convex problem};
+    \node (optimize)     [process, below of=start]  {Optimize convex problem};
     \node (condition)    [process, below of=optimize]   {Check primal/dual condition};
     \node (solution)     [activityRuns, below of=condition]   {Solution};
     \node (sens)         [activityRuns, left of=solution, xshift=-3cm] {Sensitivities};
 
     \draw[->] (start) -- (guess);
+    \draw[->] (start) -- (optimize);
     \draw[->] (guess) -- (convexify);
     \draw[->] (convexify) -- (optimize);
     \draw[->] (optimize) -- (condition);
+    \draw[->] (condition) -- (guess);
     \draw[->] (condition) -- (solution);
     \draw[->] (condition) -| (sens);
+    % TODO: learn how to label the 'if DC' section
 \end{tikzpicture}}
     \end{center}
-    \caption{Convex optimization}
+    \caption{Convex, and difference-of-convex optimization}
 \end{subfigure}
     \caption{The flow diagrams of two methods of optimization. The 'bag of constraints'
     form of the GP facilitates the addition of variables and constraints while extending
     model capabilities, and provides sensitivities to guide modeling efforts.}
+    \label{f:optflow}
 \end{figure*}
 
-%\begin{figure*}[!b]
-%    \begin{subfigure}[b]
-%        \begin{tikzpicture}[scale=0.8]
-%        \end{tikzpicture}
-%        \caption{Gradient-based program}
-%    \end{subfigure}
-%    \begin{subfigure}[b]
-%        \begin{tikzpicture}[scale=0.8]
-%            \draw (0,0) ellipse (1.0 and 0.5)
-%        \end{tikzpicture}
-%        \caption{Convex program}
-%    \end{subfigure}
+A big advantage of convexity is that we can effectively use sensitivity information
+to determine which parts of the
+model yield the greatest returns to improved modeling, so engineers can target
+their efforts.
 
-%    model capabilities.}
-%\end{figure*}
+    \item \textit{Models are amenable to mission and multi-point design, and compatible with modern
+    engineering design.}
+
+The design tools available in GPkit make it easy to
+implement mission design, and build models that are shared between
+different design problems. Mission design helps engineers gain valuable intuition about
+the tradeoffs in the performance of a design, and multi-point design allows designs to
+be able to fulfill a variety of missions.
+
+\end{enumerate}
 
 In this thesis, I will methodically demonstrate the advantages of \gls{GP} in modeling
 and exploring complex engineering trade spaces.
