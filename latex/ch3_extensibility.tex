@@ -134,7 +134,7 @@ hierarchy as presented in Figure~\ref{forest:submodels}, which define all of the
 required for SimPleAC to fly one flight segment.
 
 \begin{figure}[!h]\centering\small\sffamily
-\begin{forest}
+\begin{forest} sn edges
     [\textbf{Aircraft}
         [\textbf{Wing}]
         [\textbf{Fuselage}]
@@ -159,15 +159,21 @@ will facilitate the vectorization of constraints required for mission design.
 The SimPleAC that I have defined so far works well to demonstrate the
 capabilities of \gls{SP} in helping explore tradeoffs in engineering design.
 However, often in the design process, we will want to test the performance of a
-design in different conditions. This requires the vectorization of
+design in different conditions, and/or during different phases of a mission.
+This requires the vectorization of
 constraints that relate to the performance of the design. What we'd like to do
 is to have a single aircraft optimize both its static sizing variables (having
 to do with the airframe), and its flight performance simultaneously. This requires a major
-augmentation of the model tree defined in Figure~\ref{forest:submodels}.
+augmentation of the model tree defined in Figure~\ref{forest:submodels}, into a
+uni-directional graph as shown in Figure~\ref{f:missiongraph}.
 
 \begin{figure}[!h]
     \centering\small\sffamily
-    \begin{forest}
+    \begin{forest} sn edges,
+    l sep+=1em,
+    for children={
+    l sep+=1em,
+    }
     [\textit{\textbf{Mission}},name=mission
     [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=aircraftP2
     [\textit{\shortstack{Wing\\Perf}},name=wingP2]
@@ -185,16 +191,16 @@ augmentation of the model tree defined in Figure~\ref{forest:submodels}.
     [\textit{Atmosphere},name=atmos1]]
     ]
     ]
-        \draw[-] (atmos1) -- (wingP1);
-        \draw[-] (atmos1) -- (aircraftP1);
-        \draw[-] (atmos2) -- (wingP2);
-        \draw[-] (atmos2) -- (aircraftP2);
-        \draw[-] (aircraft) -- (aircraftP1);
-        \draw[-] (aircraft) -- (aircraftP2);
-        \draw[-] (wing) -- (wingP1);
-        \draw[-] (engine) -- (engineP1);
-        \draw[-] (wing) -- (wingP2);
-        \draw[-] (engine) -- (engineP2);
+        \draw[->] (atmos1) -- (wingP1);
+        \draw[->] (atmos1) -- (aircraftP1);
+        \draw[->] (atmos2) -- (wingP2);
+        \draw[->] (atmos2) -- (aircraftP2);
+        \draw[->] (aircraft) -- (aircraftP1);
+        \draw[->] (aircraft) -- (aircraftP2);
+        \draw[->] (wing) -- (wingP1);
+        \draw[->] (engine) -- (engineP1);
+        \draw[->] (wing) -- (wingP2);
+        \draw[->] (engine) -- (engineP2);
         \node[draw,rectangle,fit={(aircraftP2) (atmos2) (engineP2) (wingP2)}] {};
         \node[draw,rectangle,fit={(aircraftP1) (atmos1) (engineP1) (wingP1)}] {};
     \end{forest}
@@ -202,13 +208,13 @@ augmentation of the model tree defined in Figure~\ref{forest:submodels}.
     segments. Models that include sizing variables are
     bolded while models that include performance variables are italicized.
     There are models that contain both kinds of variables.}
-    \label{f:missiontree}
+    \label{f:missiongraph}
 \end{figure}
 
-Note that I have added a large number of modules to the graph in
-Figure~\ref{forest:submodels}. The performance modules include variables
-that have by vectorized by the number of flight segments, $N_{segments}$, many of
-which have been previously defined. Note that I have created a performance model for all subcomponents other than the
+The performance models are enclosed in a rectangle, and they are
+vectorized by the number of flight segments, $N_{segments}$. Each
+one of the performance models contain variables that change between flight segments.
+Note that I have created a performance model for all subcomponents other than the
 fuselage. This is because the only performance variable of the fuselage is its drag
 coefficient, which is assumed to not change between flight segments, making it static. I
 have also added a \textbf{Mission} model, which links flight segments together,
@@ -221,7 +227,7 @@ the performance-static model hierarchy we have identified,
 we have to determine which variables
 belong in which level of the tree. Table~\ref{tab:missionvars} details the full
 decomposition of the model into its submodels in the format defined
-by Figure~\ref{f:componenttree}. This is as simple as identifying which variables
+by Figure~\ref{f:missiongraph}. This is as simple as identifying which variables
 we do not expect to change during flight segments, and which ones we do.
 
 \begin{center}
@@ -233,35 +239,50 @@ variable and constraint hierarchy.}
 
 Then, using the variable structure in Table~\ref{tab:missionvars}, we can place the
 constraints in the appropriate locations. Each constraint should be placed
-in the model which has the variable that is highest in the level of hierarchy. For example,
-the constraint for thrust power
+in the model that contains the variable in the constraint that is highest in the level of hierarchy. For example,
+we can consider the constraint for thrust power in Equation~\ref{e:thrustConstr}.
 
 \begin{equation}
+    \label{e:thrustConstr}
 T \times V \leq \eta_{prop} P_{shaft}
 \end{equation}
 
+We expect that thrust ($T$) and shaft power ($P_{shaft}$) occur
+in \textit{Engine Performance}. Since our model has no model for propeller efficiency ($\eta_{prop}$), we treat it
+as a static variable in \textbf{Engine}. And velocity ($V$) is a variable in \textbf{\textit{Aircraft {Performance}}}.
+As a result, the constraint for thrust power would logically reside in the \textbf{\textit{Aircraft {Performance}}}
+model, the highest level in the hierarchy as shown in Figure~\ref{f:thrustConstr}. Since this model is vectorized,
+the constraint would be vectorized by the number of flight segments we create.
+
 \begin{figure}[!h]\centering\small\sffamily
 \begin{forest}
-        [\textit{\textbf{Mission}}
-            [\textit{Atmosphere}]
-            [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},circle,draw
-                [\textbf{Aircraft}
-                    [\textbf{Wing}]
-                    [\textbf{Fuselage}]
-                    [\textbf{Engine},circle,draw]
+        [\textit{\textbf{Mission}},name=mission
+            [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=aircraftP
+                [\textbf{Aircraft},name=aircraft
+                    [\textbf{Wing},name=wing]
+                    [\textbf{Fuselage},name=fuse]
+                    [\textbf{Engine},name=engine]
                 ]
-                [\textit{\shortstack{Wing\\Perf}}]
-                [\textit{\shortstack{Engine\\Perf.}},circle,draw]
+                [\textit{\shortstack{Wing\\Perf}},name=wingP]
+                [\textit{\shortstack{Engine\\Perf.}},name=engineP
+                            [\textit{Atmosphere},name=atmos]]
             ]
         ]
+        \draw[->] (atmos) -- (wingP);
+        \draw[->] (atmos) -- (aircraftP);
+        \draw[->] (aircraft) -- (aircraftP);
+        \draw[->] (aircraft) -- (mission);
+        \draw[->] (wing) -- (wingP);
+        \draw[->] (engine) -- (engineP);
+        \node[draw,rectangle,fit={(engineP)}] {};
+        \node[draw,rectangle,fit={(aircraftP)}] {};
+        \node[draw,rectangle,fit={(engine)}] {};
 \end{forest}
-   \caption{Variable and constraint hierarchy of the presented aircraft model. Models that include sizing variables are
-bolded while models that include performance variables are italicized.
-There are models that contain both kinds of variables.}
-\label{f:componenttree}
+   \caption{The models that contain the variables in Equation~\ref{e:thrustConstr} are enclosed in rectangles.
+   Constraint logically resides in \textbf{\textit{Aircraft Perf.}}.
+   Vectorized performance models have been removed for clarity.}
+\label{f:thrustConstr}
 \end{figure}
-
-
 
 \subsection{Characterizing the environment: atmospheric model}
 
