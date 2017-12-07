@@ -1,9 +1,10 @@
 \chapter{Engineering inequalities and intuition, from equalities}
 \label{ch2:inequalities}
 
-This section will demonstrate how inequalities
-
-I will derive a simple aircraft problem that will serve as
+This section will demonstrate how the form of the \gls{GP} (monomial
+equalities and posynomial inequalities) helps engineers gain intuition
+about the structure of a problem and the way that each variable is pressured
+by a given objective function. I will derive a simple aircraft problem that will serve as
 a demonstration of the intuitive structure of geometric programs, and show
 how the feasibility space of the design evolves as we introduce new constraints.
 
@@ -78,7 +79,10 @@ different than one
 that has been designed for total weight or payload-fuel consumption, but all of
 these different objective will put a downward pressure on drag and weight.
 As such, this model will be able to take in a number of objective functions
-and be properly constrained and bounded.
+and be properly constrained and bounded. According to Raymer, an important
+principle of aircraft design is 'that there is no such thing as a free lunch!'
+~\cite[pg.26]{raymer}. An improvement in any of the other objective functions
+will result in reduced performance with respect to others.
 
 \subsection{Functional description: constraining the problem}
 
@@ -100,18 +104,22 @@ What does an aircraft need to be able to do to deliver payload of a distance?
     subjected to.
 \end{itemize}
 
-Note that these are in now way presented in order of importance, which is part of
-the beauty of \gls{GP}. In the basic example, I will choose not to model engines,
+Note that these are in now way presented in order of importance, which is reflective
+of the non-hierarchical nature of \gls{GP}s. In the basic example, I will choose not to model engines,
 and leave this as an exercise
 to complete in Section~\ref{s:engine} to improve the model.
 
-\subsection{Beginning to model: weight and lift}
-
+\section{GP Modeling}
+%TODO: come up with a better title
 Oftentimes, GP model creation starts haphazardly, with the designer having a
 vague idea about the kind of physics that governs a problem, and some basic
-set of assumptions about the configuration. In this initial section, we will
+set of assumptions about the configuration. In this section, we will
 generate variables and constraints with abandon, and think about how to make
-sure each variable is adequately constrained later.
+sure each variable is adequately constrained later. Each subsection is intended
+to introduce the reader to an important aspect of \gls{GP} modeling,
+accompanied by examples in implementation.
+
+\subsection{Free and fixed variables: modeling weight and lift}
 
 For this particular design problem, we start by modeling
 weight and lift, since the fundamental function of the aircraft is to stay aloft.
@@ -155,7 +163,7 @@ At this point, we have introduced a large set of variables, some of which are in
 parameters, and the others free variables. This decision is often the first decision
 that and can shape the whole model development process.
 
-The decision of whether to keep variables fixed or variable can be determined by many
+The decision of whether to keep variables free or fixed can be determined by many
 factors. In this case, we set the lift coefficient and takeoff speed to be constants since
 (1) we would need
 more detailed modeling to determine their values. Payload weight is also set
@@ -195,13 +203,14 @@ to be constant. The behavior of these variables with altitude
 will be modeled in more detail in Section~\ref{s:mission} when
 I model the flight profile of the aircraft.
 
-\subsection{Adding additional performance metrics}
+\subsection{Alternate objective functions: adding performance metrics}
 
 As multi-objective designers, we may also be interested in knowing about
 additional performance metrics that can serve as part of objective functions. A
 few that are particularly relevant to aircraft will be introduced here.
 
-The time of flight of the aircraft, which is a useful metric to calculate cost, is simply the range over velocity:
+The time of flight of the aircraft, which is a useful metric to calculate cost,
+is simply the range over velocity:
 
 \begin{equation}
     T_{flight} \geq \frac{\mathrm{Range}}{V}
@@ -233,10 +242,10 @@ The new variables we have introduced are detailed in Table~\ref{tab:vars_perfMet
     \label{tab:vars_perfMetrics}
 \end{table} \end{footnotesize}
 
-\subsection{More physics: thrust and drag model}
+\subsection{More physics for boundedness: thrust and drag model}
 
 If we attempt to run our current model, we would find that it is unbounded in many variables.
-The results are as follows:
+The results are shown in Table~\ref{tab:WandL_unbounded}.
 
 \begin{footnotesize}
 \begin{table}
@@ -254,14 +263,16 @@ The results are as follows:
     \end{tabular}
     \label{tab:WandL_unbounded}
     \caption{Unbounded variables in the weight and lift model. More modeling, or direct
-    substitutions are required to
-    sufficiently bound these variables.}
+    substitutions are required.}
 \end{table} \end{footnotesize}
 
 This is not surprising at all, since none of the defined variables lower bound $W_f$,
-the objective function.
+the objective function. Without the pressure from the objective, any variables that
+are not both upper- and lower- bounded will tend to run away. This is indicative usually
+that more modeling or direct substitutions are required to sufficiently bound the variables.
 
-For initial modeling purposes, I assume a constant brake
+In this case, we lack a propulsion model which would properly bound fuel weight, velocity,
+and time of flight. For initial modeling purposes, I assume a naive constant brake
 specific fuel consumption (BSFC) for the 'engine' of the aircraft, which is assumed
 to provide as much thrust as needed. Since $T \geq D$:
 
@@ -269,7 +280,8 @@ to provide as much thrust as needed. Since $T \geq D$:
     W_f \geq BSFC \times T_{flight} \times D
 \end{equation}
 
-the fuel weight required is the product of the BSFC, time of flight, and the total drag on the aircraft.
+the fuel weight required is the product of the BSFC, time of flight, and the
+total drag on the aircraft.
 The drag of the aircraft is the product of dynamic pressure ($\frac{1}{2} \rho V^2$),
 the planform area $S$, and the coefficient of drag of the aircraft:
 
@@ -323,18 +335,22 @@ The Reynolds number of the aircraft wing is approximated
 \label{e:re}
 \end{equation}
 
-and used to find the friction drag coefficient of wing. We approximate the $C_f$ by assuming a turbulent Blasius flow over a flat plate as below:
+and used to find the friction drag coefficient of wing. We approximate the $C_f$ by assuming a
+turbulent Blasius flow over a flat plate as below:
 
 \begin{equation}
     C_f \geq \frac{0.074} {Re^{0.2}}
 \end{equation}
 
-The induced drag of the wing is calculated with a span efficiency factor e, and is a function of the $C_L$ and aspect ratio $AR$ of the wing.
+The induced drag of the wing is calculated with a span efficiency factor e, and is a
+function of the $C_L$ and aspect ratio $AR$ of the wing.
 
 \begin{equation}
     C_{D_{induced}} = \frac{C_L^2}{\pi \AR e}
 \label{e:cdinduced}
 \end{equation}
+
+The new variables are detailed in Table~\ref{tab:vars_TandD}.
 
 \begin{footnotesize}
 \begin{table}
@@ -361,20 +377,23 @@ The induced drag of the wing is calculated with a span efficiency factor e, and 
     \label{tab:vars_TandD}
 \end{table} \end{footnotesize}
 
-\begin{python}
-        # Thrust and drag model
-        C_D_fuse = CDA0 / S
-        C_D_wpar = k * C_f * S_wetratio
-        C_D_ind  = C_L ** 2 / (np.pi * A * e)
-        constraints += [W_f >= BSFC * T_flight * D,
-                    D >= 0.5 * rho * S * C_D * V ** 2,
-                    C_D >= C_D_fuse + C_D_wpar + C_D_ind,
-                    V_f_fuse <= 10*units('m')*CDA0,
-                    Re <= (rho / mu) * V * (S / A) ** 0.5,
-                    C_f >= 0.074 / Re ** 0.2]
-\end{python}
+%\begin{python}
+%        # Thrust and drag model
+%        C_D_fuse = CDA0 / S
+%        C_D_wpar = k * C_f * S_wetratio
+%        C_D_ind  = C_L ** 2 / (np.pi * A * e)
+%        constraints += [W_f >= BSFC * T_flight * D,
+%                    D >= 0.5 * rho * S * C_D * V ** 2,
+%                    C_D >= C_D_fuse + C_D_wpar + C_D_ind,
+%                    V_f_fuse <= 10*units('m')*CDA0,
+%                    Re <= (rho / mu) * V * (S / A) ** 0.5,
+%                    C_f >= 0.074 / Re ** 0.2]
+%\end{python}
 
-\subsection{Boundedness as a GP}
+As shown in Table~\ref{tab:WLTD_unbounded} attempting to run the model as is
+results in both the fuselage fuel
+volume $V_{f_{fuse}}$ and the wing weight $W_w$ still being lower-unbounded. Next,
+I will attempt to properly bound these to complete the SimPleAC model.
 
 \begin{footnotesize}
 \begin{table}
@@ -390,12 +409,7 @@ The induced drag of the wing is calculated with a span efficiency factor e, and 
 \label{tab:WLTD_unbounded}
 \end{table} \end{footnotesize}
 
-As shown in Table~\ref{tab:WLTD_unbounded} attempting to run the model as is
-results in both the fuselage fuel
-volume $V_{f_{fuse}}$ and the wing weight $W_w$ being lower-unbounded. Next,
-I will attempt to properly bound these to complete the SimPleAC model.
-
-\section{Limits of GP and Convexity} \label{s:GPLimits}
+\section{Limits of GP and Convexity, and SP modeling} \label{s:GPLimits}
 
 Even with the demonstrated strengths of \gls{GP}'s in solving certain classes of 
 problems, it is important to recognize that the mathematical framework has limits. 
@@ -406,7 +420,7 @@ that the problems loses convexity and all of the mathematical guarantees associa
 It takes engineering intuition to recognize where and when improved modeling is worth
 the loss of the mathematical guarantees.
 
-\subsection{Introducing fuel volume constraints to a GP aircraft model}
+\subsection{Signomial constraints: adding fuel volume constraints}
 
 In an attempt to lower bound $V_{f_{fuse}}$, we will
 be adding a fuel volume model to SimPleAC, where fuel can be stored in the wing or
@@ -449,7 +463,8 @@ In aerospace engineering, we like dimensionless quantities and planform areas,
 so we would like to express relation~\ref{e:vfwingpre} with respect to the planform area $S$
 aspect ratio \AR and thickness ratio $\tau$ only, without having to define $b$ and $c$ as new
 free variables.
-Using the additional relations $\AR = \frac{b^2}{S}$ and $S \propto b c$, we can express $V_{f_{wing}}$.
+Using the additional relations $\AR = \frac{b^2}{S}$ and $S \propto b c$, we can
+express $V_{f_{wing}}$.
 
 \begin{equation}
 	V_{f_{wing}} \propto \tau (\frac{\AR}{S})^{0.5} (\frac{S}{b})^2 \propto
@@ -461,6 +476,7 @@ Using the additional relations $\AR = \frac{b^2}{S}$ and $S \propto b c$, we can
 V_{f_{wing}}^2 \leq 9\times10^{-4} \frac{S \tau^2}{\AR}
 \end{equation}
 
+The new variables introduced to bound fuel volume are in Table~\ref{tab:vars_fuelmodel}.
 (In the final form of the Equation~\ref{e:vfwing} I picked $9\times10^{-4}$ as the coefficient in
 front of the relation by tuning it after I had developed
 the model, but any other coefficient would do.)
@@ -484,6 +500,39 @@ the model, but any other coefficient would do.)
     \label{tab:vars_fuelmodel}
 \end{table} \end{footnotesize}
 
+\subsection{What is the proper use case of the signomial equality?}
+
+In a segue, I will attempt to explain and motivate the use of signomial equalities,
+as described in \cite{sigeqpaper}, in \gls{SP} modeling.
+Signomial equalities must be used as a last resort. The signomial equality is the only place
+where the feasibility set of individual \gls{GP}'s within a \gls{SP} solve are not guaranteed
+to be subsets of the feasibility set of the \gls{SP}. This is because the signomial solution
+algorithm in GPkit flattens the original signomial equality constraint,
+a concave curve in log-space in n-dimensions,
+onto a line in log-space in n-dimensions(Method C in \ref{sigeqpaper}) that intersects the
+original constraint at the optimal point of the last \gls{GP} solve. This is undesirable although
+the final solution of the \gls{SP} with equalities
+is guaranteed to be in the feasibility region of the \gls{SP}. Furthermore, \gls{SP}s
+with signomial equalities have been demonstrated to require more \gls{GP} solves
+than \gls{SP}s without signomial equalities. However, there are a few arguments
+to be made in defense of signomial equalities.
+
+One good use case of the signomial equalities is in constraints in which the direction
+of pressure on free variables is not clear. This ensures the tightness of constraints
+that may otherwise have unbounded variables. A good example is in atmospheric models.
+Although the pressure on air density $\rho$ is almost certainly upward since it results in
+lower drag, the pressure on viscosity $\mu$ is not clear because of the complex relationship
+between Reynolds number and drag.
+
+The second reason is that we are not interested in the 'feasibility set' of the atmosphere,
+since this has no intuition behind it: at every altitude, the atmospheric quantities
+can only be be represented by single quantities. Additionally, the computational penalty of
+implementing signomial equalities in atmospheric models is low, since the monomial approximation
+to the atmospheric data is not far from the monomial approximations made to the signomial equality.
+In fact, when we add an atmospheric model to SimPleAC in
+Section~\ref{s:mission}, we will be implementing signomial equalities to represent both air density
+$\rho$ and viscosity $\mu$.
+
 \subsection{Completing the model: wing structural model}
 
 Only one unbounded variable remains, which is wing weight $W_w$. We can think
@@ -501,7 +550,7 @@ I have borrowed the wing weight model from \cite{gp_ac_design}, and adapted it t
 structural weight coefficient $W_{w_{coeff1}}$. Note that this equation captures the
 major trends in wing structural sizing. We can see this through looking at the partial
 derivatives of the wing weight with respect to the different free variables.
-The weight grows with the cube of the span ($AR^{1.5}$, derived
+The weight grows with the cube of the span ($AR^{1.5} = \frac{b^3}{S_{constant}^{1.5}}$, derived
 from the integration of a quadratically increasing bending moment),
 linearly with the maximum structural factor $N_{ult}$, and inversely with the
 surface area \footnotemark. (Using similar partial-derivative based analyses, it
@@ -520,7 +569,8 @@ Equation~\ref{e:wwstrc} takes into account the root
 bending moment relief due to presence of fuel and weight in the wings by performing a
 geometric average of the total weight, and the weight excluding wing fuel and wing weight.
 
-The total wing weight is now lower-bounded by its component weights.
+The total wing weight is now lower-bounded by its component weights, and we have introduced
+the final set of variables in Table~\ref{tab:vars_wingstrcmodel}.
 
 \begin{equation} W_w \geq W_{w_{surf}} + W_{w_{strc}} \label{e:ww} \end{equation}
 
@@ -543,33 +593,28 @@ The total wing weight is now lower-bounded by its component weights.
     \label{tab:vars_wingstrcmodel}
 \end{table} \end{footnotesize}
 
-\subsection{What is the proper use case of the signomial equality?} 
+\section{Results of SimPleAC}
 
-Signomial equalities must be used as a last resort. The signomial equality is the only place 
-where the feasibility set of individual \gls{GP}'s within a \gls{SP} solve are not guaranteed 
-to be subsets of the feasibility set of the \gls{SP}. This is because the signomial solution
-algorithm in GPkit flattens the original signomial equality constraint,
-a concave curve in log-space in n-dimensions,
-onto a line in log-space in n-dimensions(Method C in \ref{sigeqpaper}) that intersects the
-original constraint at the optimal point of the last \gls{GP} solve. This is undesirable although
-the solutions to the \gls{GP} approximations of the \gls{SP} with equalities
-is guaranteed to be in the feasibility region of the \gls{SP}. Furthermore, \gls{SP}s
-with signomial equalities have been demonstrated to require more \gls{GP} solves
-than \gls{SP}s without signomial equalities. However, there are a few arguments
-to be made in defense of signomial equalities.
+The benefits of convex optimization and \gls{GP} in both solution
+quality (in terms of mathematical guarantees) and the low-cost
+computation of sensitivities has been detailed in (\cite{gp_ac_design},\cite{sp_ac_design}),
+so I will not dwell on these here. However, the values of the free variables,
+and the sensitivities of the parameters are presented.
 
-One good use case of the signomial equalities is in constraints in which the direction
-of pressure on free variables is not clear. This ensures the tightness of constraints
-that may otherwise have unbounded variables. A good example is in atmospheric models.
-Although the pressure on air density $\rho$ is almost certainly upward since it results in
-lower drag, the pressure on viscosity $\mu$ is not clear because of the complex relationship
-between Reynolds number and drag.
+\begin{center}
+\captionof{table}{Values of the free variables in the SimPleAC model.}
+\input{tables/SimPleAC_results.tex}
+    \label{tab:SimPleAC_results}
+\end{center}
 
-The second reason is that we are not interested in the 'feasibility set' of the atmosphere,
-since this has no intuition behind it: at every altitude, the atmospheric quantities
-can only be be represented by single quantities. Additionally, the computational penalty of
-implementing signomial equalities in atmospheric models is low, since the monomial approximation
-to the atmospheric data is not far from the monomial approximations made to the signomial equality.
-In fact, when we add an atmospheric model to SimPleAC in
-Section~\ref{s:mission}, we will be implementing signomial equalities to represent both air density
-$\rho$ and viscosity $\mu$.
+\begin{center}
+\captionof{table}{Sensitivities of parameters in the SimPleAC model.}
+\input{tables/SimPleAC_sens.tex}
+    \label{tab:SimPleAC_sens}
+\end{center}
+
+\section{Feasibility set of SimPleAC}
+
+
+
+
