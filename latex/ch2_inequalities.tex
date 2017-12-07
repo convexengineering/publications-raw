@@ -111,7 +111,7 @@ to complete in Section~\ref{s:engine} to improve the model.
 
 \section{GP Modeling}
 %TODO: come up with a better title
-Oftentimes, GP model creation starts haphazardly, with the designer having a
+Oftentimes, \gls{GP} model creation starts haphazardly, with the designer having a
 vague idea about the kind of physics that governs a problem, and some basic
 set of assumptions about the configuration. In this section, we will
 generate variables and constraints with abandon, and think about how to make
@@ -414,13 +414,13 @@ I will attempt to properly bound these to complete the SimPleAC model.
 Even with the demonstrated strengths of \gls{GP}'s in solving certain classes of 
 problems, it is important to recognize that the mathematical framework has limits. 
 Certain constraints can only be expressed as signomial constraints, which are 
-non-log-convex extensions of posynomial constraints. Even the addition of a single 
+difference-of-posynomial constraints. Even the addition of a single
 signomial constraint turns the problem from a \gls{GP} to a \gls{SP}, which means
 that the problems loses convexity and all of the mathematical guarantees associated with it. 
 It takes engineering intuition to recognize where and when improved modeling is worth
 the loss of the mathematical guarantees.
 
-\subsection{Signomial constraints: adding fuel volume constraints}
+\subsection{Signomial constraints: adding fuel volume model}
 
 In an attempt to lower bound $V_{f_{fuse}}$, we will
 be adding a fuel volume model to SimPleAC, where fuel can be stored in the wing or
@@ -520,7 +520,7 @@ to be made in defense of signomial equalities.
 One good use case of the signomial equalities is in constraints in which the direction
 of pressure on free variables is not clear. This ensures the tightness of constraints
 that may otherwise have unbounded variables. A good example is in atmospheric models.
-Although the pressure on air density $\rho$ is almost certainly upward since it results in
+Although the pressure on air density $\rho$ is almost certainly downward since it results in
 lower drag, the pressure on viscosity $\mu$ is not clear because of the complex relationship
 between Reynolds number and drag.
 
@@ -553,8 +553,8 @@ derivatives of the wing weight with respect to the different free variables.
 The weight grows with the cube of the span ($AR^{1.5} = \frac{b^3}{S_{constant}^{1.5}}$, derived
 from the integration of a quadratically increasing bending moment),
 linearly with the maximum structural factor $N_{ult}$, and inversely with the
-surface area \footnotemark. (Using similar partial-derivative based analyses, it
-is often easy to make first-order models for components.)
+surface area \footnotemark. Using similar partial-derivative based analyses, it
+is often easy to make first-order models for components.
 
 \footnotetext{This can be difficult to see, but since $S \propto b_{constant} c$ and loading is constant, as area
 grows, the thickness of the wing grows as well at a constant $\tau$. So the weight increases linearly with S,
@@ -599,7 +599,7 @@ The benefits of convex optimization and \gls{GP} in both solution
 quality (in terms of mathematical guarantees) and the low-cost
 computation of sensitivities has been detailed in (\cite{gp_ac_design},\cite{sp_ac_design}),
 so I will not dwell on these here. However, the values of the free variables,
-and the sensitivities of the parameters are presented.
+and the sensitivities of the parameters are presented for the reader.
 
 \begin{center}
 \captionof{table}{Values of the free variables in the SimPleAC model.}
