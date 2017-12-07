@@ -11,8 +11,7 @@ having to restructure the optimization formulation.
 \label{s:engine}
 
 The SimPleAC currently has an engine that weighs nothing and magically supplies
-unlimited power. This is obviously unphysical, and since one of the variables
-with the highest sensitivity is \BSFC, requires refinement.
+unlimited power. This is obviously unphysical, and requires refinement.
 
 \subsection{Creating an engine submodel}
 
@@ -54,7 +53,7 @@ At the most basic level, the engine provides shaft power, consumes fuel,
 and has weight. The model is missing both the shaft power and weight description
 of the engine. If we abstract away the propeller (the relation between shaft
 power and thrust power) through a propeller efficiency,
-we can perhaps related maximum power to weight.
+we can perhaps relate maximum power to weight.
 
 \subsection{Data-based modeling: engine power vs. weight}
 \label{s:datafit}
@@ -71,7 +70,7 @@ will try to highlight the best practices when making data-based models.
 To be able to fit the engine power vs. weight data, we take several important steps.
 \begin{itemize}
     \item \textbf{Comb the data.} Since we are essentially projecting
-    data with potentially high standard deviation into a single line,
+    data with potentially high standard deviation onto a single line,
     it is important to fit the ranges of data we care about.
     \item \textbf{Normalize the data.} Normalizing the data
 	by some known quantity is preferable, since we would not want our fit to be dependent on the
@@ -120,7 +119,11 @@ error of the fit on the given data. As such, we will proceed with the 2-term pos
 \subsubsection{Other constraints in engine model}
 
 I constrain the cruise shaft power to be 20\% of the maximum shaft power of the engine,
-to account for engine surge power demands, and the
+to account for engine surge power demands.
+
+\begin{equation}
+    P_shaft \leq \frac{1}{5} P_{shaft,max}
+\end{equation}
 
 \subsection{Converting all subsystems into submodels}
 \label{s:submodels}
@@ -144,40 +147,111 @@ required for SimPleAC to fly one flight segment.
 
 Tree structures such as in Figure~\ref{forest:submodels} are informative, since
 it provides an intuitive representation of the way constraints and variables
-are passed between GPkit models. The way the \gls{GP} is solved at the end has no
-hierarchy.
+are passed between GPkit models. The way the \gls{SP} is solved at the end has no
+hierarchy, but as we will see in Section~\ref{s:mission} a hierarchical representation
+will facilitate the vectorization of constraints required for mission design.
 
 %TODO: develop on the idea of variable and constraint hierarchy
 
-\section{Designing missions: Converting the SimPleAC to performance modeling form}
+\section{Converting the SimPleAC to performance modeling form}
 \label{s:mission}
 
 The SimPleAC that I have defined so far works well to demonstrate the
 capabilities of \gls{SP} in helping explore tradeoffs in engineering design.
 However, often in the design process, we will want to test the performance of a
 design in different conditions. This requires the vectorization of
-constraints that relate to the performance of the design.
-
-To design the mission for SimPleAC, we have to have a better understanding
-of the environment in which the aircraft operates. So far, we have assumed that
-the aircraft flies at a constant altitude (sea level) for a single mission segment,
-and is subject to the same air density and viscosity. What we'd like to do instead
+constraints that relate to the performance of the design. What we'd like to do
 is to have a single aircraft optimize both its static sizing variables (having
-to do with the airframe), and its flight performance. This requires a major
+to do with the airframe), and its flight performance simultaneously. This requires a major
 augmentation of the model tree defined in Figure~\ref{forest:submodels}.
+
+\begin{figure}[!h]
+    \centering\small\sffamily
+    \begin{forest}
+    [\textit{\textbf{Mission}},name=mission
+    [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=aircraftP2
+    [\textit{\shortstack{Wing\\Perf}},name=wingP2]
+    [\textit{\shortstack{Engine\\Perf.}},name=engineP2
+    [\textit{Atmosphere},name=atmos2]]]
+    [,name=phantom
+    [\textbf{Aircraft},name=aircraft
+    [\textbf{Wing},name=wing]
+    [\textbf{Fuselage},name=fuse]
+    [\textbf{Engine},name=engine]
+    ]]
+    [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=aircraftP1
+    [\textit{\shortstack{Wing\\Perf}},name=wingP1]
+    [\textit{\shortstack{Engine\\Perf.}},name=engineP1
+    [\textit{Atmosphere},name=atmos1]]
+    ]
+    ]
+        \draw[-] (atmos1) -- (wingP1);
+        \draw[-] (atmos1) -- (aircraftP1);
+        \draw[-] (atmos2) -- (wingP2);
+        \draw[-] (atmos2) -- (aircraftP2);
+        \draw[-] (aircraft) -- (aircraftP1);
+        \draw[-] (aircraft) -- (aircraftP2);
+        \draw[-] (wing) -- (wingP1);
+        \draw[-] (engine) -- (engineP1);
+        \draw[-] (wing) -- (wingP2);
+        \draw[-] (engine) -- (engineP2);
+        \node[draw,rectangle,fit={(aircraftP2) (atmos2) (engineP2) (wingP2)}] {};
+        \node[draw,rectangle,fit={(aircraftP1) (atmos1) (engineP1) (wingP1)}] {};
+    \end{forest}
+    \caption{Variable and constraint hierarchy of the presented aircraft model, for two flight
+    segments. Models that include sizing variables are
+    bolded while models that include performance variables are italicized.
+    There are models that contain both kinds of variables.}
+    \label{f:missiontree}
+\end{figure}
+
+Note that I have added a large number of modules to the graph in
+Figure~\ref{forest:submodels}. The performance modules include variables
+that have by vectorized by the number of flight segments, $N_{segments}$, many of
+which have been previously defined. Note that I have created a performance model for all subcomponents other than the
+fuselage. This is because the only performance variable of the fuselage is its drag
+coefficient, which is assumed to not change between flight segments, making it static. I
+have also added a \textbf{Mission} model, which links flight segments together,
+and an \textbf{Atmosphere} model, which describes the conditions in which the aircraft
+operates.
+
+The static aircraft model, and the atmospheric state are passed as an argument to multiple
+performance models within this framework. To transform our previously static model to
+the performance-static model hierarchy we have identified,
+we have to determine which variables
+belong in which level of the tree. Table~\ref{tab:missionvars} details the full
+decomposition of the model into its submodels in the format defined
+by Figure~\ref{f:componenttree}. This is as simple as identifying which variables
+we do not expect to change during flight segments, and which ones we do.
+
+\begin{center}
+\captionof{table}{Variables of SimPleAC in performance modeling, detailed in the
+variable and constraint hierarchy.}
+\input{tables/SimPleAC_missionvars.tex}
+    \label{tab:missionvars}
+\end{center}
+
+Then, using the variable structure in Table~\ref{tab:missionvars}, we can place the
+constraints in the appropriate locations. Each constraint should be placed
+in the model which has the variable that is highest in the level of hierarchy. For example,
+the constraint for thrust power
+
+\begin{equation}
+T \times V \leq \eta_{prop} P_{shaft}
+\end{equation}
 
 \begin{figure}[!h]\centering\small\sffamily
 \begin{forest}
         [\textit{\textbf{Mission}}
             [\textit{Atmosphere}]
-            [\textit{\textbf{\shortstack{Aircraft\\Perf.}}}
+            [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},circle,draw
                 [\textbf{Aircraft}
                     [\textbf{Wing}]
                     [\textbf{Fuselage}]
-                    [\textbf{Engine}]
+                    [\textbf{Engine},circle,draw]
                 ]
                 [\textit{\shortstack{Wing\\Perf}}]
-                [\textit{\shortstack{Engine\\Perf.}}]
+                [\textit{\shortstack{Engine\\Perf.}},circle,draw]
             ]
         ]
 \end{forest}
@@ -187,23 +261,38 @@ There are models that contain both kinds of variables.}
 \label{f:componenttree}
 \end{figure}
 
-Note that I have created a performance model for all subcomponents other than the
-fuselage. This is because the only performance variable of the fuselage is its drag
-coefficient, which is assumed to not change between flight segments, making it static.
 
-The aircraft model that is passed as an argument to the separate flight segments is the
-same static aircraft model. %TODO: improve this explanation.
 
-Within the model hierarchy we have identified, we have to determine which variables
-belong in which level of the tree. Table~\ref{tab:missionvars} details the full
-decomposition of the model into its submodels in the format defined
-by Figure~\ref{f:componenttree}.
+\subsection{Characterizing the environment: atmospheric model}
 
-\begin{center}
-\captionof{table}{Variables of SimPleAC in performance modeling, detailed in the
-variable and constraint hierarchy.}
-\input{tables/SimPleAC_missionvars.tex}
-    \label{tab:missionvars}
-\end{center}
+To design the mission for SimPleAC, we have to have a better understanding
+of the environment in which the aircraft operates. So far, we have assumed that
+the aircraft flies at a constant altitude (sea level) for a single mission segment,
+and is subject to the same air density and viscosity.
+
+\subsection{Engine lapse rate model}
+
+\subsection{Making use of sensitivities: engine BSFC model}
+
+\subsection{Design exploration through mission design}
+
+Mission design often exploits the weaknesses of existing models to arrive at solutions
+that do not seem physical. In this
+specific modeling example, it shows the weaknesses of the engine model.
+
+
+The first weakness is the fact that the engine can supply the same amount of power
+regardless of altitude. \gls{GP} can help us observe this behavior by allowing engineers to
+evaluate a number of optimal designs quickly, and enabling the observation of trends.
+For naturally aspirated piston engines, we would expect the maximum power available to
+drop with altitude; adding such a lapse rate will improve the fidelity of the engine.
+
+THe second is the lack of
+
+\section{Multimission design}
+
+Having created a mission profile for the SimPleAC, it only takes one extra level of
+hierarchy to do multimission design. Now we vectorize the performance
+and atmosphere models that are flown by the same aircraft.
 
 
