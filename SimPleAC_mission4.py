@@ -175,7 +175,7 @@ class EngineP(Model):
             constraints += [P_shaft <= P_shaft_alt,
                         L == (0.937 * (state['h']/self.engine['h_{ref}'])**0.0922)**10,
                         SignomialEquality(1, L + P_shaft_alt / self.engine['P_{shaft,max}']),
-                        (BSFC/self.engine['BSFC_{ref}'])**0.1 >= 0.992*(P_shaft/P_shaft_alt)**-0.0303,
+                        (BSFC/self.engine['BSFC_{ref}'])**(2.29) >= 6.57*(L)**6.60 + 1.14 * (L) ** 0.106,
                         BSFC >= 0.32*units('lbf/(hp*hr)')]
         return constraints
 

@@ -21,12 +21,15 @@ BSFCmin = np.amin(BSFC)
 L = 1- P/Pmax
 K=2
 Type = 'SMA'
-cstrt, rms_error = fit(log(L[0:-1]),log(BSFC[0:-1]/BSFCmin),K,Type)
+#cstrt, rms_error = fit(log(L[0:-1]),log(BSFC[0:-1]/BSFCmin),K,Type)
+cstrt, rms_error = fit(log(P[0:-1]/Pmax),log(BSFC[0:-1]/BSFCmin),K,Type)
 
 # Plotting
-Lnew = np.linspace(0.1,0.9,100)
+Lnew = np.linspace(0.1,1,100)
 newPoints = (6.57*(Lnew)**6.60 + 1.14 * (Lnew) ** 0.106)**(1/2.29)
+#newPoints = (0.992*(Lnew)**-0.0303)**10
 plt.plot(L,BSFC/BSFCmin,label='data')
+#plt.plot(P/Pmax,BSFC/BSFCmin,label='data')
 plt.plot(Lnew,newPoints,label='fit')
 plt.xlabel('$1 - P_{shaft}/P_{shaft,alt}$')
 plt.ylabel('$BSFC/BSFC_{min}$')

@@ -167,9 +167,9 @@ class EngineP(Model):
         Thrust      = Variable("T","N","propeller thrust")
 
         constraints = []
-
-        constraints += [P_shaft <= P_shaft_alt,
-            Tight([1 >= (0.937 * (state['h']/self.engine['h_{ref}'])**0.0922)**10 + P_shaft_alt / self.engine['P_{shaft,max}']])]
+        with SignomialsEnabled():
+            constraints += [P_shaft <= P_shaft_alt,
+            SignomialEquality(1,(0.937 * (state['h']/self.engine['h_{ref}'])**0.0922)**10 + P_shaft_alt / self.engine['P_{shaft,max}'])]
 
         return constraints
 
