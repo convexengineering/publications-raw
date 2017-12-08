@@ -284,16 +284,109 @@ the constraint would be vectorized by the number of flight segments we create.
 \label{f:thrustConstr}
 \end{figure}
 
-\subsection{Characterizing the environment: atmospheric model}
+Now, we have used a framework to modularize our constraints, which makes it
+amenable to vectorization and mission design.
 
-To design the mission for SimPleAC, we have to have a better understanding
+\subsection{Linking performance models: flight segments}
+
+Although the variables in the performance models are vectorized, they can be constrained
+against each other. If each of the \textit{\textbf{Aircraft Performance}} models were operating
+independently of
+each other simulating different missions, then they would simply be merged in the bag of constraints
+of \textbf{\textit{Mission}}. However, we know that the models are related through since the aircraft
+burns fuel throughout the mission, changing its flight characteristics.
+
+The derivation of the \gls{GP}-compatible flight segment models has been detailed in ~\cite{gassolar}
+and used widely within the \gls{CEG} in aircraft design. It defines segment start, end and average weights,
+as well as altitut.
+
+I have added the monomial equality below to the formulation
+
+\begin{align}
+    h_{{avg}_0} &= \frac{1}{2}\Delta h_0 \\
+    h_{{avg}_i} &= \sqrt{h_{i} \times h_{i-1}}
+\end{align}
+
+to add an average altitude variable $h_{avg}$ in Section~\ref{s:atmos}. This adds
+conservatism to the density and drag (otherwise, the air density for a flight segment is calculated
+at the end of the segment, at which the aircraft is at its highest altitude).
+
+As with most \gls{GP} approximations, there are limitations to this model. To avoid non-positive
+altitude change values ($\Delta h$), we restrict the aircraft to climb during every segment, and
+don't model descents. Furthermore, we have binned the flight segments to equal range segments to
+avoid the potential lower-unboundedness of the lengths of certain segments.
+
+\subsection{Characterizing the environment: atmospheric model}
+\label{s:atmos}
+
+We have created a mission and flight segment model without having  we have to have a better understanding
 of the environment in which the aircraft operates. So far, we have assumed that
 the aircraft flies at a constant altitude (sea level) for a single mission segment,
-and is subject to the same air density and viscosity.
+and is subject to the same air density and viscosity. This is a big simplification
+that we can overcome through vectorization.
+
+I have borrowed Tony Tao's atmosphere fits, which are 2-term softmax-affine fits of the atmospheric
+quantities of interest ($\rho$ and $\mu$ in this thesis) with respect to altitude.
+The relations are valid between 0-10000m of altitude.
 
 \subsection{Engine lapse rate model}
+\label{s:lapse}
+
+I have described how we can perform data-based modeling in Section~\ref{s:datafit}, so I will
+not linger here. But much in the same way I created posynomial fits for the relationship between
+engine maximum power and weight, I have created a posynomial fit for the lapse rate of the engine.
+This models requires the insertion of another signomial equality into the model. Consider the
+posynomial inequality expression below:
+
+\begin{equation}
+    \label{e:lapse}
+    1 \geq L + \frac{P_{shaft,alt}}{P_{shaft,max}}
+\end{equation}
+
+Since the BSFC of a normally aspirated piston engine would be expected to improve
+as the $P_{shaft} \xrightarrow[]{} P_{shaft,alt}$, the maximum shaft
+power at altitude has downward pressure on it from the fuel burn objective. This means that the
+inequality doesn't adequately lower bound the $P_{shaft,alt}$. If we try to flip the inequality in
+Constraint~\ref{e:lapse}, then $P_{shaft,alt}$ is upper-unbounded, so with our current parametrization
+of the shaft power, we must use a signomial equality.
 
 \subsection{Making use of sensitivities: engine BSFC model}
+
+The \BSFC is one of the variables that the model is most sensitive to, and it has yet to be modeled. As
+stated in Section~\ref{s:lapse}, the \BSFC of a piston engine improves as the engine puts out more power.
+
+BSFC has downward pressure due to the objective function, and therefore must be lower-bounded. This makes
+it amenable to multiple-term posynomial fits.
+
+First, I attempted a monomial fit of the $\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$.
+The result is shown in Figure~\ref{f:P_BSFC}.
+
+\begin{center}
+\begin{figure}
+    \includegraphics[width=0.5\textwidth]{P_BSFC.png}
+    \caption{$\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ data fit. Note that the fit is
+    not able to capture the tail ends of the curve.}
+    \label{f:P_BSFC}
+\end{figure}
+\end{center}
+
+There is a significant deterioration in the quality of the fit as $\frac{P_{shaft}}{P_{shaft,alt}} \xrightarrow[]{} 1$,
+and increasing the number of posynomial terms in the fit does not alleviate this problem. It
+turns out that fitting with respect to lapse rate using the simple relation $1 = L + \frac{P_{shaft}}{P_{shaft,alt}}$
+resolves the issue. The fit with respect to lapse rate, which has been implemented in the model, is
+shown in Figure~\ref{f:lapse_BSFC.png}
+
+\begin{center}
+\begin{figure}
+    \includegraphics[width=0.5\textwidth]{P_BSFC.png}
+    \caption{Engine lapse \% $L$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ data fit. This fit has minimal
+    RMS error.}
+    \label{f:lapse_BSFC}
+\end{figure}
+\end{center}
+
+The improvement of the fit thanks to a simple variable transformation shows that
+parametrization can be important to the level of accuracy and fidelity of a model.
 
 \subsection{Design exploration through mission design}
 
