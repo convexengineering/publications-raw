@@ -3,6 +3,8 @@ import numpy as np
 from numpy import logspace, log, log10
 import matplotlib.pyplot as plt
 from gpfit.fit import fit
+from scipy.interpolate import spline
+
 
 
 # Maps BSFC to throttle level
@@ -16,8 +18,18 @@ BSFC = np.array(df['BSFC'][0:6]) #lb/(hp*hr)
 Pmax = np.amax(P)
 BSFCmin = np.amin(BSFC)
 
-K=1
+L = 1- P/Pmax
+K=2
 Type = 'SMA'
-cstrt, rms_error = fit(log(P/Pmax),log(BSFC/BSFCmin),K,Type)
+cstrt, rms_error = fit(log(L[0:-1]),log(BSFC[0:-1]/BSFCmin),K,Type)
 
-#newPoints = (0.992*(P/Pmax)**-0.0303)**10
+# Plotting
+Lnew = np.linspace(0.1,0.9,100)
+newPoints = (6.57*(Lnew)**6.60 + 1.14 * (Lnew) ** 0.106)**(1/2.29)
+plt.plot(L,BSFC/BSFCmin,label='data')
+plt.plot(Lnew,newPoints,label='fit')
+plt.xlabel('$1 - P_{shaft}/P_{shaft,alt}$')
+plt.ylabel('$BSFC/BSFC_{min}$')
+plt.legend(loc=2)
+plt.show()
+
