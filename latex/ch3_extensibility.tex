@@ -15,31 +15,31 @@ unlimited power. This is obviously unphysical, and requires refinement.
 
 \subsection{Creating an engine submodel}
 
-Before even thinking about modeling, we would like to leverage the object-oriented 
-GPkit models to put the variables describing the engine into a submodel (currently only 
+Before even thinking about modeling, we would like to leverage the object-oriented
+GPkit models to put the variables describing the engine into a submodel (currently only
 BSFC). We do this by creating a new class called \textbf{Engine} and creating a \textit{setup}
 method that returns the constraints within it.
 
 \begin{python}
-class Engine(Model):
+    class Engine(Model):
     def setup(self):
-        # Dimensional constants
-        BSFC      = Variable("BSFC", 400, "g/(kw*hr)", "brake specific fuel consumption")
-        constraints = []
-        return constraints    
+    # Dimensional constants
+    BSFC = Variable("BSFC", 400, "g/(kw*hr)", "brake specific fuel consumption")
+    constraints = []
+    return constraints
 \end{python}
 
 We allow the SimPleAC model to contain the variables and constraints of the engine
 as follows:
 
 \begin{python}
-class SimPleAC(Model):
+    class SimPleAC(Model):
     def setup(self):
-        self.engine = Engine()
-        self.components = [self.engine]
-        # Env. constants
-        ...
-        return constraints, self.components
+    self.engine = Engine()
+    self.components = [self.engine]
+    # Env. constants
+    ...
+    return constraints, self.components
 \end{python}
 
 This restructuring of the model yields the exact same overall \gls{GP} formulation
@@ -49,7 +49,7 @@ collaboratively and in a disciplined manner.
 If we think of an engine as an input-output system, we can determine how it
 would interact with the SimPleAC system, and create appropriately bounded
 sets of variables.
-At the most basic level, the engine provides shaft power, consumes fuel, 
+At the most basic level, the engine provides shaft power, consumes fuel,
 and has weight. The model is missing both the shaft power and weight description
 of the engine. If we abstract away the propeller (the relation between shaft
 power and thrust power) through a propeller efficiency,
@@ -58,14 +58,14 @@ we can perhaps relate maximum power to weight.
 \subsection{Data-based modeling: engine power vs. weight}
 \label{s:datafit}
 
-We can imagine that, for a specific kind of engine, there is a relation between the 
-maximum shaft power available and the mass of the engine, somewhat related to the 
-cube-square law, which describes the relation between the surface area and volume 
+We can imagine that, for a specific kind of engine, there is a relation between the
+maximum shaft power available and the mass of the engine, somewhat related to the
+cube-square law, which describes the relation between the surface area and volume
 of objects. And let's assume that our knowledge of the internal workings of engines
 is limited, but we have some knowledge of the technology available in the market
 and have data to support it. Using GPfit, we will try to fit the data to find
 \gls{GP} compatible relations between engine weight and maximum power. This section
-will try to highlight the best practices when making data-based models. 
+will try to highlight the best practices when making data-based models.
 
 To be able to fit the engine power vs. weight data, we take several important steps.
 \begin{itemize}
@@ -73,8 +73,8 @@ To be able to fit the engine power vs. weight data, we take several important st
     data with potentially high standard deviation onto a single line,
     it is important to fit the ranges of data we care about.
     \item \textbf{Normalize the data.} Normalizing the data
-	by some known quantity is preferable, since we would not want our fit to be dependent on the
-	units that we used while performing it. This also helps the fit integrate
+    by some known quantity is preferable, since we would not want our fit to be dependent on the
+    units that we used while performing it. This also helps the fit integrate
     seamlessly into GPkit, since dimensional fits would require units manipulation
     to avoid errors. The data can be normalized by any
     reference quantities (in this case using the maximum power and weight values
@@ -98,20 +98,20 @@ To be able to fit the engine power vs. weight data, we take several important st
 After having performed these intermediate steps on the engine data,
 the relation we obtain for the one-term approximation is as follows:
 \begin{equation}
-	(\frac{W_{eng}}{W_{eng_{max}}})^{0.100} = 0.988 (\frac{P_{shaft}}{P_{shaft,max}})^{0.117}
+    (\frac{W_{eng}}{W_{eng_{max}}})^{0.100} = 0.988 (\frac{P_{shaft}}{P_{shaft,max}})^{0.117}
 \end{equation}
 
-Note that the root mean square error of this fit is 0.414, but this has to do with 
+Note that the root mean square error of this fit is 0.414, but this has to do with
 the level of variation in the data. Since engine weight will have downward pressure
-on it from the objective, we can easily use a two-term posynomial approximation to 
-improve its error. 
+on it from the objective, we can easily use a two-term posynomial approximation to
+improve its error.
 
 \begin{equation}
-	(\frac{W_{eng}}{W_{eng_{max}}})^{0.801} \geq 0.0330 (\frac{P_{shaft}}{P_{shaft,max}})^{0.167}
-												+1.59 (\frac{P_{shaft}}{P_{shaft,max}})^{1.36}
+    (\frac{W_{eng}}{W_{eng_{max}}})^{0.801} \geq 0.0330 (\frac{P_{shaft}}{P_{shaft,max}})^{0.167}
+    +1.59 (\frac{P_{shaft}}{P_{shaft,max}})^{1.36}
 \end{equation}
 
-This relation has an r.m.s. error of 0.346, which is a significant improvement. 
+This relation has an r.m.s. error of 0.346, which is a significant improvement.
 
 It turns out that with a SMA approximation, more terms do not improve the r.m.s.
 error of the fit on the given data. As such, we will proceed with the 2-term posynomial fit.
@@ -133,16 +133,18 @@ SimPleAC as well, with very little additional work. This creates the variable an
 hierarchy as presented in Figure~\ref{forest:submodels}, which define all of the constraints
 required for SimPleAC to fly one flight segment.
 
-\begin{figure}[!h]\centering\small\sffamily
-\begin{forest} sn edges
-    [\textbf{Aircraft}
+\begin{figure}[!h]
+    \centering\small\sffamily
+    \begin{forest}
+        sn edges
+        [\textbf{Aircraft}
         [\textbf{Wing}]
         [\textbf{Fuselage}]
         [\textbf{Engine}]
-    ]
-\end{forest}
-\caption{Variable and constraint hierarchy of the single mission segment SimPleAC model}
-\label{forest:submodels}
+        ]
+    \end{forest}
+    \caption{Variable and constraint hierarchy of the single mission segment SimPleAC model}
+    \label{forest:submodels}
 \end{figure}
 
 Tree structures such as in Figure~\ref{forest:submodels} are informative, since
@@ -169,28 +171,29 @@ uni-directional graph as shown in Figure~\ref{f:missiongraph}.
 
 \begin{figure}[!h]
     \centering\small\sffamily
-    \begin{forest} sn edges,
-    l sep+=1em,
-    for children={
-    l sep+=1em,
-    }
-    [\textit{\textbf{Mission}},name=mission
-    [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=aircraftP2
-    [\textit{\shortstack{Wing\\Perf}},name=wingP2]
-    [\textit{\shortstack{Engine\\Perf.}},name=engineP2
-    [\textit{Atmosphere},name=atmos2]]]
-    [,name=phantom
-    [\textbf{Aircraft},name=aircraft
-    [\textbf{Wing},name=wing]
-    [\textbf{Fuselage},name=fuse]
-    [\textbf{Engine},name=engine]
-    ]]
-    [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=aircraftP1
-    [\textit{\shortstack{Wing\\Perf}},name=wingP1]
-    [\textit{\shortstack{Engine\\Perf.}},name=engineP1
-    [\textit{Atmosphere},name=atmos1]]
-    ]
-    ]
+    \begin{forest}
+        sn edges,
+        l sep+=1em,
+        for children={
+        l sep+=1em,
+        }
+        [\textit{\textbf{Mission}},name=mission
+        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=aircraftP2
+        [\textit{\shortstack{Wing\\Perf.}},name=wingP2]
+        [\textit{\shortstack{Engine\\Perf.}},name=engineP2
+        [\textit{Atmosphere},name=atmos2]]]
+        [,name=phantom
+        [\textbf{Aircraft},name=aircraft
+        [\textbf{Wing},name=wing]
+        [\textbf{Fuselage},name=fuse]
+        [\textbf{Engine},name=engine]
+        ]]
+        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=aircraftP1
+        [\textit{\shortstack{Wing\\Perf.}},name=wingP1]
+        [\textit{\shortstack{Engine\\Perf.}},name=engineP1
+        [\textit{Atmosphere},name=atmos1]]
+        ]
+        ]
         \draw[->] (atmos1) -- (wingP1);
         \draw[->] (atmos1) -- (aircraftP1);
         \draw[->] (atmos2) -- (wingP2);
@@ -231,9 +234,9 @@ by Figure~\ref{f:missiongraph}. This is as simple as identifying which variables
 we do not expect to change during flight segments, and which ones we do.
 
 \begin{center}
-\captionof{table}{Variables of SimPleAC in performance modeling, detailed in the
-variable and constraint hierarchy.}
-\input{tables/SimPleAC_missionvars.tex}
+    \captionof{table}{Variables of SimPleAC in performance modeling, detailed in the
+    variable and constraint hierarchy.}
+    \input{tables/SimPleAC_missionvars.tex}
     \label{tab:missionvars}
 \end{center}
 
@@ -244,7 +247,7 @@ we can consider the constraint for thrust power in Equation~\ref{e:thrustConstr}
 
 \begin{equation}
     \label{e:thrustConstr}
-T \times V \leq \eta_{prop} P_{shaft}
+    T \times V \leq \eta_{prop} P_{shaft}
 \end{equation}
 
 We expect that thrust ($T$) and shaft power ($P_{shaft}$) occur
@@ -254,20 +257,21 @@ As a result, the constraint for thrust power would logically reside in the \text
 model, the highest level in the hierarchy as shown in Figure~\ref{f:thrustConstr}. Since this model is vectorized,
 the constraint would be vectorized by the number of flight segments we create.
 
-\begin{figure}[!h]\centering\small\sffamily
-\begin{forest}
-        [\textit{\textbf{Mission}},name=mission
-            [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=aircraftP
-                [\textbf{Aircraft},name=aircraft
-                    [\textbf{Wing},name=wing]
-                    [\textbf{Fuselage},name=fuse]
-                    [\textbf{Engine},name=engine]
-                ]
-                [\textit{\shortstack{Wing\\Perf}},name=wingP]
-                [\textit{\shortstack{Engine\\Perf.}},name=engineP
-                            [\textit{Atmosphere},name=atmos]]
-            ]
-        ]
+\begin{figure}[!h]
+    \centering\small\sffamily
+    \begin{forest}
+    [\textit{\textbf{Mission}},name=mission
+    [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=aircraftP
+    [\textbf{Aircraft},name=aircraft
+    [\textbf{Wing},name=wing]
+    [\textbf{Fuselage},name=fuse]
+    [\textbf{Engine},name=engine]
+    ]
+    [\textit{\shortstack{Wing\\Perf.}},name=wingP]
+    [\textit{\shortstack{Engine\\Perf.}},name=engineP
+    [\textit{Atmosphere},name=atmos]]
+    ]
+    ]
         \draw[->] (atmos) -- (wingP);
         \draw[->] (atmos) -- (aircraftP);
         \draw[->] (aircraft) -- (aircraftP);
@@ -277,11 +281,11 @@ the constraint would be vectorized by the number of flight segments we create.
         \node[draw,rectangle,fit={(engineP)}] {};
         \node[draw,rectangle,fit={(aircraftP)}] {};
         \node[draw,rectangle,fit={(engine)}] {};
-\end{forest}
-   \caption{The models that contain the variables in Equation~\ref{e:thrustConstr} are enclosed in rectangles.
-   Constraint logically resides in \textbf{\textit{Aircraft Perf.}}.
-   Vectorized performance models have been removed for clarity.}
-\label{f:thrustConstr}
+    \end{forest}
+    \caption{The models that contain the variables in Equation~\ref{e:thrustConstr} are enclosed in rectangles.
+    Constraint logically resides in \textbf{\textit{Aircraft Perf.}}.
+    Vectorized performance models have been removed for clarity.}
+    \label{f:thrustConstr}
 \end{figure}
 
 Now, we have used a framework to modularize our constraints, which makes it
@@ -298,18 +302,19 @@ burns fuel throughout the mission, changing its flight characteristics.
 
 The derivation of the \gls{GP}-compatible flight segment models has been detailed in ~\cite{gassolar}
 and used widely within the \gls{CEG} in aircraft design. It defines segment start, end and average weights,
-as well as altitut.
+as well as altitude.
 
 I have added the monomial equality below to the formulation
 
 \begin{align}
-    h_{{avg}_0} &= \frac{1}{2}\Delta h_0 \\
+    h_{{avg}_1} &= \frac{1}{2}\Delta h_1 \\
     h_{{avg}_i} &= \sqrt{h_{i} \times h_{i-1}}
 \end{align}
 
 to add an average altitude variable $h_{avg}$ in Section~\ref{s:atmos}. This adds
 conservatism to the density and drag (otherwise, the air density for a flight segment is calculated
-at the end of the segment, at which the aircraft is at its highest altitude).
+at the end of the segment, at which the aircraft is at its highest altitude). I have also constrained
+the cruise altitude (final altitude in every flight segment but the initial segment) to be greater than 5000m.
 
 As with most \gls{GP} approximations, there are limitations to this model. To avoid non-positive
 altitude change values ($\Delta h$), we restrict the aircraft to climb during every segment, and
@@ -319,7 +324,7 @@ avoid the potential lower-unboundedness of the lengths of certain segments.
 \subsection{Characterizing the environment: atmospheric model}
 \label{s:atmos}
 
-We have created a mission and flight segment model without having  we have to have a better understanding
+We have created a mission and flight segment model without having we have to have a better understanding
 of the environment in which the aircraft operates. So far, we have assumed that
 the aircraft flies at a constant altitude (sea level) for a single mission segment,
 and is subject to the same air density and viscosity. This is a big simplification
@@ -328,6 +333,23 @@ that we can overcome through vectorization.
 I have borrowed Tony Tao's atmosphere fits, which are 2-term softmax-affine fits of the atmospheric
 quantities of interest ($\rho$ and $\mu$ in this thesis) with respect to altitude.
 The relations are valid between 0-10000m of altitude.
+
+\section{Design exploration through mission design}
+
+Mission design often exploits the weaknesses of existing models to arrive at solutions
+that do not seem physical. In this specific modeling example, it shows the weaknesses of the engine model.
+
+The first weakness is the fact that the engine can supply the same amount of power
+regardless of altitude. \gls{GP} can help us observe this behavior by allowing engineers to
+evaluate a number of optimal designs quickly, and enabling the observation of trends.
+For naturally aspirated piston engines, we would expect the maximum power available to
+drop with altitude; adding such a lapse rate will improve how much we trust the engine model.
+
+The second is the lack of an engine BSFC model. As an aerospace engineer, I have the insight
+empirically that the BSFC of an engine deteriorates at low power outputs.  Using more
+data-based modeling, we can model this relationship and improve our results.
+
+In Sections~\ref{s:lapse} and \ref{s:BSFC}, I will aim to implement these improvements.
 
 \subsection{Engine lapse rate model}
 \label{s:lapse}
@@ -351,6 +373,7 @@ Constraint~\ref{e:lapse}, then $P_{shaft,alt}$ is upper-unbounded, so with our c
 of the shaft power, we must use a signomial equality.
 
 \subsection{Making use of sensitivities: engine BSFC model}
+\label{s:BSFC}
 
 The \BSFC is one of the variables that the model is most sensitive to, and it has yet to be modeled. As
 stated in Section~\ref{s:lapse}, the \BSFC of a piston engine improves as the engine puts out more power.
@@ -362,12 +385,12 @@ First, I attempted a monomial fit of the $\frac{\BSFC}{\BSFC_{min}}$ versus $\fr
 The result is shown in Figure~\ref{f:P_BSFC}.
 
 \begin{center}
-\begin{figure}
-    \includegraphics[width=0.5\textwidth]{P_BSFC.png}
-    \caption{$\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ data fit. Note that the fit is
-    not able to capture the tail ends of the curve.}
-    \label{f:P_BSFC}
-\end{figure}
+    \begin{figure}
+        \includegraphics[width=0.5\textwidth]{P_BSFC.png}
+        \caption{$\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ data fit. Note that the fit is
+        not able to capture the tail ends of the curve.}
+        \label{f:P_BSFC}
+    \end{figure}
 \end{center}
 
 There is a significant deterioration in the quality of the fit as $\frac{P_{shaft}}{P_{shaft,alt}} \xrightarrow[]{} 1$,
@@ -377,36 +400,49 @@ resolves the issue. The fit with respect to lapse rate, which has been implement
 shown in Figure~\ref{f:lapse_BSFC.png}
 
 \begin{center}
-\begin{figure}
-    \includegraphics[width=0.5\textwidth]{P_BSFC.png}
-    \caption{Engine lapse \% $L$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ data fit. This fit has minimal
-    RMS error.}
-    \label{f:lapse_BSFC}
-\end{figure}
+    \begin{figure}
+        \includegraphics[width=0.5\textwidth]{lapse_BSFC.png}
+        \caption{Engine lapse \% $L$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ data fit. This fit has minimal
+        RMS error.}
+        \label{f:lapse_BSFC}
+    \end{figure}
 \end{center}
 
 The improvement of the fit thanks to a simple variable transformation shows that
 parametrization can be important to the level of accuracy and fidelity of a model.
 
-\subsection{Design exploration through mission design}
-
-Mission design often exploits the weaknesses of existing models to arrive at solutions
-that do not seem physical. In this
-specific modeling example, it shows the weaknesses of the engine model.
-
-
-The first weakness is the fact that the engine can supply the same amount of power
-regardless of altitude. \gls{GP} can help us observe this behavior by allowing engineers to
-evaluate a number of optimal designs quickly, and enabling the observation of trends.
-For naturally aspirated piston engines, we would expect the maximum power available to
-drop with altitude; adding such a lapse rate will improve the fidelity of the engine.
-
-THe second is the lack of
-
 \section{Multimission design}
+\label{s:multimission}
 
 Having created a mission profile for the SimPleAC, it only takes one extra level of
-hierarchy to do multimission design. Now we vectorize the performance
-and atmosphere models that are flown by the same aircraft.
+hierarchy to do multimission design. Now we vectorize the mission models flown by the same aircraft.
+
+%\begin{figure}[!h]
+%    \centering\small\sffamily
+%    \begin{forest}
+%        sn edges
+%        [\textit{\textbf{Multimission}},name=multimission
+%        [\textit{\textbf{Mission}},name=mission1
+%        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=ap1]
+%        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=ap2]
+%        ]
+%        [\textbf{Aircraft},name=ac]
+%        [\textit{\textbf{Mission}},name=mission2
+%        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=ap3]
+%        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=ap4]
+%        ]
+%        ]
+%
+%        \draw[->] (ac) -- (ap1);
+%        \draw[->] (ac) -- (ap2);
+%        \draw[->] (ac) -- (ap3);
+%        \draw[->] (ac) -- (ap4);
+%
+%    \end{forest}
+%    \caption{Multimission uni-directional graph.}
+%    \label{f:multimission}
+%\end{figure}
+
+Now the vectorization has gone down two levels. We are able to consider $N$ flight segments, $M$
 
 
