@@ -6,8 +6,8 @@ equalities and posynomial inequalities) helps engineers gain intuition
 about the way that each variable is pressured
 by a given objective function. The intuition gained in turn helps formulate
 constraints that can properly bound each variable in the model.
-
-GPkit facilitates process by providing feedback to designers about
+GPkit, \gls{CEG}'s \gls{GP} modeling framework,
+facilitates process by providing feedback to designers about
 the boundedness of a model.
 
 I will derive a simple aircraft problem that will serve as
@@ -32,7 +32,7 @@ to be less than 2:
 
 We can draw the feasibility set of the above problem in both linear and log space,
 as shown in Figure~\ref{f:feas_moneq}. One expects that, given only two variables
-and a monomial equality constraint, the feasibility space is
+and a monomial equality constraint , the feasibility space is
 a finite line segment in log-space, and a finite exponential function in linear space.
 
 \begin{figure}
@@ -74,8 +74,9 @@ whose feasibility set is shown in Figure~\ref{feas_posyleq}.
 
 Since $x$ is our objective, and both variables are upper-bounded, they both collapse towards numerical
 precision zero,
-giving a non-sensical feasibility set shown in Figure~\ref{feas:posyleq}. In this section, we will
-create models that are adequately bounded to avoid such singularities, which for the most part do not
+giving a non-sensical feasibility set shown in Figure~\ref{feas:posyleq}. In this section, I will
+demonstrate methods to create \gls{GP}-compatible models that are adequately bounded to avoid such
+singularities, which for the most part do not
 exist in real physical models.
 
 \section{Defining the design problem}
@@ -104,7 +105,7 @@ have a positive correlation to the objective function.
 In many design problems
 formulated as \gls{GP}s, many different objectives will put pressure on design
 in the same direction. For example, an aircraft designed for fuel weight will look
-different than one
+different compared to one
 that has been designed for total weight or payload-fuel consumption, but all of
 these different objective will put a downward pressure on drag and weight.
 As such, this model will be able to take in a number of objective functions
@@ -121,16 +122,17 @@ this case, we will think about the functional decomposition to create a
 basic list of constraints that our aircraft will need to fulfill to be
 able to capture the tradeoffs in an aircraft design problem. (In
 Section~\ref{s:submodels}, we will examine how thinking about the component decomposition
-can help structure large problems.)
+can help structure larger problems.)
 
 What does an aircraft need to be able to do to deliver payload of a distance?
 \begin{itemize}
-	\item It will need to be able to sustain steady
-    level flight with itself and the payload.
-    \item It will need to overcome drag.
-	\item It will need to contain enough fuel to complete its mission.
-	\item The wing will need to be able to sustain the loads it is
-    subjected to.
+	\item It will need to sustain steady
+    level flight, keeping itself and the payload aloft (Section~\ref{s:wl}).
+    \item It will need to overcome drag (Section~\ref{s:td}).
+	\item It will need to contain enough fuel to complete its mission
+        (Section~\ref{s:fuel}).
+	\item It will need to be able to sustain the loads it is
+    subjected to (Section~\ref{s:wingstrc}).
 \end{itemize}
 
 Note that these are in now way presented in order of importance, which is reflective
@@ -150,6 +152,7 @@ to introduce the reader to an important aspect of \gls{GP} modeling,
 accompanied by examples in implementation.
 
 \subsection{Free and fixed variables: modeling weight and lift}
+\label{s:wl}
 
 For this particular design problem, we start by modeling
 weight and lift, since the fundamental function of the aircraft is to stay aloft.
@@ -190,8 +193,8 @@ relation does not need to be tight. It is possible that the aircraft is able to
 fly at a velocity slower than $V_{min}$ for a given objective function.
 
 At this point, we have introduced a large set of variables, some of which are input
-parameters, and the others free variables. This decision is often the first decision
-that and can shape the whole model development process in all forms of optimization.
+parameters, and the others free variables. This decision is
+can shape the whole model development process in all forms of optimization.
 
 The decision of whether to keep variables free or fixed can be determined by many
 factors in a \gls{GP}. In this case, we set the lift coefficient and takeoff speed
@@ -228,7 +231,7 @@ of some of the variables as defined in Table~\ref{tab:vars_WandL}.
 \end{table} \end{footnotesize}
 
 Note that the atmospheric variable $\rho$ in Table~\ref{tab:vars_TandD}, and other
-atmospheric variables in the following tables are set
+atmospheric variables in Section~\ref{ch2:inequalities} are set
 to be constant. The behavior of these variables with altitude
 will be modeled in more detail in Section~\ref{s:mission} when
 I model the flight profile of the aircraft.
@@ -272,7 +275,22 @@ The new variables we have introduced are detailed in Table~\ref{tab:vars_perfMet
     \label{tab:vars_perfMetrics}
 \end{table} \end{footnotesize}
 
+An important note about variables that are potential alternative objectives. These variables
+must always be lower bounded (or inverted and upper bounded) since the general \gls{GP} is a
+minimization problem. However, if they are not also upper bounded, these variables
+will likely be unbounded for a given model and run off the +$\infty$. This means that
+performance-quantifying variables
+that are not involved in the fundamental physics of a model will need to be in a monomial form,
+or must be present in a posynomial objective
+function as shown in Equation~\ref{e:posyobj} for boundedness.
+
+\begin{equation}
+    \mathrm{Objective} \geq \sum\limits^n_{i=1}\prod\limits^n_{i=1} c_{i,j} v^{k_{i,j}}
+    \label{e:posyobj}
+\end{equation}
+
 \subsection{More physics for boundedness: thrust and drag model}
+\label{s:td}
 
 If we attempt to run our current model, we would find that it is unbounded in many variables.
 The results are shown in Table~\ref{tab:WandL_unbounded}.
@@ -325,7 +343,7 @@ There is yet another relaxed monomial equality in Equation~\ref{e:d}.
 If the pressure on the \gls{LHS} or \gls{RHS} of a monomial equality are clear as in this case,
 it is a good practice to relax the equality to leave as many degrees of freedom
 in the design space as possible. The intuition is that, we can almost always have more drag,
-but it is likely that most objectives will suffer.
+but the constraint will always be tight since all objectives will suffer.
 
 The drag coefficient of the aircraft is assumed to be the sum of the fuselage drag,
 the wing profile drag, and the wing induced drag coefficients \cite{gp_ac_design}:
@@ -336,7 +354,7 @@ the wing profile drag, and the wing induced drag coefficients \cite{gp_ac_design
 \end{equation}
 
 I will represent the individual components of the drag as monomial equalities, again borrowing
-from \cite{gp_ac_design} for constraints~\ref{e:cdfuse} through \ref{e:cdinduced}.
+from \cite{gp_ac_design} for constraints~\ref{e:cdfuse} through~\ref{e:cdinduced}.
 The fuselage drag is a function of its drag area $CDA_0$ and the planform area of the wing:
 
 \begin{equation}
@@ -425,7 +443,7 @@ The new variables are detailed in Table~\ref{tab:vars_TandD}.
 
 As shown in Table~\ref{tab:WLTD_unbounded} attempting to run the model as is
 results in both the fuselage fuel
-volume $V_{f_{fuse}}$ and the wing weight $W_w$ still being lower-unbounded. Next,
+volume $V_{f_{fuse}}$ and the wing weight $W_w$ still being lower-unbounded.
 I will attempt to properly bound these to complete the SimPleAC model.
 
 \begin{footnotesize}
@@ -457,6 +475,7 @@ It takes engineering intuition to recognize where and when improved modeling is 
 the loss of the mathematical guarantees.
 
 \subsection{Signomial constraints: adding fuel volume model}
+\label{s:fuel}
 
 In an attempt to lower bound $V_{f_{fuse}}$, we will
 be adding a fuel volume model to SimPleAC, where fuel can be stored in the wing or
@@ -476,7 +495,8 @@ can create signomial constraints. (One way around this is potentially creating f
 fraction variables to denote how much fuel is stored in each volume, but I will not 
 explore other potential parametrizations here.)
 
-As such, we can continue to develop the model. Fuel weight is going
+As such, we can continue to develop the model, since it is important for us to
+capture the fuel distribution between the wing and the fuselage. Fuel weight is going
 to influence the lift required of the aircraft, so I determine the weight of the fuel
 using a density parameter $\rho_{f}$. 
 
@@ -485,8 +505,8 @@ using a density parameter $\rho_{f}$.
     \label{e:vf}
 \end{equation}
 
-We need a model of how much fuel volume there is in a wing. We would expect the volume
-within a wing
+We need a model of how much fuel volume there is in a wing. Intuitively,
+we would expect the volume within a wing
 to be related linearly to its thickness ratio ($\tau$) and span ($b$),
 and to the square of its chord ($c$). 
 
@@ -512,7 +532,9 @@ express $V_{f_{wing}}$.
 V_{f_{wing}}^2 \leq 9\times10^{-4} \frac{S \tau^2}{\AR}
 \end{equation}
 
-The new variables introduced to bound fuel volume are in Table~\ref{tab:vars_fuelmodel}.
+Such variable transformations can be useful to have a minimal parametrization of designs.
+One can post-process the results of the optimization problem to get complete geometry
+as necessary. The new variables introduced to bound fuel volume are in Table~\ref{tab:vars_fuelmodel}.
 (In the final form of the Equation~\ref{e:vfwing} I picked $9\times10^{-4}$ as the coefficient in
 front of the relation by tuning it after I had developed
 the model, but any other coefficient would do.)
@@ -570,6 +592,7 @@ Section~\ref{s:mission}, we will be implementing signomial equalities to represe
 $\rho$ and viscosity $\mu$.
 
 \subsection{Completing the model: wing structural model}
+\label{s:wingstrc}
 
 Only one unbounded variable remains, which is wing weight $W_w$. We can think
 of wing weight having two components, the skin weight that
@@ -595,7 +618,7 @@ is often easy to make first-order models for components.
 \footnotetext{This can be difficult to see, but since $S \propto b_{constant} c$ and loading is constant, as area
 grows, the thickness of the wing grows as well at a constant $\tau$. So the weight increases linearly with S,
 and stiffness increases with the cube of S.
-Integrating this over the wing yields a $S^{-1}$ relation.}
+Integrated over the whole wing this yields a $S^{-1}$ relation.}
 
 \begin{equation} W_{w_{strc}} \geq \frac{W_{w_{coeff1}}}{\tau}
 N_{ult} AR ^ {1.5} \sqrt{(W_0+\rho_fgV_{f_{fuse}}) WS} \label{e:wwstrc}
