@@ -3,12 +3,18 @@
 
 This section will demonstrate how the form of the \gls{GP} (monomial
 equalities and posynomial inequalities) helps engineers gain intuition
-about the structure of a problem and the way that each variable is pressured
-by a given objective function. I will derive a simple aircraft problem that will serve as
-a demonstration of the intuitive structure of geometric programs, and show
-how the feasibility space of the design evolves as we introduce new constraints.
+about the way that each variable is pressured
+by a given objective function. The intuition gained in turn helps formulate
+constraints that can properly bound each variable in the model.
 
-\section{Making feasibility sets explicit}
+GPkit facilitates process by providing feedback to designers about
+the boundedness of a model.
+
+I will derive a simple aircraft problem that will serve as
+a demonstration of the intuitive structure of geometric programs, and show
+how we can introduce new constraints to bound the feasibility sets of models.
+
+\section{Making feasibility sets and boundedness explicit}
 
 Consider the simple design problem below, where we define a simple bilinear
 monomial equality with respect to x and y, and constrain the sum of the variables
@@ -47,30 +53,53 @@ then we would get a new feasibility set as shown in Figure~\ref{f:feas_posygeq}.
     \label{f:feas_posygeq}
 \end{figure}
 
-Since we can always upper-bound posynomials, and lower bound both posynomials
-and monomials, we cna
-
-%TODO: figure out how to tie this into SimPleAC model building
-
-Note that the optimal point, which is at $x = 1 - \frac{1}{\sqrt{2}}$, $y = 1 + \frac{1}{\sqrt{2}}$,
+Using the \gls{GP} form, since we can always upper-bound posynomials, and lower bound both posynomials
+and monomials to get convex feasible sets. Note that the optimal point, which is at
+$x = 1 - \frac{1}{\sqrt{2}}$, $y = 1 + \frac{1}{\sqrt{2}}$,
 does not change by the relaxation of the monomial equality. This is a key
-observation that allows us to turn most equalities into \gls{GP}-compatible
-posynomial inequalities.
+observation that will allow us to turn most equalities into \gls{GP}-compatible
+posynomial inequalities. The posynomial equality relaxation is explained in greater detail
+in~\cite{hoburg_thesis}.
 
-\section{Defining the aircraft design problem}
+However if we convert the monomial equality to  $xy \leq \frac{1}{2}$, we will get an unbounded model,
+whose feasibility set is shown in Figure~\ref{feas_posyleq}.
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{feas_posyleq.png}
+    \caption{The x vs y feasibility set of upper bounding monomial,
+    and upper-bonding posynomial.}
+    \label{f:feas_posyleq}
+\end{figure}
+
+Since $x$ is our objective, and both variables are upper-bounded, they both collapse towards numerical
+precision zero,
+giving a non-sensical feasibility set shown in Figure~\ref{feas:posyleq}. In this section, we will
+create models that are adequately bounded to avoid such singularities, which for the most part do not
+exist in real physical models.
+
+\section{Defining the design problem}
+
+\gls{GP}s are amenable to solving a large variety of design problems (see~\cite{gp_intro} for an
+extensive number of examples). I have chosen to model aircraft since my background is in
+aerospace engineering,
+and I work in the Aerospace Computational Design Lab at MIT.
 Aircraft epitomize the nature of complex engineering problems. The physical 
 relations describing their motion are nonlinear, and all of their subsystems are 
-coupled through the primary forces in flight (thrust, weight, lift, drag). 
+coupled through the primary forces in flight (thrust, weight, lift, drag).
+The goal of the aircraft in question will be to perform a basic 'ferry' mission, that
+is to carry a given payload
+over a distance while minimizing an objective function.
 
 \subsection{Objective functions}
+\label{s:objective}
 
 Objective functions are the way that a designer puts pressure on the variables 
-in the constraints. The goal of the aircraft in question will be to carry a given payload
-over a distance while minimizing an objective function. To begin with, we will consider
+in the constraints. To begin with, we will consider
 total fuel weight $W_f$ as our objective, which will put
 downward pressure on all of the variables that would cause in greater fuel burn, namely
-drag and weight.
+drag and weight. We must necessarily put a lower-bound on all variables expected to
+have a positive correlation to the objective function.
 
 In many design problems
 formulated as \gls{GP}s, many different objectives will put pressure on design
@@ -105,17 +134,18 @@ What does an aircraft need to be able to do to deliver payload of a distance?
 \end{itemize}
 
 Note that these are in now way presented in order of importance, which is reflective
-of the non-hierarchical nature of \gls{GP}s. In the basic example, I will choose not to model engines,
+of the non-hierarchical nature of \gls{GP}s.
+In the basic example, I will choose not to model engines,
 and leave this as an exercise
 to complete in Section~\ref{s:engine} to improve the model.
 
-\section{GP Modeling}
-%TODO: come up with a better title
+\section{GP Modeling from Physics}
+
 Oftentimes, \gls{GP} model creation starts haphazardly, with the designer having a
 vague idea about the kind of physics that governs a problem, and some basic
 set of assumptions about the configuration. In this section, we will
 generate variables and constraints with abandon, and think about how to make
-sure each variable is adequately constrained later. Each subsection is intended
+sure each variable is adequately bounded later. Each subsection is intended
 to introduce the reader to an important aspect of \gls{GP} modeling,
 accompanied by examples in implementation.
 
@@ -135,7 +165,7 @@ to put total weight as greater than the sum of the component weights. Weight rel
 are especially amenable to being represented by posynomials, since most objective
 functions penalize higher weight.
 
-We would like the aircraft to be able to sustain steady level flight, which means 
+The aircraft has to sustain steady level flight, which means
 that it needs to generate enough lift to carry itself. We use the naive $W \leq L$ 
 model below for steady state flight:
 
@@ -145,7 +175,7 @@ model below for steady state flight:
 
 where the lift of the aircraft is equal to weight of the aircraft with half-fuel, 
 which is a crude estimate of the average weight of the aircraft throughout the flight.
-Again, the \gls{GP} form is seamless here, since lift is related to fuel weight through
+Again, the \gls{GP} form is seamless here, since lift is related to
 induced drag, and so it is pressured downward by the objective function.
 
 We would also like the fully-fueled aircraft to be able to fly at a minimum speed 
@@ -161,17 +191,17 @@ fly at a velocity slower than $V_{min}$ for a given objective function.
 
 At this point, we have introduced a large set of variables, some of which are input
 parameters, and the others free variables. This decision is often the first decision
-that and can shape the whole model development process.
+that and can shape the whole model development process in all forms of optimization.
 
 The decision of whether to keep variables free or fixed can be determined by many
-factors. In this case, we set the lift coefficient and takeoff speed to be constants since
-(1) we would need
+factors in a \gls{GP}. In this case, we set the lift coefficient and takeoff speed
+to be constants since (1) we would need
 more detailed modeling to determine their values. Payload weight is also set
 because (2) it would always be unbounded towards zero due to the downward pressure from
 the objective. A designer may also fix variables (3) if he/she knows their values with
 certainty (eg. gravitational acceleration $g$) or (4) the variable is a normalizing
 coefficient (which we will see in Section~\ref{s:datafit}). We will set the values
-to those defined in Table~\ref{tab:vars_WandL}.
+of some of the variables as defined in Table~\ref{tab:vars_WandL}.
 
 \begin{footnotesize}
 \begin{table}
@@ -267,8 +297,9 @@ The results are shown in Table~\ref{tab:WandL_unbounded}.
 \end{table} \end{footnotesize}
 
 This is not surprising at all, since none of the defined variables lower bound $W_f$,
-the objective function. Without the pressure from the objective, any variables that
-are not both upper- and lower- bounded will tend to run away. This is indicative usually
+the objective function, in the constraints we have defined.
+Without the pressure from the objective, any variables that
+are not both upper- and lower- bounded will tend to blow up. This is indicative usually
 that more modeling or direct substitutions are required to sufficiently bound the variables.
 
 In this case, we lack a propulsion model which would properly bound fuel weight, velocity,
@@ -293,7 +324,8 @@ the planform area $S$, and the coefficient of drag of the aircraft:
 There is yet another relaxed monomial equality in Equation~\ref{e:d}.
 If the pressure on the \gls{LHS} or \gls{RHS} of a monomial equality are clear as in this case,
 it is a good practice to relax the equality to leave as many degrees of freedom
-in the design space as possible.
+in the design space as possible. The intuition is that, we can almost always have more drag,
+but it is likely that most objectives will suffer.
 
 The drag coefficient of the aircraft is assumed to be the sum of the fuselage drag,
 the wing profile drag, and the wing induced drag coefficients \cite{gp_ac_design}:
@@ -303,7 +335,8 @@ the wing profile drag, and the wing induced drag coefficients \cite{gp_ac_design
 \label{e:cd}
 \end{equation}
 
-I will represent the individual components of the drag as monomial equalities.
+I will represent the individual components of the drag as monomial equalities, again borrowing
+from \cite{gp_ac_design} for constraints~\ref{e:cdfuse} through \ref{e:cdinduced}.
 The fuselage drag is a function of its drag area $CDA_0$ and the planform area of the wing:
 
 \begin{equation}
@@ -396,18 +429,21 @@ volume $V_{f_{fuse}}$ and the wing weight $W_w$ still being lower-unbounded. Nex
 I will attempt to properly bound these to complete the SimPleAC model.
 
 \begin{footnotesize}
-\begin{table}
-\begin{tabular}{ l c l }
-    \toprule
-	Unbounded variable & Units & Direction \\
-    \midrule
-    $V_{f_{fuse}}$ &  $~\mathrm{m^3}$  & $0$ \\
-    $W_w$ & $~\mathrm{N}$  & $0$ \\
-    \bottomrule
-\end{tabular}
-\caption{Unbounded variables within the GP formulation}
-\label{tab:WLTD_unbounded}
-\end{table} \end{footnotesize}
+    \begin{center}
+        \begin{table}
+            \begin{tabular}{ l c l }
+                \toprule
+                Unbounded variable & Units & Direction \\
+                \midrule
+                $V_{f_{fuse}}$ &  $~\mathrm{m^3}$  & $0$ \\
+                $W_w$ & $~\mathrm{N}$  & $0$ \\
+                \bottomrule
+            \end{tabular}
+            \caption{Unbounded variables within the GP formulation}
+            \label{tab:WLTD_unbounded}
+        \end{table}
+    \end{center}
+\end{footnotesize}
 
 \section{Limits of GP and Convexity, and SP modeling} \label{s:GPLimits}
 
@@ -500,9 +536,9 @@ the model, but any other coefficient would do.)
     \label{tab:vars_fuelmodel}
 \end{table} \end{footnotesize}
 
-\subsection{What is the proper use case of the signomial equality?}
+\subsection{Arguments for the signomial equality}
 
-In a segue, I will attempt to explain and motivate the use of signomial equalities,
+In a segue, I will explain and motivate the use of signomial equalities,
 as described in \cite{sigeqpaper}, in \gls{SP} modeling.
 Signomial equalities must be used as a last resort. The signomial equality is the only place
 where the feasibility set of individual \gls{GP}'s within a \gls{SP} solve are not guaranteed
@@ -589,7 +625,7 @@ the final set of variables in Table~\ref{tab:vars_wingstrcmodel}.
         $W_{w_{surf}}$ & $~\mathrm{N}$ & wing skin weight & Y & - \\
     \bottomrule
     \end{tabular}
-    \caption{Variables introduced in the fuel model.}
+    \caption{Variables introduced in the wing structural model.}
     \label{tab:vars_wingstrcmodel}
 \end{table} \end{footnotesize}
 

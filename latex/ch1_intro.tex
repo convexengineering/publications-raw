@@ -143,12 +143,13 @@ for three primary reasons.
 
     Gradient-based optimization methods for
     multimodal, multicomponent systems often involve
-    converge loops, as shown in Figure~\ref{f:optflow}, which have to be reengineered
+    converge loops, as shown in Figure~\ref{f:optflow}, which have to be re-engineered
     when new constraints are introduced. Furthermore, the designer has to tune
     the module for generating new guesses from gradient information, which is unreliable
     at best. \gls{GP}s (and the \gls{GP} approximations
     of \gls{SP}s) are solved all-at-once, which means that there are no constraint
-    convergence loops to worry about or parameters to tune.
+    convergence loops to worry about or parameters to tune. Please refer to \cite{martins_mdo}
+    for a more in-depth analysis of various \gls{MDO} architectures.
 
     \begin{figure*}[!b]
         \begin{subfigure}[b]{0.5\linewidth}
