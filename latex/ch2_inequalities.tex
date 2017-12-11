@@ -32,7 +32,7 @@ to be less than 2:
 
 We can draw the feasibility set of the above problem in both linear and log space,
 as shown in Figure~\ref{f:feas_moneq}. One expects that, given only two variables
-and a monomial equality constraint , the feasibility space is
+related through an equality and bounded by inequalities, the feasibility space is
 a finite line segment in log-space, and a finite exponential function in linear space.
 
 \begin{figure}
@@ -42,7 +42,7 @@ a finite line segment in log-space, and a finite exponential function in linear 
     \label{f:feas_moneq}
 \end{figure}
 
-However, if we had decided to impose $xy \geq \frac{1}{2}$ instead of \ref{simple_moneq},
+However, if we had decided to impose $xy \geq \frac{1}{2}$ instead of $xy = \frac{1}{2}$,
 then we would get a new feasibility set as shown in Figure~\ref{f:feas_posygeq}.
 
 \begin{figure}
@@ -53,7 +53,7 @@ then we would get a new feasibility set as shown in Figure~\ref{f:feas_posygeq}.
     \label{f:feas_posygeq}
 \end{figure}
 
-Using the \gls{GP} form, since we can always upper-bound posynomials, and lower bound both posynomials
+Using the \gls{GP} form, we can always upper-bound posynomials, and lower bound both posynomials
 and monomials to get convex feasible sets. Note that the optimal point, which is at
 $x = 1 - \frac{1}{\sqrt{2}}$, $y = 1 + \frac{1}{\sqrt{2}}$,
 does not change by the relaxation of the monomial equality. This is a key
@@ -74,14 +74,14 @@ whose feasibility set is shown in Figure~\ref{feas_posyleq}.
 
 Since $x$ is our objective, and both variables are upper-bounded, they both collapse towards numerical
 precision zero,
-giving a non-sensical feasibility set shown in Figure~\ref{feas:posyleq}. In this section, I will
+giving a non-sensical feasibility set shown in Figure~\ref{f:feas_posyleq}. In this section, I will
 demonstrate methods to create \gls{GP}-compatible models that are adequately bounded to avoid such
-singularities, which for the most part do not
+singularities towards zero or infinity, which for the most part do not
 exist in real physical models.
 
 \section{Defining the design problem}
 
-\gls{GP}s are amenable to solving a large variety of design problems (see~\cite{gp_intro} for an
+\gls{GP}s are amenable to solving a large variety of design problems (see~\cite{gpintro} for an
 extensive number of examples). I have chosen to model aircraft since my background is in
 aerospace engineering,
 and I work in the Aerospace Computational Design Lab at MIT.
@@ -144,7 +144,7 @@ to complete in Section~\ref{s:engine} to improve the model.
 \section{GP Modeling from Physics}
 
 Oftentimes, \gls{GP} model creation starts haphazardly, with the designer having a
-vague idea about the kind of physics that governs a problem, and some basic
+vague idea about the set of physical a problem, and some basic
 set of assumptions about the configuration. In this section, we will
 generate variables and constraints with abandon, and think about how to make
 sure each variable is adequately bounded later. Each subsection is intended
@@ -193,10 +193,9 @@ relation does not need to be tight. It is possible that the aircraft is able to
 fly at a velocity slower than $V_{min}$ for a given objective function.
 
 At this point, we have introduced a large set of variables, some of which are input
-parameters, and the others free variables. This decision is
+parameters, and the others free variables. The decision of whether to keep variables free or fixed
 can shape the whole model development process in all forms of optimization.
-
-The decision of whether to keep variables free or fixed can be determined by many
+The decision can be influenced by many
 factors in a \gls{GP}. In this case, we set the lift coefficient and takeoff speed
 to be constants since (1) we would need
 more detailed modeling to determine their values. Payload weight is also set
@@ -204,7 +203,7 @@ because (2) it would always be unbounded towards zero due to the downward pressu
 the objective. A designer may also fix variables (3) if he/she knows their values with
 certainty (eg. gravitational acceleration $g$) or (4) the variable is a normalizing
 coefficient (which we will see in Section~\ref{s:datafit}). We will set the values
-of some of the variables as defined in Table~\ref{tab:vars_WandL}.
+of some of the variables as defined in Table~\ref{t:vars_WandL}.
 
 \begin{footnotesize}
 \begin{table}
@@ -227,16 +226,17 @@ of some of the variables as defined in Table~\ref{tab:vars_WandL}.
     \end{tabular}
     \caption{Variables introduced in weight vs. lift model. Free variables,
     and constants and their values have been labeled.}
-    \label{tab:vars_WandL}
+    \label{t:vars_WandL}
 \end{table} \end{footnotesize}
 
-Note that the atmospheric variable $\rho$ in Table~\ref{tab:vars_TandD}, and other
+Note that the atmospheric variable $\rho$ in Table~\ref{t:vars_TandD}, and other
 atmospheric variables in Section~\ref{ch2:inequalities} are set
 to be constant. The behavior of these variables with altitude
 will be modeled in more detail in Section~\ref{s:mission} when
 I model the flight profile of the aircraft.
 
 \subsection{Alternate objective functions: adding performance metrics}
+\label{s:altobj}
 
 As multi-objective designers, we may also be interested in knowing about
 additional performance metrics that can serve as part of objective functions. A
@@ -255,7 +255,7 @@ The lift-to-drag ratio is also defined:
     L/D = \frac{C_L}{C_D}    
 \end{equation}
 
-The new variables we have introduced are detailed in Table~\ref{tab:vars_perfMetrics}.
+The new variables we have introduced are detailed in Table~\ref{t:vars_perfMetrics}.
 
 \begin{footnotesize}
 \begin{table}
@@ -272,20 +272,19 @@ The new variables we have introduced are detailed in Table~\ref{tab:vars_perfMet
         \bottomrule
     \end{tabular}
     \caption{Variables introduced to define new performance metrics.}
-    \label{tab:vars_perfMetrics}
+    \label{t:vars_perfMetrics}
 \end{table} \end{footnotesize}
 
-An important note about variables that are potential alternative objectives. These variables
+An important note about variables that are potential alternative objectives: these variables
 must always be lower bounded (or inverted and upper bounded) since the general \gls{GP} is a
 minimization problem. However, if they are not also upper bounded, these variables
-will likely be unbounded for a given model and run off the +$\infty$. This means that
-performance-quantifying variables
-that are not involved in the fundamental physics of a model will need to be in a monomial form,
+will likely be unbounded for a given model and run off to +$\infty$. This means that
+performance-quantifying variables will need to be in a monomial form,
 or must be present in a posynomial objective
 function as shown in Equation~\ref{e:posyobj} for boundedness.
 
 \begin{equation}
-    \mathrm{Objective} \geq \sum\limits^n_{i=1}\prod\limits^n_{i=1} c_{i,j} v^{k_{i,j}}
+    \mathrm{Objective} \geq \sum\limits^n_{i=1}c_{i}\prod\limits^n_{i=1}  v^{k_{i,j}}
     \label{e:posyobj}
 \end{equation}
 
@@ -293,7 +292,7 @@ function as shown in Equation~\ref{e:posyobj} for boundedness.
 \label{s:td}
 
 If we attempt to run our current model, we would find that it is unbounded in many variables.
-The results are shown in Table~\ref{tab:WandL_unbounded}.
+The results are shown in Table~\ref{t:WandL_unbounded}.
 
 \begin{footnotesize}
 \begin{table}
@@ -309,9 +308,9 @@ The results are shown in Table~\ref{tab:WandL_unbounded}.
         $W_w$ & $~\mathrm{N}$  & $0$ \\
         \bottomrule
     \end{tabular}
-    \label{tab:WandL_unbounded}
     \caption{Unbounded variables in the weight and lift model. More modeling, or direct
     substitutions are required.}
+    \label{t:WandL_unbounded}
 \end{table} \end{footnotesize}
 
 This is not surprising at all, since none of the defined variables lower bound $W_f$,
@@ -322,11 +321,12 @@ that more modeling or direct substitutions are required to sufficiently bound th
 
 In this case, we lack a propulsion model which would properly bound fuel weight, velocity,
 and time of flight. For initial modeling purposes, I assume a naive constant brake
-specific fuel consumption (BSFC) for the 'engine' of the aircraft, which is assumed
+specific fuel consumption (\BSFC) for the 'engine' of the aircraft, which is assumed
 to provide as much thrust as needed. Since $T \geq D$:
 
 \begin{equation}
     W_f \geq BSFC \times T_{flight} \times D
+    \label{e:W_f}
 \end{equation}
 
 the fuel weight required is the product of the BSFC, time of flight, and the
@@ -334,16 +334,16 @@ total drag on the aircraft.
 The drag of the aircraft is the product of dynamic pressure ($\frac{1}{2} \rho V^2$),
 the planform area $S$, and the coefficient of drag of the aircraft:
 
-\begin{equation} 
-    D \geq \frac{1}{2} \rho V^2 S  C_D
-\label{e:d}
+\begin{equation}
+    D \geq \frac{1}{2} \rho V^2 S C_D
+    \label{e:d}
 \end{equation}
 
-There is yet another relaxed monomial equality in Equation~\ref{e:d}.
-If the pressure on the \gls{LHS} or \gls{RHS} of a monomial equality are clear as in this case,
+There are yet more relaxed monomial equalities in Equations~\ref{e:W_f} and \ref{e:d}.
+If the pressure on the \gls{LHS} or \gls{RHS} of a monomial equality are clear as in these cases,
 it is a good practice to relax the equality to leave as many degrees of freedom
-in the design space as possible. The intuition is that, we can almost always have more drag,
-but the constraint will always be tight since all objectives will suffer.
+in the design space as possible. The intuition is that, we can almost always spend more fuel or have more drag,
+but the constraints will always be tight since all objectives will suffer as a consequence.
 
 The drag coefficient of the aircraft is assumed to be the sum of the fuselage drag,
 the wing profile drag, and the wing induced drag coefficients \cite{gp_ac_design}:
@@ -369,7 +369,8 @@ where the $CDA_0$ is linearly proportional to the volume of fuel in the fuselage
 \label{e:vffuse}
 \end{equation}
 
-Note that we correct the dimensionality of the volume here, since GPkit automatically checks units. 
+Note that we correct the dimensionality of the volume here, since GPkit automatically checks units.
+Additionally, we upper-bound fuel volume, since it is good to more space available for fuel.
 
 The wing profile drag is the product of the form factor, the friction drag coefficient,
 and the wetted area ratio of the wing \cite{gp_ac_design},
@@ -401,7 +402,7 @@ function of the $C_L$ and aspect ratio $AR$ of the wing.
 \label{e:cdinduced}
 \end{equation}
 
-The new variables are detailed in Table~\ref{tab:vars_TandD}.
+The new variables are detailed in Table~\ref{t:vars_TandD}.
 
 \begin{footnotesize}
 \begin{table}
@@ -425,7 +426,7 @@ The new variables are detailed in Table~\ref{tab:vars_TandD}.
         \bottomrule
     \end{tabular}
     \caption{Variables introduced in thrust and drag model.}
-    \label{tab:vars_TandD}
+    \label{t:vars_TandD}
 \end{table} \end{footnotesize}
 
 %\begin{python}
@@ -441,7 +442,7 @@ The new variables are detailed in Table~\ref{tab:vars_TandD}.
 %                    C_f >= 0.074 / Re ** 0.2]
 %\end{python}
 
-As shown in Table~\ref{tab:WLTD_unbounded} attempting to run the model as is
+As shown in Table~\ref{t:WLTD_unbounded} attempting to run the model as is
 results in both the fuselage fuel
 volume $V_{f_{fuse}}$ and the wing weight $W_w$ still being lower-unbounded.
 I will attempt to properly bound these to complete the SimPleAC model.
@@ -458,7 +459,7 @@ I will attempt to properly bound these to complete the SimPleAC model.
                 \bottomrule
             \end{tabular}
             \caption{Unbounded variables within the GP formulation}
-            \label{tab:WLTD_unbounded}
+            \label{t:WLTD_unbounded}
         \end{table}
     \end{center}
 \end{footnotesize}
@@ -533,8 +534,9 @@ V_{f_{wing}}^2 \leq 9\times10^{-4} \frac{S \tau^2}{\AR}
 \end{equation}
 
 Such variable transformations can be useful to have a minimal parametrization of designs.
-One can post-process the results of the optimization problem to get complete geometry
-as necessary. The new variables introduced to bound fuel volume are in Table~\ref{tab:vars_fuelmodel}.
+One can solve the minimal problem, and
+post-process the results of the optimization problem to get complete geometry
+as necessary. The new variables introduced to bound fuel volume are in Table~\ref{t:vars_fuelmodel}.
 (In the final form of the Equation~\ref{e:vfwing} I picked $9\times10^{-4}$ as the coefficient in
 front of the relation by tuning it after I had developed
 the model, but any other coefficient would do.)
@@ -555,7 +557,7 @@ the model, but any other coefficient would do.)
         \bottomrule
     \end{tabular}
     \caption{Variables introduced in the fuel model.}
-    \label{tab:vars_fuelmodel}
+    \label{t:vars_fuelmodel}
 \end{table} \end{footnotesize}
 
 \subsection{Arguments for the signomial equality}
@@ -629,7 +631,7 @@ bending moment relief due to presence of fuel and weight in the wings by perform
 geometric average of the total weight, and the weight excluding wing fuel and wing weight.
 
 The total wing weight is now lower-bounded by its component weights, and we have introduced
-the final set of variables in Table~\ref{tab:vars_wingstrcmodel}.
+the final set of variables in Table~\ref{t:vars_wingstrcmodel}.
 
 \begin{equation} W_w \geq W_{w_{surf}} + W_{w_{strc}} \label{e:ww} \end{equation}
 
@@ -649,7 +651,7 @@ the final set of variables in Table~\ref{tab:vars_wingstrcmodel}.
     \bottomrule
     \end{tabular}
     \caption{Variables introduced in the wing structural model.}
-    \label{tab:vars_wingstrcmodel}
+    \label{t:vars_wingstrcmodel}
 \end{table} \end{footnotesize}
 
 \section{Results of SimPleAC}
@@ -663,17 +665,18 @@ and the sensitivities of the parameters are presented for the reader.
 \begin{center}
 \captionof{table}{Values of the free variables in the SimPleAC model.}
 \input{tables/SimPleAC_results.tex}
-    \label{tab:SimPleAC_results}
+    \label{t:SimPleAC_results}
 \end{center}
 
 \begin{center}
 \captionof{table}{Sensitivities of parameters in the SimPleAC model.}
 \input{tables/SimPleAC_sens.tex}
-    \label{tab:SimPleAC_sens}
+    \label{t:SimPleAC_sens}
 \end{center}
 
 \section{Feasibility set of SimPleAC}
 
+%TODO: add stuff or remove?
 
 
 

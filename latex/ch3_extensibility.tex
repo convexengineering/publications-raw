@@ -228,7 +228,7 @@ The static aircraft model, and the atmospheric state are passed as an argument t
 performance models within this framework. To transform our previously static model to
 the performance-static model hierarchy we have identified,
 we have to determine which variables
-belong in which level of the tree. Table~\ref{tab:missionvars} details the full
+belong in which level of the tree. Table~\ref{t:missionvars} details the full
 decomposition of the model into its submodels in the format defined
 by Figure~\ref{f:missiongraph}. This is as simple as identifying which variables
 we do not expect to change during flight segments, and which ones we do.
@@ -237,10 +237,10 @@ we do not expect to change during flight segments, and which ones we do.
     \captionof{table}{Variables of SimPleAC in performance modeling, detailed in the
     variable and constraint hierarchy.}
     \input{tables/SimPleAC_missionvars.tex}
-    \label{tab:missionvars}
+    \label{t:missionvars}
 \end{center}
 
-Then, using the variable structure in Table~\ref{tab:missionvars}, we can place the
+Then, using the variable structure in Table~\ref{t:missionvars}, we can place the
 constraints in the appropriate locations. Each constraint should be placed
 in the model that contains the variable in the constraint that is highest in the level of hierarchy. For example,
 we can consider the constraint for thrust power in Equation~\ref{e:thrustConstr}.
@@ -334,7 +334,19 @@ I have borrowed Tony Tao's atmosphere fits, which are 2-term softmax-affine fits
 quantities of interest ($\rho$ and $\mu$ in this thesis) with respect to altitude.
 The relations are valid between 0-10000m of altitude.
 
+\subsection{Objective of the mission model}
+
+Recalling from Section~\ref{s:altobj}, upper-unbounded performance metrics often have to
+reside in the objective function to be bounded. As such, I have added mission time $t_m$ through a cost index as such:
+
+\begin{equation}
+    \mathrm{Objective} \geq W_f \frac{1}{\mathrm{N}} + \mathrm{Cost Index} \times t_m
+    \label{e:missionobj}
+\end{equation}
+
 \section{Design exploration through mission design}
+
+MORE TO BE ADDED HERE.
 
 Mission design often exploits the weaknesses of existing models to arrive at solutions
 that do not seem physical. In this specific modeling example, it shows the weaknesses of the engine model.
