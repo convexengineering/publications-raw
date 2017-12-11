@@ -2,7 +2,7 @@
  C_{L,max}: {C_{L,max}},
  e: {e},
  k: {k},
- (\frac{S}{S_{wet}}): {(\frac{S}{S_{wet}})},
+ \left(\frac{S}{S_{wet}}\right): {\left(\frac{S}{S_{wet}}\right)},
  Range: {Range},
  BSFC: {BSFC},
  V_{min}: {V_{min}},

@@ -3,7 +3,7 @@ k
 \mu
 Re
 D
-(\frac{S}{S_{wet}})
+\left(\frac{S}{S_{wet}}\right)
 A
 V_{f_{fuse}}
 BSFC

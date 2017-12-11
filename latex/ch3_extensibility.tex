@@ -232,8 +232,8 @@ one of the performance models contain variables that change between flight segme
 Note that I have created a performance model for all subcomponents other than the
 fuselage. This is because the only performance variable of the fuselage is its drag
 coefficient, which is assumed to not change between flight segments, making it static. I
-have also added a \textbf{Mission} model, which links flight segments together,
-and an \textbf{Atmosphere} model, which describes the conditions in which the aircraft
+have also added a \textbf{\textit{Mission}} model, which links flight segments together,
+and an \textit{Atmosphere} model, which describes the conditions in which the aircraft
 operates.
 
 The static aircraft model, and the atmospheric state are passed as an argument to multiple
@@ -369,8 +369,8 @@ evaluate a number of optimal designs quickly, and enabling the observation of tr
 For naturally aspirated piston engines, we would expect the maximum power available to
 drop with altitude; adding such a lapse rate will improve how much we trust the engine model.
 
-The second is the lack of an engine BSFC model. As an aerospace engineer, I have the insight
-empirically that the BSFC of an engine deteriorates at low power outputs.  Using more
+The second is the lack of an engine \BSFC model. As an aerospace engineer, I have the insight
+empirically that the \BSFC of an engine deteriorates at low power outputs.  Using more
 data-based modeling, we can model this relationship and improve our results.
 
 In Sections~\ref{s:lapse} and \ref{s:BSFC}, I will aim to implement these improvements.
@@ -389,14 +389,14 @@ posynomial inequality expression below:
     1 \geq L + \frac{P_{shaft,alt}}{P_{shaft,max}}
 \end{equation}
 
-Since the BSFC of a normally aspirated piston engine would be expected to improve
+Since the \BSFC of a normally aspirated piston engine would be expected to improve
 as the $P_{shaft} \xrightarrow[]{} P_{shaft,alt}$, the maximum shaft
 power at altitude has downward pressure on it from the fuel burn objective. This means that the
 inequality doesn't adequately lower bound the $P_{shaft,alt}$. If we try to flip the inequality in
 Constraint~\ref{e:lapse}, then $P_{shaft,alt}$ is upper-unbounded, so with our current parametrization
 of the shaft power, we must use a signomial equality.
 
-\subsection{Making use of sensitivities: engine BSFC model}
+\subsection{Making use of sensitivities: engine \BSFC model}
 \label{s:BSFC}
 
 The \BSFC is one of the variables that the model is most sensitive to, and it has yet to be modeled. As

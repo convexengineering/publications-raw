@@ -138,8 +138,8 @@ class Engine(Model):
     def setup(self):
         # Dimensional constants
         eta_prop    = Variable("\\eta_{prop}",0.8,'-',"propeller efficiency")
-        P_shaft_ref = Variable("P_{shaft_{ref}}",149,"kW","reference MSL maximum shaft power")
-        W_e_ref     = Variable("W_{e_{ref}}",681,"N","reference engine weight")
+        P_shaft_ref = Variable("P_{shaft,ref}",149,"kW","reference MSL maximum shaft power")
+        W_e_ref     = Variable("W_{e,ref}",681,"N","reference engine weight")
 
         # Free variables
         P_shaft_max = Variable("P_{shaft,max}","kW","MSL maximum shaft power")
@@ -182,7 +182,7 @@ class Mission(Model):
             Wend    = Variable('W_{end}', 'N','Weight at the end of flight segment')
             h       = Variable('h','m','Flight altitude')
             havg    = Variable('h_{avg}','m','average segment flight altitude')
-            dhdt    = Variable('\\frac{\\Delta h}{dt}','m/hr','Climb rate')
+            dhdt    = Variable('\\frac{dh}{dt}','m/hr','Climb rate')
             W_f_s   = Variable('W_{f_s}','N', 'Segment fuel burn')
             t_s     = Variable('t_s','hr','Time spent in flight segment')
             R_s     = Variable('R_s','km','Range flown in segment')

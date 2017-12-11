@@ -325,11 +325,11 @@ specific fuel consumption (\BSFC) for the 'engine' of the aircraft, which is ass
 to provide as much thrust as needed. Since $T \geq D$:
 
 \begin{equation}
-    W_f \geq BSFC \times T_{flight} \times D
+    W_f \geq \BSFC \times T_{flight} \times D
     \label{e:W_f}
 \end{equation}
 
-the fuel weight required is the product of the BSFC, time of flight, and the
+the fuel weight required is the product of the \BSFC, time of flight, and the
 total drag on the aircraft.
 The drag of the aircraft is the product of dynamic pressure ($\frac{1}{2} \rho V^2$),
 the planform area $S$, and the coefficient of drag of the aircraft:
@@ -412,7 +412,7 @@ The new variables are detailed in Table~\ref{t:vars_TandD}.
         Variable & Units & Description & Free & Value \\
         \midrule
         $A$ & $-$ & aspect ratio & Y & - \\
-        $BSFC$ & $\mathrm{\frac{g}{kW*hr}}$ & brake specific fuel consumption & N & 400 \\
+        $\BSFC$ & $\mathrm{\frac{g}{kW*hr}}$ & brake specific fuel consumption & N & 400 \\
         $(CDA0)$ & $~\mathrm{m^{2}}$ & fuselage drag area & Y & - \\
         $C_f$ & $-$ & skin friction coefficient & Y & - \\
         $D$ & $~\mathrm{N}$ & total drag force & Y & - \\
@@ -421,7 +421,7 @@ The new variables are detailed in Table~\ref{t:vars_TandD}.
         $\mu$ & $~\mathrm{\tfrac{kg}{m\cdot s}}$ & viscosity of air & N &
             $\mathrm{1.78 \times 10^{-5}}$ \\
         $Re$ & $-$ & Reynolds number & Y & - \\
-        $(\frac{S}{S_{wet}})$ & $-$ & wetted area ratio & N & 2.075 \\
+        $\left(\frac{S}{S_{wet}}\right)$ & $-$ & wetted area ratio & N & 2.075 \\
         $V_{f_{fuse}}$ & $~\mathrm{m^{3}}$ & fuel volume in the fuselage & Y & - \\
         \bottomrule
     \end{tabular}

@@ -24,7 +24,7 @@ class Multimission(Model):
                 Wstart = Variable('W_{start}', 'N', 'Weight at the beginning of flight segment')
                 Wend   = Variable('W_{end}', 'N','Weight at the end of flight segment')
                 h      = Variable('h','m','Flight altitude')
-                dhdt   = Variable('\\frac{\\Delta h}{dt}','m/hr','Climb rate')
+                dhdt   = Variable('\\frac{dh}{dt}','m/hr','Climb rate')
                 W_f_s  = Variable('W_{f_s}','N', 'Segment fuel burn')
                 t_s    = Variable('t_s','hr','Time spent in flight segment')
                 R_s    = Variable('R_s','km','Range flown in segment')

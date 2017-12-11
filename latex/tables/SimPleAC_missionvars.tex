@@ -10,7 +10,7 @@ $W_{avg}$ & $~\mathrm{N}$ & Segment average weight \\
 $W_{end}$ & $~\mathrm{N}$ & Weight at the end of flight segment \\
 $W_{f_s}$ & $~\mathrm{N}$ & Segment fuel burn \\
 $W_{start}$ & $~\mathrm{N}$ & Weight at the beginning of flight segment \\
-$\frac{\Delta h}{dt}$ & $~\mathrm{\tfrac{m}{hr}}$ & Climb rate \\
+$\frac{dh}{dt}$ & $~\mathrm{\tfrac{m}{hr}}$ & Climb rate \\
 $h$ & $~\mathrm{m}$ & Flight altitude \\
 $t_s$ & $~\mathrm{hr}$ & Time spent in flight segment \\
 \hline
@@ -85,12 +85,12 @@ $\rho_f$ & $~\mathrm{\tfrac{kg}{m^{3}}}$ & density of fuel \\
 $g$ & $~\mathrm{\tfrac{m}{s^{2}}}$ & gravitational acceleration \\
 \hline
 \multicolumn{3}{l}{\textbf{\textit{Mission}}/\textbf{SimPleAC}/\textbf{Engine}} \\
-$P_{shaft_{ref}}$ & $~\mathrm{kW}$ & reference MSL maximum shaft power \\
-$W_{e_{ref}}$ & $~\mathrm{N}$ & reference engine weight \\
+$P_{shaft,ref}$ & $~\mathrm{kW}$ & reference MSL maximum shaft power \\
+$W_{e,ref}$ & $~\mathrm{N}$ & reference engine weight \\
 $\eta_{prop}$ & $$ & propeller efficiency \\
 \hline
 \multicolumn{3}{l}{\textbf{\textit{Mission}}/\textbf{SimPleAC}/\textbf{Wing}} \\
-$(\frac{S}{S_{wet}})$ & $$ & wetted area ratio \\
+$\left(\frac{S}{S_{wet}}\right)$ & $$ & wetted area ratio \\
 $C_{L,max}$ & $$ & lift coefficient at stall \\
 $N_{ult}$ & $$ & ultimate load factor \\
 $W_{w_{coeff1}}$ & $~\mathrm{\tfrac{1}{m}}$ & wing weight coefficient 1 \\
@@ -124,11 +124,11 @@ $\rho_f$ & $~\mathrm{\tfrac{kg}{m^{3}}}$ & density of fuel \\
 \hline
 \multicolumn{3}{l}{\textbf{\textit{Mission}}/\textbf{SimPleAC}/\textbf{Engine}} \\
 $\eta_{prop}$ & $$ & propeller efficiency \\
-$P_{shaft_{ref}}$ & $~\mathrm{kW}$ & reference MSL maximum shaft power \\
-$W_{e_{ref}}$ & $~\mathrm{N}$ & reference engine weight \\
+$P_{shaft,ref}$ & $~\mathrm{kW}$ & reference MSL maximum shaft power \\
+$W_{e,ref}$ & $~\mathrm{N}$ & reference engine weight \\
 \hline
 \multicolumn{3}{l}{\textbf{\textit{Mission}}/\textbf{SimPleAC}/\textbf{Wing}} \\
-$(\frac{S}{S_{wet}})$ & $$ & wetted area ratio \\
+$\left(\frac{S}{S_{wet}}\right)$ & $$ & wetted area ratio \\
 $k$ & $$ & form factor \\
 $C_{L,max}$ & $$ & lift coefficient at stall \\
 $e$ & $$ & Oswald efficiency factor \\
@@ -138,6 +138,6 @@ $N_{ult}$ & $$ & ultimate load factor \\
 $W_{w_{coeff1}}$ & $~\mathrm{\tfrac{1}{m}}$ & wing weight coefficient 1 \\
 \hline
 \multicolumn{3}{l}{\textbf{\textit{Mission}}/\textbf{\textit{SimPleACP}}/\textit{EngineP}} \\
-$BSFC$ & $~\mathrm{\tfrac{g}{\left(hr\cdot kW\right)}}$ & brake specific fuel consumption \\
+$\BSFC$ & $~\mathrm{\tfrac{g}{\left(hr\cdot kW\right)}}$ & brake specific fuel consumption \\
 \bottomrule
 \end{longtable}}
