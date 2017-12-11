@@ -42,11 +42,13 @@ cstrt, rms_error = fit(logPin,logWin,K,Type)
 
 
 # Plotting data
-plt.plot(P[indices]/1000,W[indices],'r*') 
+plt.plot(P[indices]/1000,W[indices],'r*',label='Data')
 Pplot = np.linspace(1,150000,100)
+plt.plot(Pplot/1000,maxW*(0.984118 * (Pplot/maxP)**0.117039)**10,label='K=1')
 plt.plot(Pplot/1000, maxW*(0.00441* (Pplot/maxP)**0.759 +
-                           1.44* (Pplot/maxP)**2.90)**(1/1.92))
+                           1.44* (Pplot/maxP)**2.90)**(1/1.92),label='K=2')
 plt.xlabel('Mean sea level maximum power (kW)')
 plt.ylabel('Engine weight (lbs)')
 plt.grid(True)
+plt.legend(loc=2)
 plt.show()

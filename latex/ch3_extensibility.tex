@@ -1,11 +1,15 @@
 \chapter{Extensibility of GP}
 \label{ch3:extensibility}
 
-Traditional engineering design optimization tools (eg. TASOPT) implement
+Recalling from Figure~\ref{f:optflow}, traditional gradient-based design optimization tools implement
 convergence loops that assume structure within a given design problem.
 The 'bag of constraints' form of the GP means that constraints can be
 added to the problem without
-having to restructure the optimization formulation.
+having to restructure the optimization formulation. This property,
+coupled with the object-oriented modeling framework of GPkit, allows
+\gls{GP} compatible models to be continuously extensible.
+In this section, I will demonstrate common methods used to extend the capability
+and improve the fidelity of \gls{GP}- and \gls{SP} compatible models.
 
 \section{Improving fidelity: Adding a simple engine model to the SimPleAC}
 \label{s:engine}
@@ -22,11 +26,11 @@ method that returns the constraints within it.
 
 \begin{python}
     class Engine(Model):
-    def setup(self):
-    # Dimensional constants
-    BSFC = Variable("BSFC", 400, "g/(kw*hr)", "brake specific fuel consumption")
-    constraints = []
-    return constraints
+        def setup(self):
+            # Dimensional constants
+            BSFC = Variable("BSFC", 400, "g/(kw*hr)", "brake specific fuel consumption")
+            constraints = []
+            return constraints
 \end{python}
 
 We allow the SimPleAC model to contain the variables and constraints of the engine
@@ -34,12 +38,11 @@ as follows:
 
 \begin{python}
     class SimPleAC(Model):
-    def setup(self):
-    self.engine = Engine()
-    self.components = [self.engine]
-    # Env. constants
-    ...
-    return constraints, self.components
+        def setup(self):
+            self.engine = Engine()
+            self.components = [self.engine]
+            ...
+            return constraints, self.components
 \end{python}
 
 This restructuring of the model yields the exact same overall \gls{GP} formulation
@@ -73,15 +76,15 @@ To be able to fit the engine power vs. weight data, we take several important st
     data with potentially high standard deviation onto a single line,
     it is important to fit the ranges of data we care about.
     \item \textbf{Normalize the data.} Normalizing the data
-    by some known quantity is preferable, since we would not want our fit to be dependent on the
-    units that we used while performing it. This also helps the fit integrate
+    by some known quantity is preferable, fits should not be dependent on the
+    units that are used while performing it. This also helps the fit integrate
     seamlessly into GPkit, since dimensional fits would require units manipulation
     to avoid errors. The data can be normalized by any
     reference quantities (in this case using the maximum power and weight values
     from the data set).
     \item \textbf{Choose the type of fit.} In~\cite{gpfitpaper}, \textit{softmax-affine}
     (SMA) and \textit{implicit softmax-affine} (ISMA)
-    functions are proposed as convex approximations
+    functions are proposed and implemented as convex approximations
     to data. Depending on the behavior of the data, one or the other
     may be appropriate. For engineering relations that are expected to be smooth, SMA
     functions are often good approximations. However, if kinks are expected in the
@@ -98,20 +101,28 @@ To be able to fit the engine power vs. weight data, we take several important st
 After having performed these intermediate steps on the engine data,
 the relation we obtain for the one-term approximation is as follows:
 \begin{equation}
-    (\frac{W_{eng}}{W_{eng_{max}}})^{0.100} = 0.988 (\frac{P_{shaft}}{P_{shaft,max}})^{0.117}
+    \left(\frac{W_{eng}}{W_{eng,max}}\right)^{0.100} = 0.988 \left(\frac{P_{shaft}}{P_{shaft,max}}\right)^{0.117}
 \end{equation}
 
-Note that the root mean square error of this fit is 0.414, but this has to do with
+Note that the root mean square error of this fit is 0.414, which primarily has to do with
 the level of variation in the data. Since engine weight will have downward pressure
 on it from the objective, we can easily use a two-term posynomial approximation to
 improve its error.
 
 \begin{equation}
-    (\frac{W_{eng}}{W_{eng_{max}}})^{0.801} \geq 0.0330 (\frac{P_{shaft}}{P_{shaft,max}})^{0.167}
-    +1.59 (\frac{P_{shaft}}{P_{shaft,max}})^{1.36}
+    \left(\frac{W_{eng}}{W_{eng,max}}\right)^{0.801} \geq 0.0330 \left(\frac{P_{shaft}}{P_{shaft,max}}\right)^{0.167}
+    +1.59 \left(\frac{P_{shaft}}{P_{shaft,max}}\right)^{1.36}
 \end{equation}
 
 This relation has an r.m.s. error of 0.346, which is a significant improvement.
+Both fits are shown with the data in Figure~\ref{f:enginefit}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{enginePvsW.png}
+    \caption{Engine MSL power versus weight fits for $K=1,2$ posynomial terms with underlying data.}
+    \label{f:enginefit}
+\end{figure}
 
 It turns out that with a SMA approximation, more terms do not improve the r.m.s.
 error of the fit on the given data. As such, we will proceed with the 2-term posynomial fit.
@@ -119,10 +130,11 @@ error of the fit on the given data. As such, we will proceed with the 2-term pos
 \subsubsection{Other constraints in engine model}
 
 I constrain the cruise shaft power to be 20\% of the maximum shaft power of the engine,
-to account for engine surge power demands.
+to account for engine surge power demands. This rather arbitrary constraint is removed
+later when the full mission model is integrated.
 
 \begin{equation}
-    P_shaft \leq \frac{1}{5} P_{shaft,max}
+    P_{shaft} \leq \frac{1}{5} P_{shaft,max}
 \end{equation}
 
 \subsection{Converting all subsystems into submodels}
