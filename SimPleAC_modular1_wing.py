@@ -53,7 +53,7 @@ class SimPleAC(Model):
                     D >= 0.5 * rho * self.wing['S'] * C_D * V ** 2,
                     C_D_fuse == CDA0 / self.wing['S'],
                     C_D >= C_D_fuse + self.wing['C_{D_{wpar}}'] + self.wing['C_{D_{ind}}'],
-                    V_f_fuse <= 10*units('m')*CDA0,
+                    V_f_fuse == 10*units('m')*CDA0,
                     Re <= (rho / mu) * V * (self.wing['S'] / self.wing['A']) ** 0.5,
                     self.wing['C_f'] >= 0.074 / Re ** 0.2,
                     ]

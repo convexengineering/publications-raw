@@ -71,7 +71,7 @@ class SimPleAC(Model):
                     C_D_fuse == CDA0 / S,
                     C_D_wpar == k * C_f * S_wetratio,
                     C_D_ind  == C_L ** 2 / (np.pi * A * e),
-                    V_f_fuse <= 10*units('m')*CDA0,
+                    V_f_fuse == 10*units('m')*CDA0,
                     Re <= (rho / mu) * V * (S / A) ** 0.5,
                     C_f >= 0.074 / Re ** 0.2]
 
