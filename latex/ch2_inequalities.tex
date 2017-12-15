@@ -365,12 +365,11 @@ The fuselage drag is a function of its drag area $CDA_0$ and the planform area o
 where the $CDA_0$ is linearly proportional to the volume of fuel in the fuselage:
 
 \begin{equation}
-    V_{f_{fuse}} \leq CDA_0 \times 10 ~\mathrm{[meters]}
+    V_{f_{fuse}} = CDA_0 \times 10 ~\mathrm{[meters]}
 \label{e:vffuse}
 \end{equation}
 
 Note that we correct the dimensionality of the volume here, since GPkit automatically checks units.
-Additionally, we upper-bound fuel volume, since it is good to more space available for fuel.
 
 The wing profile drag is the product of the form factor, the friction drag coefficient,
 and the wetted area ratio of the wing \cite{gp_ac_design},
@@ -437,7 +436,7 @@ The new variables are detailed in Table~\ref{t:vars_TandD}.
 %        constraints += [W_f >= BSFC * T_flight * D,
 %                    D >= 0.5 * rho * S * C_D * V ** 2,
 %                    C_D >= C_D_fuse + C_D_wpar + C_D_ind,
-%                    V_f_fuse <= 10*units('m')*CDA0,
+%                    V_f_fuse == 10*units('m')*CDA0,
 %                    Re <= (rho / mu) * V * (S / A) ** 0.5,
 %                    C_f >= 0.074 / Re ** 0.2]
 %\end{python}

@@ -75,7 +75,8 @@ class Fuselage(Model):
         V_f_fuse  = Variable('V_{f_{fuse}}','m^3','fuel volume in the fuselage', fix = True)
 
         constraints = []
-        constraints += [V_f_fuse == 10*units('m')*CDA0]
+        constraints += [V_f_fuse == 10*units('m')*CDA0,
+                        V_f_fuse >= 1*10**-5*units('m^3')]
 
         return constraints
 

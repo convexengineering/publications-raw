@@ -3,7 +3,8 @@
 
 Modern engineering design, and particularly aerospace design, has come to rely
 heavily on optimization. Time and time again, the importance of fast and
-reliable \gls{MDO} tools has been stressed in the literature. However most \gls{MDO} tools
+reliable \gls{MDO} tools has been stressed in the literature. %TODO: cite
+However most \gls{MDO} tools
 have the downfall of being slow due to the multimodal nature of many
 engineering design problems. Furthermore, these tools act like black boxes since
 they provide point solutions without additional information about the design problem
@@ -15,7 +16,7 @@ software product is GPkit, an
 open-source, object-oriented software to help build \gls{GP}-compatible models and
 interface with solvers. In much of our previous work
 (\cite{gp_ac_design},\cite{SP_ac_design}, \cite{sp_engine}), we have demonstrated that
-\gls{GP} is useful for optimization, but have yet to formalize why it
+\gls{GP} is useful for certain kinds of optimization problems, but have yet to formalize why it
 facilitates design.
 
 The mathematical restrictions on the form of constraints remains the biggest
@@ -32,7 +33,7 @@ pass on some of the expertise we have developed in the \gls{CEG} building
 
 Secondly, I aim to showcase the extensibility of \gls{GP}.
 The formulation of the \gls{GP} as a 'bag of
-constraints' instead of a hierarchial set of relations confers advantages
+constraints' instead of a hierarchical set of relations confers advantages
 when trying to expand the fidelity and scope of models, especially in the
 conceptual design stage. Furthermore, the solution to the dual of the \gls{GP}
 provides optimal sensitivities which allow targeted efforts by engineers to
@@ -61,8 +62,8 @@ features of optimization create barriers to entry for its use in design.
 In the context of this thesis, I will define design as the following:
 To design is to conceive the form and function of something.
 In the engineering sense, we can think about the form as the configuration or
-the parametrization. The form usually defines n, the number of degrees of freedom
-of the system, which can have a direct effect on the size of the feasibility
+the parametrization. The form usually defines $n$, the number of degrees of freedom
+of the system, which has a direct effect on the size of the feasibility
 space, as well as the complexity of the problem.
 On the other hand, the function is the actual purpose of the things
 being designed. It is oftentimes the aspect of the design that we can
@@ -90,12 +91,12 @@ In many ways, optimization is a natural extension of design, because it allows
 for an explicit mathematical representation of the form and function. Both design and
 optimization explore feasible and infeasible sets, but differ in a fundamental way.
 Design is based on feasibility, whereas optimization is based on optimality.
-This observations seems banal, but gives insight as to why there is a barrier
+This observation seems banal, but gives insight as to why there is a barrier
 to entry for optimization methods (and especially so for more restrictive forms).
 The distinction allows design to be performed
 in non-restrictive mathematical forms, since non-linear feasibility problems are
 much easier to solve than non-linear optimization problems. Optimization is
-done in specific mathematical forms; since most problems of interest are complex
+done in specific mathematical forms; since most problems of interest are complex,
 computational time is a limited resource. These forms can prove
 an impediment for designers unfamiliar with optimization to use it.
 
@@ -106,8 +107,8 @@ world"~\cite{duffingp}. \gls{GP}s and other convex optimization methods have bee
 in development since the 1960's, but have come into the limelight thanks to the development of
 polynomial-time algorithms for convex programming~\cite{interior_point} and
 improvements in computing. I do not make
-the claim that the form of \gls{GP} makes it applicable to every design
-problem, especially since \gls{GP} generally requires explicit constraints.
+the claim that the form of the \gls{GP} makes it applicable to every design
+problem, especially since \gls{GP}s generally require explicit constraints.
 Instead, I argue that, for certain kinds of problems, \gls{GP} and convex
 optimization naturally integrate into the conceptual design process
 for three primary reasons.
@@ -138,7 +139,7 @@ for three primary reasons.
     means that there is no need to reformulate the optimization scheme as more
     constraints are added. This makes incremental modeling improvements straight-forward.
     The traditional engineering design process is split into conceptual, preliminary
-    and critical design segments. GP modeling facilitates this process by allowing
+    and critical design segments. \gls{GP} modeling facilitates this process by allowing
     ever-increasing levels of complexity.
 
     Gradient-based optimization methods for
@@ -147,7 +148,7 @@ for three primary reasons.
     when new constraints are introduced. Furthermore, the designer has to tune
     the module for generating new guesses from gradient information, which is unreliable
     at best. \gls{GP}s (and the \gls{GP} approximations
-    of \gls{SP}s) are solved all-at-once, which means that there are no constraint
+    of \gls{SP}s) are solved all-at-once~\cite{martins_mdo}, which means that there are no constraint
     convergence loops to worry about or parameters to tune. Please refer to \cite{martins_mdo}
     for a more in-depth analysis of various \gls{MDO} architectures.
 
@@ -208,7 +209,7 @@ for three primary reasons.
 
     A big advantage of convexity is that we can effectively use sensitivity information
     to determine which parts of the
-    model yield the greatest returns to improved modeling, so engineers can target
+    model yield the greatest returns in terms of fidelity to improved modeling, so engineers can target
     their efforts.
 
     \item \textit{Models are amenable to mission and multi-point design, and are compatible with modern
