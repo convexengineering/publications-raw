@@ -201,7 +201,7 @@ class Mission(Model):
             self.aircraftP = self.aircraft.dynamic(state)
 
         # Mission variables
-        hcruise = Variable('h_{cruise}', 5000, 'm', 'minimum cruise altitude')
+        hcruise    = Variable('h_{cruise}', 2500, 'm', 'minimum cruise altitude')
         Range      = Variable("Range", 3000, "km", "aircraft range")
         W_p        = Variable("W_p", 6250, "N", "payload weight", pr=20.)
         V_min      = Variable("V_{min}", 25, "m/s", "takeoff speed", pr=20.)
