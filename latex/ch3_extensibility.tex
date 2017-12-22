@@ -167,7 +167,7 @@ will facilitate the vectorization of constraints required for mission design.
 
 %TODO: develop on the idea of variable and constraint hierarchy
 
-\section{Performance modeling form}
+\section{Mission design and performance modeling form}
 \label{s:mission}
 
 The SimPleAC that I have defined so far works well to demonstrate the
@@ -371,32 +371,70 @@ potential designs using\gls{GP}s.
 
 Leveraging the speed of convex optimization, we can perform sweeps with respect to mission input
 parameters, and map out the entire design space w.r.t the objective. In this case, I have chosen to
-sweep across both payload weight and range, and my variable of interest is total weight.
+sweep across both payload weight and range, and the variable of interest is mission fuel weight.
+Note that
+every point in the design space represents a fully optimized aircraft.
 
-%TODO: insert a diagram of a range-payload contour plot here.
+\begin{figure*}[t!]
+    \centering
+    \begin{subfigure}[t]{0.5\linewidth}
+        \centering
+        \includegraphics[width=0.9\linewidth]{W_fcontours.png}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}[t]{0.5\linewidth}
+        \centering
+        \includegraphics[width=0.9\linewidth]{Wcontours.png}
+    \end{subfigure}
+    \caption{The fuel and total weight Pareto frontiers with respect to range and payload inputs.}
+    \label{f:pareto}
+\end{figure*}
 
-%TODO: insert a diagram of fuel fraction stored in wing vs. fuselage
+In Section~\ref{s:fuel} we had to weigh whether or not it was worth losing the mathematical
+guarantees of convexity to be able to model fuel storage. Now we can use our \gls{SP} model to understand
+the tradeoffs in fuel storage, and when it is beneficial to store fuel in the wing versus the fuselage.
 
-%TODO: plot some mission profiles (at which point does the aircraft want
-%to climb in terms of mission length?
+\begin{center}
+\begin{figure}
+    \includegraphics[width=0.45\linewidth]{FuseFuelFraccontours.png}
+    \caption{}
+    \label{f:fusefuelfrac}
+\end{figure}
+\end{center}
 
-%TODO: insert a sensitivity variation plot.
+Figure~\ref{f:fusefuelfrac} shows how designs for different range and payload requirements
+allocate fuel differently within the aircraft. As the mission range increases for a given payload weight,
+more and more fuel is allocated within the fuselage as a proportion of total fuel. Since fuselage fuel
+volume is directly related to increased fuselage drag, it makes sense that no fuel is put in the fuselage
+until the fuel volume constraint in the wing becomes tight. And this is the behavior that is observed.
 
-
-Mission design often exploits the weaknesses of existing models to arrive at solutions
-that do not seem physical. In this specific modeling example, it shows the weaknesses of the engine model.
-
-The first weakness is the fact that the engine can supply the same amount of power
-regardless of altitude. \gls{GP} can help us observe this behavior by allowing engineers to
-evaluate a number of optimal designs quickly, and enabling the observation of trends.
-For naturally aspirated piston engines, we would expect the maximum power available to
-drop with altitude; adding such a lapse rate will improve how much we trust the engine model.
-
-The second is the lack of an engine \BSFC model. As an aerospace engineer, I have the insight
-empirically that the \BSFC of an engine deteriorates at low power outputs.  Using more
-data-based modeling, we can model this relationship and improve our results.
-
-In Sections~\ref{s:lapse} and \ref{s:BSFC}, I will aim to implement these improvements.
+%\begin{center}
+%\begin{figure}
+%    \includegraphics[width=0.45\linewidth]{h_cruisesenscontours.png}
+%    \caption{}
+%    \label{f:h_cruisesens}
+%\end{figure}
+%\end{center}
+%
+%Another interesting aspect to investigate is the effect of minimum cruise altitude. In none of the designs
+%does minimum cruise altitude have a zero sensitivity, which indicates that the constraint is always tight.
+%However, we do observe that, if the
+%
+%
+%Mission design often exploits the weaknesses of existing models to arrive at solutions
+%that do not seem physical. In this specific modeling example, it shows the weaknesses of the engine model.
+%
+%The first weakness is the fact that the engine can supply the same amount of power
+%regardless of altitude. \gls{GP} can help us observe this behavior by allowing engineers to
+%evaluate a number of optimal designs quickly, and enabling the observation of trends.
+%For naturally aspirated piston engines, we would expect the maximum power available to
+%drop with altitude; adding such a lapse rate will improve how much we trust the engine model.
+%
+%The second is the lack of an engine \BSFC model. As an aerospace engineer, I have the insight
+%empirically that the \BSFC of an engine deteriorates at low power outputs.  Using more
+%data-based modeling, we can model this relationship and improve our results.
+%
+%In Sections~\ref{s:lapse} and \ref{s:BSFC}, I will aim to implement these improvements.
 
 \subsection{Engine lapse rate model}
 \label{s:lapse}
@@ -440,7 +478,8 @@ The result is shown in Figure~\ref{f:P_BSFC}.
     \end{figure}
 \end{center}
 
-There is a significant deterioration in the quality of the fit as $\frac{P_{shaft}}{P_{shaft,alt}} \xrightarrow[]{} 1$,
+Although the r.m.s. error of the fit is low (0.015), there is a significant deterioration in the quality of the
+fit as $\frac{P_{shaft}}{P_{shaft,alt}} \xrightarrow[]{} 1$,
 and increasing the number of posynomial terms in the fit does not alleviate this problem. It
 turns out that fitting with respect to lapse rate using the simple relation $1 = L + \frac{P_{shaft}}{P_{shaft,alt}}$
 resolves the issue. The fit with respect to lapse rate, which has been implemented in the model, is
@@ -455,8 +494,22 @@ shown in Figure~\ref{f:lapse_BSFC.png}
     \end{figure}
 \end{center}
 
+The r.m.s. error of the new fit is less than $10^{-10}$, since we are able to find a 2-term posynomial that
+goes through the seven data points to numerical precision.
 The improvement of the fit thanks to a simple variable transformation shows that
 parametrization can be important to the level of accuracy and fidelity of a model.
+
+\subsection{Results with improved BSFC model}
+
+Now we can compare the changes in the results, both in terms of the mission and airframe design, with respect
+to the improved engine model.
+
+%TODO: add table with the input values to initial and final missions
+
+%TODO: add table comparing the results of the different missions
+
+And most importantly, we should see changes in the sensitivity contours that may (or sometimes may not)
+agree with our engineering intuition. This is a valuable feature of optimization coupled in design.
 
 \section{Multimission design}
 \label{s:multimission}
