@@ -408,33 +408,20 @@ more and more fuel is allocated within the fuselage as a proportion of total fue
 volume is directly related to increased fuselage drag, it makes sense that no fuel is put in the fuselage
 until the fuel volume constraint in the wing becomes tight. And this is the behavior that is observed.
 
-%\begin{center}
-%\begin{figure}
-%    \includegraphics[width=0.45\linewidth]{h_cruisesenscontours.png}
-%    \caption{}
-%    \label{f:h_cruisesens}
-%\end{figure}
-%\end{center}
-%
-%Another interesting aspect to investigate is the effect of minimum cruise altitude. In none of the designs
-%does minimum cruise altitude have a zero sensitivity, which indicates that the constraint is always tight.
-%However, we do observe that, if the
-%
-%
-%Mission design often exploits the weaknesses of existing models to arrive at solutions
-%that do not seem physical. In this specific modeling example, it shows the weaknesses of the engine model.
-%
-%The first weakness is the fact that the engine can supply the same amount of power
-%regardless of altitude. \gls{GP} can help us observe this behavior by allowing engineers to
-%evaluate a number of optimal designs quickly, and enabling the observation of trends.
-%For naturally aspirated piston engines, we would expect the maximum power available to
-%drop with altitude; adding such a lapse rate will improve how much we trust the engine model.
-%
-%The second is the lack of an engine \BSFC model. As an aerospace engineer, I have the insight
-%empirically that the \BSFC of an engine deteriorates at low power outputs.  Using more
-%data-based modeling, we can model this relationship and improve our results.
-%
-%In Sections~\ref{s:lapse} and \ref{s:BSFC}, I will aim to implement these improvements.
+\section{Improved modeling in mission design}
+
+There are still significant weaknesses in the model that mission design often exploits to arrive at solutions
+that do not seem physical. In this specific modeling example, it shows the weaknesses of the engine model.
+
+The first weakness is the fact that the engine can supply the same amount of power
+regardless of altitude. For naturally aspirated piston engines, we would expect the maximum power available to
+drop with altitude; adding such a lapse rate will improve how much we trust the engine model.
+The second is the lack of an engine \BSFC model. As an aerospace engineer, I have the insight
+empirically that the \BSFC of an engine deteriorates at low power outputs.  Using more
+data-based modeling, we can model this relationship and improve our results.
+
+In Sections~\ref{s:lapse} and \ref{s:BSFC}, I will aim to implement these improvements. Then in Section\ref{s:compare},
+we can see how improved modeling affects the results of the model.
 
 \subsection{Engine lapse rate model}
 \label{s:lapse}
@@ -499,7 +486,8 @@ goes through the seven data points to numerical precision.
 The improvement of the fit thanks to a simple variable transformation shows that
 parametrization can be important to the level of accuracy and fidelity of a model.
 
-\subsection{Results with improved BSFC model}
+\subsection{Comparing models under different sets of constraints}
+\label{s:compare}
 
 Now we can compare the changes in the results, both in terms of the mission and airframe design, with respect
 to the improved engine model.
@@ -510,6 +498,22 @@ to the improved engine model.
 
 And most importantly, we should see changes in the sensitivity contours that may (or sometimes may not)
 agree with our engineering intuition. This is a valuable feature of optimization coupled in design.
+
+\subsection{Insights from mission design}
+
+\begin{center}
+\begin{figure}
+    \includegraphics[width=0.45\linewidth]{h_cruisesenscontours.png}
+    \caption{}
+    \label{f:h_cruisesens}
+\end{figure}
+\end{center}
+
+Another interesting aspect to investigate is the effect of minimum cruise altitude. In none of the designs
+does minimum cruise altitude have a zero sensitivity, which indicates that the constraint is always tight.
+However, we do observe that, if the
+
+
 
 \section{Multimission design}
 \label{s:multimission}
