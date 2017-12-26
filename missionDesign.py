@@ -1,4 +1,4 @@
-from SimPleAC_mission2 import Mission
+from SimPleAC_mission4 import Mission
 from gpkit import Model, units, Vectorize, Variable
 from gpkit import GPCOLORS, GPBLU
 from gpkit.constraints.bounded import Bounded
@@ -13,13 +13,14 @@ m.cost = m['W_f'] * units('1/N') + m['Cost Index'] * m['t_m']
 
 # Setting sweep substitutions
 Range = np.linspace(1000,5000,N)
-# # W = np.linspace(2000,20000,N)
 W_p = np.linspace(1000,10000,M)
 m.substitutions.update({'Range':('sweep',Range),
                          'W_p'  :('sweep',W_p)})
 
 # Solving
 sol = m.localsolve(verbosity=2,skipsweepfailures=True)
+#sol = m.autosweep({m['Range']:(1000,5000),
+#                   m['W_p']:(1000,10000)})
 
 # Plotting
 Vffuse = sol('V_{f_{fuse}}').reshape((N,M))
@@ -39,7 +40,7 @@ plt.ylabel('Range (km)')
 plt.title('Fuel weight contours (N)')
 plt.grid()
 plt.colorbar()
-plt.savefig('figbank/Wfcontours')
+plt.savefig('figbank/Wfcontours.png')
 plt.close()
 
 # Total weight contours
@@ -127,3 +128,13 @@ plt.colorbar()
 plt.savefig('figbank/hcruisesenscontours.png')
 plt.close()
 
+# Min velocity sensitivity contours
+Vminsens = sol['sensitivities']['constants']['V_{min}'].reshape((N,M))
+plt.contour(W_p,Range,Vminsens)
+plt.xlabel('Payload weight (N)')
+plt.ylabel('Range (km)')
+plt.title('$V_{min}$ sensitivity contours')
+plt.grid()
+plt.colorbar()
+plt.savefig('figbank/Vminsenscontours.png')
+plt.close()
