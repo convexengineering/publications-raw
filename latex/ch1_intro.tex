@@ -10,9 +10,11 @@ engineering design problems. Furthermore, these tools act like black boxes since
 they provide point solutions without additional information about the design problem
 such as sensitivities, which can provide important engineering insight.
 
+%TODO: (Mark's comments: only write timeless truths).
 In the \gls{CEG}, we seek to improve the engineering design process by
-leveraging the mathematical guarantees and speed of convex optimization. Our primary
-software product is GPkit, an
+leveraging the mathematical guarantees and speed of convex optimization.
+%TODO: (Mark's comments: giving details of GPkit in the Intro is way too early.)
+Our primary software product is GPkit, an
 open-source, object-oriented software to help build \gls{GP}-compatible models and
 interface with solvers. In much of our previous work
 (\cite{gp_ac_design},\cite{SP_ac_design}, \cite{sp_engine}), we have demonstrated that
@@ -20,18 +22,18 @@ interface with solvers. In much of our previous work
 facilitates design.
 
 The mathematical restrictions on the form of constraints remains the biggest
-barrier in using convex programs for design. Firstly, I
-aim to show that the form of the \gls{GP} actually facilitates the design
+barrier in using convex programs for design. Firstly, this thesis will
+show that the form of the \gls{GP} actually facilitates the design
 optimization process
 and engineering understanding, rather than impeding it, through the disciplined use
 of inequalities to express constraints. Furthermore, GPkit allows for the
 monitoring of the boundedness of variables in a model, which facilitates the model
 building process and allows engineers
-to have properly conditioned models. Hence I will
+to have properly conditioned models. Hence this thesis will
 pass on some of the expertise we have developed in the \gls{CEG} building
 \gls{GP}-compatible models from general non-linear physical models.
 
-Secondly, I aim to showcase the extensibility of \gls{GP}.
+Section~\ref{ch3:extensibility} will showcase the extensibility of \gls{GP}.
 The formulation of the \gls{GP} as a 'bag of
 constraints' instead of a hierarchical set of relations confers advantages
 when trying to expand the fidelity and scope of models, especially in the
@@ -39,14 +41,15 @@ conceptual design stage. Furthermore, the solution to the dual of the \gls{GP}
 provides optimal sensitivities which allow targeted efforts by engineers to
 collaboratively improve models.
 
-Finally, I will discuss the features specific to GPkit in facilitating
+Section~\ref{ch3:extensibility} will also discuss the features specific to
+GPkit in facilitating
 an engineering design process that is streamlined and collaborative, and is
 compatible with modern engineering design methodologies. The modularity of the
 models, as well as the ability to create vectorized models, variables and constraints
 allows for a mission design approach that ensures that
 requirements both at the sub-system and complete-system levels are satisfied.
 
-I will discuss the features of \gls{GP} and convex optimization in general in
+The features of \gls{GP} and convex optimization in general will be discussed in
 the context of an aircraft \gls{MDO} problem, but the methods discussed
 are general to other engineering design problems which have explicit constraints.
 
@@ -56,8 +59,6 @@ It is difficult to find definitions of design and optimization that
 try to identify the similarities and differences between the terms. For us to be
 able to understand why \gls{GP}s facilitate design, we have to determine what
 features of optimization create barriers to entry for its use in design.
-
-\subsection{What is design?}
 
 In the context of this thesis, I will define design as the following:
 To design is to conceive the form and function of something.
@@ -77,18 +78,15 @@ the relative performances of designs, the classical
 definition of design implies a class of feasibility problems satisfying a set of
 constraints that act on the designer's parametrization of the problem.
 
-\subsection{What is optimization?}
-
 In this thesis, I give optimization the following definition: To optimize is to select an
 element in a set of feasible solutions with the lowest desired objective
 function value. It is also a process, which is sensitive to the elements contained within the set
 (related to the form), and the choice of objective function (related to the
 function).
-
-\subsection{The fundamental differences}
-
 In many ways, optimization is a natural extension of design, because it allows
-for an explicit mathematical representation of the form and function. Both design and
+for an explicit mathematical representation of the form and function.
+
+Both design and
 optimization explore feasible and infeasible sets, but differ in a fundamental way.
 Design is based on feasibility, whereas optimization is based on optimality.
 This observation seems banal, but gives insight as to why there is a barrier
@@ -106,10 +104,10 @@ an impediment for designers unfamiliar with optimization to use it.
 world"~\cite{duffingp}. \gls{GP}s and other convex optimization methods have been
 in development since the 1960's, but have come into the limelight thanks to the development of
 polynomial-time algorithms for convex programming~\cite{interior_point} and
-improvements in computing. I do not make
-the claim that the form of the \gls{GP} makes it applicable to every design
-problem, especially since \gls{GP}s generally require explicit constraints.
-Instead, I argue that, for certain kinds of problems, \gls{GP} and convex
+improvements in computing. The form of the \gls{GP} limits its application
+to certain kinds of design
+problems, especially since \gls{GP}s generally require explicit constraints.
+But for these problems, \gls{GP} and convex
 optimization naturally integrate into the conceptual design process
 for three primary reasons.
 
@@ -223,7 +221,7 @@ for three primary reasons.
 
 \end{enumerate}
 
-In this thesis, I will methodically demonstrate the advantages of \gls{GP} in modeling
+This thesis will methodically demonstrate the advantages of \gls{GP} in modeling
 and exploring complex engineering trade spaces.
 
 

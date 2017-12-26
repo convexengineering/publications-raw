@@ -8,7 +8,7 @@ added to the problem without
 having to restructure the optimization formulation. This property,
 coupled with the object-oriented modeling framework of GPkit, allows
 \gls{GP} compatible models to be continuously extensible.
-In this section, I will demonstrate common methods used to extend the capability
+This section will demonstrate common methods used to extend the capability
 and improve the fidelity of \gls{GP}- and \gls{SP} compatible models.
 
 \section{Improving fidelity: Adding a simple engine model to the SimPleAC}
@@ -129,7 +129,7 @@ error of the fit on the given data. As such, we will proceed with the 2-term pos
 
 \subsubsection{Other constraints in engine model}
 
-I constrain the cruise shaft power to be 20\% of the maximum shaft power of the engine,
+The cruise shaft power is constrained to be 20\% of the maximum shaft power of the engine,
 to account for engine surge power demands. This rather arbitrary constraint is removed
 later when the full mission model is integrated.
 
@@ -170,7 +170,7 @@ will facilitate the vectorization of constraints required for mission design.
 \section{Mission design and performance modeling form}
 \label{s:mission}
 
-The SimPleAC that I have defined so far works well to demonstrate the
+The SimPleAC defined so far works well to demonstrate the
 capabilities of \gls{SP} in helping explore tradeoffs in engineering design.
 However, often in the design process, we will want to test the performance of a
 design in different conditions, and/or during different phases of a mission.
@@ -229,8 +229,8 @@ uni-directional graph as shown in Figure~\ref{f:missiongraph}.
 The performance models are enclosed in a rectangle, and they are
 vectorized by the number of flight segments, $N_{segments}$. Each
 one of the performance models contain variables that change between flight segments.
-Note that I have created a performance model for all subcomponents other than the
-fuselage. This is because the only performance variable of the fuselage is its drag
+Note that the fuselage is the only subcomponent not to have a performance model.
+This is because the only performance variable of the fuselage is its drag
 coefficient, which is assumed to not change between flight segments, making it static. I
 have also added a \textbf{\textit{Mission}} model, which links flight segments together,
 and an \textit{Atmosphere} model, which describes the conditions in which the aircraft
@@ -317,7 +317,7 @@ and used widely within the \gls{CEG} in aircraft design. It defines segment star
 as well as altitude, and all of its relevant constraints are contained in the \textbf{\textit{Mission}}
 model.
 
-I have added the monomial equality below to the formulation from~\cite{gassolar}
+The monomial equality below has been added to the formulation from~\cite{gassolar}
 
 \begin{align}
     h_{{avg}_1} &= \frac{1}{2}\Delta h_1 \\
@@ -326,8 +326,9 @@ I have added the monomial equality below to the formulation from~\cite{gassolar}
 
 to add an average altitude variable $h_{avg}$ in Section~\ref{s:atmos}. This adds
 conservatism to the density and drag (otherwise, the air density for a flight segment is calculated
-at the end of the segment, at which the aircraft is at its highest altitude). I have also constrained
-the cruise altitude (final altitude in every flight segment but the initial segment) to be greater than 5000m.
+at the end of the segment, at which the aircraft is at its highest altitude).
+The cruise altitude (final altitude in every flight segment but the initial segment) has been constrained
+to be greater than 5000m.
 
 As with most \gls{GP} approximations, there are limitations to this model. To avoid non-positive
 altitude change values ($\Delta h$), we restrict the aircraft to climb during every segment, and
@@ -340,28 +341,34 @@ avoid the potential lower-unboundedness of the lengths of certain segments.
 We have created a mission and flight segment model without having we have to have a better understanding
 of the environment in which the aircraft operates. So far, we have assumed that
 the aircraft flies at a constant altitude (sea level) for a single mission segment,
-and is subject to the same air density and viscosity. This is a big simplification
-that we can overcome through vectorization.
+and is subject to the same air density and viscosity.
+An atmospheric model is essential to capturing the tradeoffs between flight altitude, engine performance,
+and lift and drag characteristics.
+This simplification is overcome through vectorization.
 
-I have borrowed Tony Tao's atmosphere fits, which are 2-term softmax-affine fits of the atmospheric
+Tony Tao's atmosphere fits have been borrowed for this purpose. These are
+2-term softmax-affine fits of the atmospheric
 quantities of interest ($\rho$ and $\mu$ in this thesis) with respect to altitude. The constraints
-are guaranteed to be tight through signomial equalities.
+are guaranteed to be tight through signomial equalities, as explained in Section~\ref{s:sigeq}.
 The relations are valid between 0-10000m of altitude.
 
 Similar environmental models can be made for other design problems where the environmental
-variables are inextricably coupled to performance.
+variables are inextricably coupled to performance. Another good example of environmental modeling
+in \gls{GP} is performed by Burton~\cite{gassolar}, where wind speeds are integrated into
+a loitering aircraft optimization problem.
 
 \subsection{Objective of the mission model}
 
 Recalling from Section~\ref{s:altobj}, upper-unbounded performance metrics often have to
-reside in the objective function to be bounded. As such, I have added mission time $t_m$ through a cost index as such:
+reside in the objective function to be bounded. As such, mission time $t_m$ has been added
+to the objective functionthrough a cost index as such:
 
 \begin{equation}
     \mathrm{Objective} \geq W_f \frac{1}{\mathrm{N}} + \mathrm{Cost Index} \times t_m
     \label{e:missionobj}
 \end{equation}
 
-I have added $\mathrm{Cost Index}$ as a separate variable so that we can observe the sensitivity
+$\mathrm{Cost Index}$ is defined as a separate parameter so that we can observe the sensitivity
 of the variable post-optimization.
 
 \section{Design exploration through mission design}
@@ -370,8 +377,8 @@ There are a few interesting methods that are specific to mission design that we 
 potential designs using\gls{GP}s.
 
 Leveraging the speed of convex optimization, we can perform sweeps with respect to mission input
-parameters, and map out the entire design space w.r.t the objective. In this case, I have chosen to
-sweep across both payload weight and range, and the variable of interest is mission fuel weight.
+parameters, and map out the entire design space w.r.t the objective. In this case, sweeps have been
+performaned across both payload weight and range, and the variable of interest is mission fuel weight.
 Note that
 every point in the design space represents a fully optimized aircraft.
 
@@ -408,7 +415,7 @@ more and more fuel is allocated within the fuselage as a proportion of total fue
 volume is directly related to increased fuselage drag, it makes sense that no fuel is put in the fuselage
 until the fuel volume constraint in the wing becomes tight. And this is the behavior that is observed.
 
-\section{Improved modeling in mission design}
+\section{Model debugging in mission design}
 
 There are still significant weaknesses in the model that mission design often exploits to arrive at solutions
 that do not seem physical. In this specific modeling example, it shows the weaknesses of the engine model.
