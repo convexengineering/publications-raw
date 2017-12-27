@@ -352,7 +352,7 @@ the wing profile drag, and the wing induced drag coefficients \cite{gp_ac_design
 \label{e:cd}
 \end{equation}
 
-I will represent the individual components of the drag as monomial equalities, again borrowing
+The individual components of the drag are represented as monomial equalities, again borrowing
 from \cite{gp_ac_design} for constraints~\ref{e:cdfuse} through~\ref{e:cdinduced}.
 The fuselage drag is a function of its drag area $CDA_0$ and the planform area of the wing:
 
@@ -443,7 +443,7 @@ The new variables are detailed in Table~\ref{t:vars_TandD}.
 As shown in Table~\ref{t:WLTD_unbounded} attempting to run the model as is
 results in both the fuselage fuel
 volume $V_{f_{fuse}}$ and the wing weight $W_w$ still being lower-unbounded.
-I will attempt to properly bound these to complete the SimPleAC model.
+These variables will need to be properly bounded to complete the SimPleAC model.
 
 \begin{footnotesize}
     \begin{center}
@@ -478,7 +478,7 @@ the loss of the mathematical guarantees.
 
 In an attempt to lower bound $V_{f_{fuse}}$, we will
 be adding a fuel volume model to SimPleAC, where fuel can be stored in the wing or
-in the fuselage. I have chosen to model the fuel volume first instead of the wing
+in the fuselage. The fuel volume will be modeled first instead of the wing
 weight because the wing weight will be a function of the fuel stored in the fuselage.
 The reason why this model is \gls{GP}-incompatible is because of the
 following constraint which follows logically:
@@ -491,12 +491,12 @@ following constraint which follows logically:
 The fuel volume available must be less than the sum of the fuel volume available in the
 wing and the fuselage. It turns out that volumes that 'contain' free variables
 can create signomial constraints. (One way around this is potentially creating fuel
-fraction variables to denote how much fuel is stored in each volume, but I will not 
-explore other potential parametrizations here.)
+fraction variables to denote how much fuel is stored in each volume, but
+other potential parametrizations will not be explored here.)
 
 As such, we can continue to develop the model, since it is important for us to
 capture the fuel distribution between the wing and the fuselage. Fuel weight is going
-to influence the lift required of the aircraft, so I determine the weight of the fuel
+to influence the lift required of the aircraft, so the weight of the fuel is determined
 using a density parameter $\rho_{f}$. 
 
 \begin{equation}
@@ -535,9 +535,9 @@ Such variable transformations can be useful to have a minimal parametrization of
 One can solve the minimal problem, and
 post-process the results of the optimization problem to get complete geometry
 as necessary. The new variables introduced to bound fuel volume are in Table~\ref{t:vars_fuelmodel}.
-(In the final form of the Equation~\ref{e:vfwing} I picked $9\times10^{-4}$ as the coefficient in
-front of the relation by tuning it after I had developed
-the model, but any other coefficient would do.)
+(In the final form of the Equation~\ref{e:vfwing} the constant $9\times10^{-4}$ was picked as the coefficient in
+front of the relation by tuning it after the model was developed,
+but any other coefficient would work.)
 
 \begin{footnotesize}
 \begin{table}
@@ -561,14 +561,14 @@ the model, but any other coefficient would do.)
 \subsection{Arguments for the signomial equality}
 \label{s:sigeq}
 
-In a segue, I will explain and motivate the use of signomial equalities,
-as described in \cite{sigeqpaper}, in \gls{SP} modeling.
+This segue will explain and motivate the use of signomial equalities,
+as described in~\cite{sigeqpaper}, in \gls{SP} modeling.
 Signomial equalities must be used as a last resort. The signomial equality is the only place
 where the feasibility set of individual \gls{GP}'s within a \gls{SP} solve are not guaranteed
 to be subsets of the feasibility set of the \gls{SP}. This is because the signomial solution
 algorithm in GPkit flattens the original signomial equality constraint,
 a concave curve in log-space in n-dimensions,
-onto a line in log-space in n-dimensions(Method C in \ref{sigeqpaper}) that intersects the
+onto a line in log-space in n-dimensions(Method C in~\cite{sigeqpaper}) that intersects the
 original constraint at the optimal point of the last \gls{GP} solve. This is undesirable although
 the final solution of the \gls{SP} with equalities
 is guaranteed to be in the feasibility region of the \gls{SP}. Furthermore, \gls{SP}s
