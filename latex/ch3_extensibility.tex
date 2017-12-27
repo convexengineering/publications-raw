@@ -530,32 +530,43 @@ However, we do observe that, if the
 Having created a mission profile for the SimPleAC, it only takes one extra level of
 hierarchy to do multimission design. Now we vectorize the mission models flown by the same aircraft.
 
-%\begin{figure}[!h]
-%    \centering\small\sffamily
-%    \begin{forest}
-%        sn edges
-%        [\textit{\textbf{Multimission}},name=multimission
-%        [\textit{\textbf{Mission}},name=mission1
-%        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=ap1]
-%        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=ap2]
-%        ]
-%        [\textbf{Aircraft},name=ac]
-%        [\textit{\textbf{Mission}},name=mission2
-%        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=ap3]
-%        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=ap4]
-%        ]
-%        ]
-%
-%        \draw[->] (ac) -- (ap1);
-%        \draw[->] (ac) -- (ap2);
-%        \draw[->] (ac) -- (ap3);
-%        \draw[->] (ac) -- (ap4);
-%
-%    \end{forest}
-%    \caption{Multimission uni-directional graph.}
-%    \label{f:multimission}
-%\end{figure}
+\begin{figure}[!h]
+    \centering\small\sffamily
+    \begin{forest}
+        sn edges,
+        l sep+=1em,
+        for children={
+        l sep+=1em,
+        }
+        [\textit{\textbf{Multimission}},name=multimission
+        [\textit{\textbf{Mission}},name=mission1
+        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=ap1]
+        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=ap2]
+        ]
+        [[[\textbf{Aircraft},name=ac]]]
+        [\textit{\textbf{Mission}},name=mission2
+        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=ap3]
+        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=ap4]
+        ]
+        ]
+        \draw[->] (ac) -- (ap1);
+        \draw[->] (ac) -- (ap2);
+        \draw[->] (ac) -- (ap3);
+        \draw[->] (ac) -- (ap4);
+        \draw[->] (ac) -- (mission1);
+        \draw[->] (ac) -- (mission2);
+        \node[draw,rectangle,fit={(ap1)}] {};
+        \node[draw,rectangle,fit={(ap2)}] {};
+        \node[draw,rectangle,fit={(ap3)}] {};
+        \node[draw,rectangle,fit={(ap4)}] {};
+        \node[draw,circle,fit={(mission1) (ap1) (ap2)}] {};
+        \node[draw,circle,fit={(mission2) (ap3) (ap4)}] {};
+    \end{forest}
+    \caption{Multimission uni-directional graph, with $N_{segments} = 2$ and $N_{missions} = 2$.}
+    \label{f:multimission}
+\end{figure}
 
-Now the vectorization has gone down two levels. We are able to consider $N$ flight segments, $M$
+Now the vectorization has gone down two levels, where each performance model is vectorized $N_{segments} \times N_{missions}$ times,
+and each mission model is vectorized $N_{missions}$ times.
 
 
