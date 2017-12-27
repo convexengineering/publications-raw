@@ -226,8 +226,9 @@ uni-directional graph as shown in Figure~\ref{f:missiongraph}.
     \label{f:missiongraph}
 \end{figure}
 
-The performance models are enclosed in a rectangle, and they are
-vectorized by the number of flight segments, $N_{segments}$. Each
+Figure~\ref{f:missiongraph} represents a model with two flight segments, where the
+models enclosed in rectangles contain the set of constraints that are vectorized
+by the number of flight segments, $N_{segments} = 2$. Each
 one of the performance models contain variables that change between flight segments.
 Note that the fuselage is the only subcomponent not to have a performance model.
 This is because the only performance variable of the fuselage is its drag
@@ -240,7 +241,7 @@ The static aircraft model, and the atmospheric state are passed as an argument t
 performance models within this framework. To transform our previously static model to
 the performance-static model hierarchy we have identified,
 we have to determine which variables
-belong in which level of the tree. Table~\ref{t:missionvars} details the full
+belong in which node of the tree. Table~\ref{t:missionvars} details the full
 decomposition of the model into its submodels in the format defined
 by Figure~\ref{f:missiongraph}. This is as simple as identifying which variables
 we do not expect to change during flight segments, and which ones we do.
@@ -312,12 +313,13 @@ each other simulating different missions, then they would simply be merged in th
 of \textbf{\textit{Mission}}. However, we know that the models are related through since the aircraft
 burns fuel throughout the mission, changing its flight characteristics.
 
-The derivation of the \gls{GP}-compatible flight segment models has been detailed in ~\cite{gassolar}
+The derivation of the \gls{GP}-compatible flight segment models has been detailed in
+both~\cite{gassolar} and ~\cite{sp_ac_design},
 and used widely within the \gls{CEG} in aircraft design. It defines segment start, end and average weights,
 as well as altitude, and all of its relevant constraints are contained in the \textbf{\textit{Mission}}
 model.
 
-The monomial equality below has been added to the formulation from~\cite{gassolar}
+The monomial equality below has been added to the formulation
 
 \begin{align}
     h_{{avg}_1} &= \frac{1}{2}\Delta h_1 \\
