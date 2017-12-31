@@ -105,8 +105,8 @@ if __name__ == "__main__":
     m.substitutions.update({
         'Range'     :[3000*units('km'), 1000*units('km')],
         'W_p'       :[6250*units('N'),   8000*units('N')],
-        'Cost Index':[120*units('1/hr'), 360*units('1/hr')],
+        'C':[120*units('1/hr'), 360*units('1/hr')],
     })
-    m.cost = m['W_{f_{mm}}']*units('1/N') + sum(m['Cost Index']*m['t_m'])
+    m.cost = m['W_{f_{mm}}']*units('1/N') + sum(m['C']*m['t_m'])
     sol = m.localsolve(verbosity = 4)
 

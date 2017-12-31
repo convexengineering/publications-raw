@@ -254,7 +254,7 @@ class Mission(Model):
 if __name__ == "__main__":
     # Most basic way to execute the model 
     m = Mission(5)
-    m.cost = m['W_f']*units('1/N') + m['Cost Index']*m['t_m']
+    m.cost = m['W_f']*units('1/N') + m['C']*m['t_m']
     #m = Model(m.cost, Bounded(m))
     #m_relax = relaxed_constants(m,None,None)
     sol = m.localsolve(verbosity = 4)
