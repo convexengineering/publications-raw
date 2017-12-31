@@ -10,7 +10,7 @@ GPkit, \gls{CEG}'s \gls{GP} modeling framework,
 facilitates process by providing feedback to designers about
 the boundedness of a model.
 
-I will derive a simple aircraft problem that will serve as
+A simple aircraft optimization problem will be derived and will serve as
 a demonstration of the intuitive structure of geometric programs, and show
 how we can introduce new constraints to bound the feasibility sets of models.
 
@@ -74,10 +74,10 @@ whose feasibility set is shown in Figure~\ref{feas_posyleq}.
 
 Since $x$ is our objective, and both variables are upper-bounded, they both collapse towards numerical
 precision zero,
-giving a non-sensical feasibility set shown in Figure~\ref{f:feas_posyleq}. In this section, I will
+giving a non-sensical feasibility set shown in Figure~\ref{f:feas_posyleq}. This section will
 demonstrate methods to create \gls{GP}-compatible models that are adequately bounded to avoid such
 singularities towards zero or infinity, which for the most part do not
-exist in real physical models.
+exist in real physical models. The models will be created within GPkit~\cite{gpkit}.
 
 \section{Defining the design problem}
 
@@ -134,7 +134,7 @@ What does an aircraft need to be able to do to deliver payload of a distance?
     subjected to (Section~\ref{s:wingstrc}).
 \end{itemize}
 
-Note that these are in now way presented in order of importance, which is reflective
+Note that these are in no way presented in order of importance, which is reflective
 of the non-hierarchical nature of \gls{GP}s.
 In the basic example, I will choose not to model engines,
 and leave this as an exercise
@@ -658,8 +658,8 @@ the final set of variables in Table~\ref{t:vars_wingstrcmodel}.
 The benefits of convex optimization and \gls{GP} in both solution
 quality (in terms of mathematical guarantees) and the low-cost
 computation of sensitivities has been detailed in (\cite{gp_ac_design},\cite{sp_ac_design}),
-so I will not dwell on these here. However, the values of the free variables,
-and the sensitivities of the parameters are presented for the reader.
+so these benefits will not be featured here. However, the values of the free variables,
+and the sensitivities of the fixed parameters are presented for the reader.
 
 \begin{center}
 \captionof{table}{Values of the free variables in the SimPleAC model.}
@@ -672,10 +672,6 @@ and the sensitivities of the parameters are presented for the reader.
 \input{tables/SimPleAC_sens.tex}
     \label{t:SimPleAC_sens}
 \end{center}
-
-\section{Feasibility set of SimPleAC}
-
-%TODO: add stuff or remove?
 
 
 

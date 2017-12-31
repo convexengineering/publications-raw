@@ -9,6 +9,10 @@ have the downfall of being slow due to the multimodal nature of many
 engineering design problems. Furthermore, these tools act like black boxes since
 they provide point solutions without additional information about the design problem
 such as sensitivities, which can provide important engineering insight.
+%
+%The formulation of general non-linear programs as convex optimization problems
+%can be beneficial for the engineering design process. The mathematical guarantees
+%and speed of convex optimization ca
 
 %TODO: (Mark's comments: only write timeless truths).
 In the \gls{CEG}, we seek to improve the engineering design process by
@@ -17,12 +21,12 @@ leveraging the mathematical guarantees and speed of convex optimization.
 Our primary software product is GPkit, an
 open-source, object-oriented software to help build \gls{GP}-compatible models and
 interface with solvers. In much of our previous work
-(\cite{gp_ac_design},\cite{sp_ac_design}, \cite{sp_engine}), we have demonstrated that
+(\cite{gp_ac_design},\cite{sp_ac_design},\cite{sp_engine}), we have demonstrated that
 \gls{GP} is useful for certain kinds of optimization problems, but have yet to formalize why it
 facilitates design.
 
 The mathematical restrictions on the form of constraints remains the biggest
-barrier in using convex programs for design. Firstly, this thesis will
+barrier in using convex programs for engineering design. Firstly, this thesis will
 show that the form of the \gls{GP} actually facilitates the design
 optimization process
 and engineering understanding, rather than impeding it, through the disciplined use
@@ -78,7 +82,7 @@ the relative performances of designs, the classical
 definition of design implies a class of feasibility problems satisfying a set of
 constraints that act on the designer's parametrization of the problem.
 
-In this thesis, I give optimization the following definition: To optimize is to select an
+In this thesis, optimization will assume the following definition: To optimize is to select an
 element in a set of feasible solutions with the lowest desired objective
 function value. It is also a process, which is sensitive to the elements contained within the set
 (related to the form), and the choice of objective function (related to the
@@ -123,7 +127,7 @@ for three primary reasons.
     form makes boundedness of variables explicit. This understanding of pressure
     and boundedness facilitates the conversion of general physical engineering
     equations into optimization-compatible constraint forms.
-    I also demonstrate that the mathematical restrictions of the \gls{GP} can be partially
+    This thesis will demonstrate that the mathematical restrictions of the \gls{GP} can be partially
     overcome through the use of the difference-of-convex
     extension of \gls{GP} called \gls{SP}. \gls{SP}s give us the flexibility to model
     non-log-convex functions, as well as allowing designers to explicitly enforce
