@@ -8,12 +8,13 @@ import numpy as np
 m = Mission(5)
 N = 8
 M = 8
-m.cost = m['W_f'] * units('1/N') + m['Cost Index'] * m['t_m']
+m.cost = m['W_f'] * units('1/N') + m['C'] * m['t_m']
 
 
 # Setting sweep substitutions
 Range = np.linspace(1000,5000,N)
 W_p = np.linspace(1000,10000,M)
+#Vmin = np.linspace(25,100,N)
 m.substitutions.update({'Range':('sweep',Range),
                          'W_p'  :('sweep',W_p)})
 
@@ -26,6 +27,7 @@ sol = m.localsolve(verbosity=2,skipsweepfailures=True)
 Vffuse = sol('V_{f_{fuse}}').reshape((N,M))
 Vfwing = sol('V_{f_{wing}}').reshape((N,M))
 Vftotal = sol('V_{f_{avail}}').reshape((N,M))
+W_e = sol('W_e').reshape((N,M))
 Vf = sol('V_f').reshape((N,M))
 W_p = sol('W_p').reshape((N,M))
 W_f = sol('W_f').reshape((N,M))
@@ -95,6 +97,15 @@ plt.colorbar()
 plt.savefig('figbank/Wwcoeff2senscontours.png')
 plt.close()
 
+plt.contour(W_p,Range,W_e)
+plt.xlabel('Payload weight (N)')
+plt.ylabel('Range (km)')
+plt.title('Engine weight (N) contours')
+plt.grid()
+plt.colorbar()
+plt.savefig('figbank/W_econtours.png')
+plt.close()
+
 # Engine weight sensitivity contours
 W_e_refsens = sol['sensitivities']['constants']['W_{e,ref}'].reshape((N,M))
 plt.contour(W_p,Range,W_e_refsens)
@@ -138,3 +149,65 @@ plt.grid()
 plt.colorbar()
 plt.savefig('figbank/Vminsenscontours.png')
 plt.close()
+
+# Cost index sensitivity contours
+Csens = sol['sensitivities']['constants']['C'].reshape((N,M))
+plt.contour(W_p,Range,Csens)
+plt.xlabel('Payload weight (N)')
+plt.ylabel('Range (km)')
+plt.title('Cost index sensitivity contours')
+plt.grid()
+plt.colorbar()
+plt.savefig('figbank/Csenscontours.png')
+plt.close()
+
+# Altitude sweep
+# m.substitutions.update({"h_{cruise}":('sweep',np.linspace(1,8000,20))})
+# sol = m.localsolve(verbosity=2,skipsweepfailures=True)
+# h_cruisesens = sol['sensitivities']['constants']['h_{cruise}']
+# BSFCsens = sol['sensitivities']['constants']['BSFC']
+
+
+# # PLOTS FOR VMIN SWEEP
+# Vmin = sol('V_{min}').reshape((N,M))
+# W_p = sol('W_p').reshape((N,M))
+# W = sol('W').reshape((N,M))
+# plt.contour(Vmin,W_p,W)
+# plt.xlabel('Minimum takeoff speed (m/s)')
+# plt.ylabel('Payload weight (N)')
+# plt.title('Total weight (N) contours')
+# plt.grid()
+# plt.colorbar()
+# plt.savefig('figbank/Wcontours_Vminsweep.png')
+# plt.close()
+#
+# Vminsens = sol['sensitivities']['constants']['V_{min}'].reshape((N,M))
+# plt.contour(Vmin,W_p,Vminsens)
+# plt.xlabel('Minimum takeoff speed (m/s)')
+# plt.ylabel('Payload weight (N)')
+# plt.title('Minimum takeoff speed sensitivity contours')
+# plt.grid()
+# plt.colorbar()
+# plt.savefig('figbank/Vmincontours_Vminsweep.png')
+# plt.close()
+#
+# CLmaxsens = sol['sensitivities']['constants']['C_{L,max}'].reshape((N,M))
+# plt.contour(Vmin,W_p,CLmaxsens)
+# plt.xlabel('Minimum takeoff speed (m/s)')
+# plt.ylabel('Payload weight (N)')
+# plt.title('Maximum lift coefficient sensitivity contours')
+# plt.grid()
+# plt.colorbar()
+# plt.savefig('figbank/CLmaxsenscontours_Vminsweep.png')
+# plt.close()
+#
+# h_cruisesens = sol['sensitivities']['constants']['h_{cruise}'].reshape((N,M))
+# plt.contour(Vmin,W_p,h_cruisesens)
+# plt.xlabel('Minimum takeoff speed (m/s)')
+# plt.ylabel('Payload weight (N)')
+# plt.title('Minimum cruise altitude sensitivity contours')
+# plt.grid()
+# plt.colorbar()
+# plt.savefig('figbank/h_cruisesenscontours_Vminsweep.png')
+# plt.close()
+#

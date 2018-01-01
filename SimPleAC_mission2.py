@@ -195,7 +195,7 @@ class Mission(Model):
         Range      = Variable("Range", 3000, "km", "aircraft range")
         W_p        = Variable("W_p", 6250, "N", "payload weight", pr=20.)
         V_min      = Variable("V_{min}", 25, "m/s", "takeoff speed", pr=20.)
-        cost_index = Variable("Cost Index", 120,'1/hr','hourly cost index')
+        cost_index = Variable("C", 120,'1/hr','hourly cost index')
 
         constraints = []
 
