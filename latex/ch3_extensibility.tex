@@ -659,12 +659,31 @@ internally will resolve boundedness issues. For this kind of objective, the
 performance of the aircraft will be a compromise with respect to aircraft optimized purely
 for mission time for the first mission or fuel burn for the second mission.
 
-The SimPleAC will be optimized for the 2-mission scenario for both objectives~\ref{e:compObj} and \ref{e:sepObj} and compared against
-the single mission solution. The inputs to the model are specified in Table~\ref{t:mminputs}.
+The SimPleAC was optimized for the 2-mission scenario for both objectives~\ref{e:compObj} and \ref{e:sepObj} and compared against
+the single mission solution. The inputs to the model are specified in Table~\ref{t:mminputs}, and the results
 
+\begin{footnotesize}
+\begin{center}
+\begin{longtable}{llcl}
+\toprule
+Constants & Value & Units & Description\\ \midrule
+$C$ & 120  & $~\mathrm{\tfrac{1}{hr}}$ & hourly cost index \\
+$Range$ & 3000  & $~\mathrm{km}$ & aircraft range \\
+$T/O factor$ & 2  & $$ & takeoff thrust factor \\
+$V_{min}$ & 25  & $~\mathrm{\tfrac{m}{s}}$ & takeoff speed \\
+$W_p$ & 6250  & $~\mathrm{N}$ & payload weight \\
+$h_{cruise}$ & 5000  & $~\mathrm{m}$ & minimum cruise altitude \\
+    \caption{Inputs to the \textbf{\textit{Multimission}} model.}
+    \label{t:mminputs}
+\end{longtable}
+\end{center}
+\end{footnotesize}
 
 
 \subsection{Potential extensions of multimission design}
+
+This thesis serves to demonstrate methods in \gls{GP} modeling and optimization
+rather than provide interesting results, so I will
 
 Multimission design can
 
