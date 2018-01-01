@@ -66,7 +66,7 @@ maximum shaft power available and the mass of the engine, somewhat related to th
 cube-square law, which describes the relation between the surface area and volume
 of objects. And let's assume that our knowledge of the internal workings of engines
 is limited, but we have some knowledge of the technology available in the market
-and have data to support it. Using GPfit, we will try to fit the data to find
+and have data to support it. Using GPfit~\cite{gpfitpaper}, we will try to fit the data to find
 \gls{GP} compatible relations between engine weight and maximum power. This section
 will try to highlight the best practices when making data-based models.
 
@@ -99,7 +99,8 @@ To be able to fit the engine power vs. weight data, we take several important st
 \end{itemize}
 
 After having performed these intermediate steps on the engine data,
-the relation we obtain for the one-term approximation is as follows:
+the relation we obtain for the one-term (monomial) approximation is as follows:
+
 \begin{equation}
     \left(\frac{W_{eng}}{W_{eng,max}}\right)^{0.100} = 0.988 \left(\frac{P_{shaft}}{P_{shaft,max}}\right)^{0.117}
 \end{equation}
@@ -124,13 +125,14 @@ Both fits are shown with the data in Figure~\ref{f:enginefit}.
     \label{f:enginefit}
 \end{figure}
 
-It turns out that with a SMA approximation, more terms do not improve the r.m.s.
-error of the fit on the given data. As such, we will proceed with the 2-term posynomial fit.
+With a SMA approximation, more terms do not improve the r.m.s.
+error of the fit on the given data, due to the large standard deviation of the data used.
+As such, we will proceed with the 2-term posynomial fit.
 
 \subsubsection{Other constraints in engine model}
 
 The cruise shaft power is constrained to be 20\% of the maximum shaft power of the engine,
-to account for engine surge power demands. This rather arbitrary constraint is removed
+to account for engine surge power demands and add engineering realism. This rather arbitrary constraint is removed
 later when the full mission model is integrated.
 
 \begin{equation}
@@ -140,8 +142,8 @@ later when the full mission model is integrated.
 \subsection{Converting all subsystems into submodels}
 \label{s:submodels}
 
-Within this framework, we can modularize also add a separate wing and fuselage module to
-SimPleAC as well, with very little additional work. This creates the variable and constraint
+Within this framework, we can modularize the SimPleAC into wing and fuselage modules as well,
+with very little additional work. This creates the variable and constraint
 hierarchy as presented in Figure~\ref{forest:submodels}, which define all of the constraints
 required for SimPleAC to fly one flight segment.
 
@@ -159,9 +161,13 @@ required for SimPleAC to fly one flight segment.
     \label{forest:submodels}
 \end{figure}
 
-Tree structures such as in Figure~\ref{forest:submodels} are informative, since
+Tree or graph structures such as in Figure~\ref{forest:submodels} are informative, since
 it provides an intuitive representation of the way constraints and variables
-are passed between GPkit models. The way the \gls{SP} is solved at the end has no
+are passed between GPkit models. Due to the serial nature of object creation in software engineering,
+variables and constraints from one model can only be called by models that are higher in the tree diagram.
+
+
+The way the \gls{SP} is solved at the end has no
 hierarchy, but as we will see in Section~\ref{s:mission} a hierarchical representation
 will facilitate the vectorization of constraints required for mission design.
 
@@ -313,11 +319,15 @@ each other simulating different missions, then they would simply be merged in th
 of \textbf{\textit{Mission}}. However, we know that the models are related through since the aircraft
 burns fuel throughout the mission, changing its flight characteristics.
 
-The derivation of the \gls{GP}-compatible flight segment models has been detailed in
-both~\cite{gassolar} and ~\cite{sp_ac_design},
-and used widely within the \gls{CEG} in aircraft design. It defines segment start, end and average weights,
+The derivation of the \gls{SP}-compatible flight segment models has been detailed in~\cite{sp_ac_design},
+and used widely within the \gls{CEG} in aircraft design.
+%However, the model in ~\cite{sp_ac_design} makes the distinction between cruise and climb flight segments
+%which we do not desire for this design problem since we would like to be able to optimize the entire
+%flight profile.
+It defines segment start, end and average weights,
 as well as altitude, and all of its relevant constraints are contained in the \textbf{\textit{Mission}}
-model.
+model. Please find the full set of variables belonging to the flight segment model in Appendix~\ref{a:vars}.
+%TODO: add appendices will full list of variables
 
 The monomial equality below has been added to the formulation
 
@@ -326,7 +336,9 @@ The monomial equality below has been added to the formulation
     h_{{avg}_i} &= \sqrt{h_{i} \times h_{i-1}}, \quad i = 2,...,N_{segments}
 \end{align}
 
-to add an average altitude variable $h_{avg}$ in Section~\ref{s:atmos}. This adds
+to define an average altitude variable $h_{avg}$ with respect to the segment altitude change variable $\Delta h$
+and segment ending altitude $h$
+in Section~\ref{s:atmos}. This adds
 conservatism to the density and drag (otherwise, the air density for a flight segment is calculated
 at the end of the segment, at which the aircraft is at its highest altitude).
 The cruise altitude (final altitude in every flight segment but the initial segment) has been constrained
@@ -363,37 +375,54 @@ a loitering aircraft optimization problem.
 
 Recalling from Section~\ref{s:altobj}, upper-unbounded performance metrics often have to
 reside in the objective function to be bounded. As such, mission time $t_m$ has been added
-to the objective functionthrough a cost index as such:
+to the objective function through a cost index as such:
 
 \begin{equation}
-    \mathrm{Objective} \geq W_f \frac{1}{\mathrm{N}} + \mathrm{Cost Index} \times t_m
+    \mathrm{Objective} \geq W_f \frac{1}{\mathrm{N}} + \mathrm{C} \times t_m
     \label{e:missionobj}
 \end{equation}
 
-$\mathrm{Cost Index}$ is defined as a separate parameter so that we can observe the sensitivity
+Cost index $\mathrm{C}$ is defined as a separate parameter so that we can observe the sensitivity
 of the variable post-optimization.
 
 \section{Design exploration through mission design}
 
-There are a few interesting methods that are specific to mission design that we can use to explore
-potential designs using\gls{GP}s.
+There are a few interesting methods that we can use to explore
+potential designs using~\gls{GP}s. So instead of showing the single optimum of the
+SimPleAC with a full mission profile, leveraging the speed of convex optimization,
+we can map out the entire design space with respect to variables of interest.
 
-Leveraging the speed of convex optimization, we can perform sweeps with respect to mission input
-parameters, and map out the entire design space w.r.t the objective. In this case, sweeps have been
-performaned across both payload weight and range, and the variable of interest is mission fuel weight.
-Note that
-every point in the design space represents a fully optimized aircraft.
+In this case, the SimPleAC has been optimized
+over a range of payload weight (1000-10000 N) and range (1000-5000km), and the mission fuel weight
+and total weight have been plotted in contour plots in Figure~\ref{f:pareto}. Note that
+every point in the design space represents a fully optimized aircraft. The other inputs
+to the \textbf{\textit{Mission}} model are detailed in Table~\ref{t:sweepinputs}
+
+\begin{footnotesize}
+\begin{center}
+\begin{longtable}{llcl}
+\toprule
+Constants & Value & Units & Description\\ \midrule
+$C$ & 120  & $~\mathrm{\tfrac{1}{hr}}$ & hourly cost index \\
+$T/O factor$ & 2  & $$ & takeoff thrust factor \\
+$V_{min}$ & 25  & $~\mathrm{\tfrac{m}{s}}$ & takeoff speed \\
+$h_{cruise}$ & 5000  & $~\mathrm{m}$ & minimum cruise altitude \\
+    \caption{Inputs to the design space exploration of the \textbf{\textit{Mission}} model.}
+    \label{t:sweepinputs}
+\end{longtable}
+\end{center}
+\end{footnotesize}
 
 \begin{figure*}[t!]
     \centering
     \begin{subfigure}[t]{0.5\linewidth}
         \centering
-        \includegraphics[width=0.9\linewidth]{W_fcontours.png}
+        \includegraphics[width=0.9\linewidth]{mission2/W_fcontours.png}
     \end{subfigure}%
     ~
     \begin{subfigure}[t]{0.5\linewidth}
         \centering
-        \includegraphics[width=0.9\linewidth]{Wcontours.png}
+        \includegraphics[width=0.9\linewidth]{mission2/Wcontours.png}
     \end{subfigure}
     \caption{The fuel and total weight Pareto frontiers with respect to range and payload inputs.}
     \label{f:pareto}
@@ -405,8 +434,8 @@ the tradeoffs in fuel storage, and when it is beneficial to store fuel in the wi
 
 \begin{center}
 \begin{figure}
-    \includegraphics[width=0.45\linewidth]{FuseFuelFraccontours.png}
-    \caption{}
+    \includegraphics[width=0.45\linewidth]{mission2/FuseFuelFraccontours.png}
+    \caption{The lower right of the graph shows where fuel storage in the fuselage is not beneficial.}
     \label{f:fusefuelfrac}
 \end{figure}
 \end{center}
@@ -414,7 +443,7 @@ the tradeoffs in fuel storage, and when it is beneficial to store fuel in the wi
 Figure~\ref{f:fusefuelfrac} shows how designs for different range and payload requirements
 allocate fuel differently within the aircraft. As the mission range increases for a given payload weight,
 more and more fuel is allocated within the fuselage as a proportion of total fuel. Since fuselage fuel
-volume is directly related to increased fuselage drag, it makes sense that no fuel is put in the fuselage
+volume is directly related to increased fuselage drag, it is logical that no fuel is put in the fuselage
 until the fuel volume constraint in the wing becomes tight. And this is the behavior that is observed.
 
 \section{Model debugging in mission design}
@@ -422,23 +451,40 @@ until the fuel volume constraint in the wing becomes tight. And this is the beha
 There are still significant weaknesses in the model that mission design often exploits to arrive at solutions
 that do not seem physical. In this specific modeling example, it shows the weaknesses of the engine model.
 
+We can see this through the engine weight contours plots with respect to range and payload as shown in
+Figure~\ref{f:wesens}. There is clearly something unphysical or unintuitive happening towards the top
+right of the contour plot, where the engine weight goes down even as the range increases for constant payload.
+
+\begin{center}
+\begin{figure}
+    \includegraphics[width=0.45\linewidth]{mission2/W_econtours.png}
+    \caption{The engine weight decreases for constant payload towards the right of the graph,
+            an unintuitive result.}
+    \label{f:wesens}
+\end{figure}
+\end{center}
+
 The first weakness is the fact that the engine can supply the same amount of power
 regardless of altitude. For naturally aspirated piston engines, we would expect the maximum power available to
 drop with altitude; adding such a lapse rate will improve how much we trust the engine model.
-The second is the lack of an engine \BSFC model. As an aerospace engineer, I have the insight
-empirically that the \BSFC of an engine deteriorates at low power outputs.  Using more
-data-based modeling, we can model this relationship and improve our results.
+The second is the lack of an engine \BSFC model. Empirical data shows that the
+\BSFC of an engine deteriorates at low power outputs.
 
-In Sections~\ref{s:lapse} and \ref{s:BSFC}, I will aim to implement these improvements. Then in Section\ref{s:compare},
+This is a key example of how optimization cannot replace engineering intuition. Even though our model
+contains many of the key tradeoffs in aircraft design, assumptions can have a significant impact on the
+quality of the optima.
+
+In Sections~\ref{s:lapse} and \ref{s:BSFC}, these improvements will be implemented using more data-based modeling.
+Then in Section\ref{s:compare},
 we can see how improved modeling affects the results of the model.
 
 \subsection{Engine lapse rate model}
 \label{s:lapse}
 
-I have described how we can perform data-based modeling in Section~\ref{s:datafit}, so I will
-not linger here. But much in the same way I created posynomial fits for the relationship between
-engine maximum power and weight, I have created a posynomial fit for the lapse rate of the engine.
-This models requires the insertion of another signomial equality into the model. Consider the
+Data-based modeling techniques have been detailed in Section~\ref{s:datafit}, so the author will
+not linger here. But much in the same way posynomial fits were created for the relationship between
+engine maximum power and weight, the lapse rate of the engine was fitted with respect to throttle level.
+This model requires the insertion of another signomial equality into the model. Consider the
 posynomial inequality expression below:
 
 \begin{equation}
@@ -456,13 +502,14 @@ of the shaft power, we must use a signomial equality.
 \subsection{Making use of sensitivities: engine \BSFC model}
 \label{s:BSFC}
 
-The \BSFC is one of the variables that the model is most sensitive to, and it has yet to be modeled. As
-stated in Section~\ref{s:lapse}, the \BSFC of a piston engine improves as the engine puts out more power.
+The \BSFC is one of the variables that the model is most sensitive to (total sensitivity over all mission segments of 0.59),
+and it has yet to be modeled. As
+stated in Section~\ref{s:lapse}, the \BSFC of a naturally-aspirated piston engine improves as the engine puts out more power.
 
 BSFC has downward pressure due to the objective function, and therefore must be lower-bounded. This makes
 it amenable to multiple-term posynomial fits.
 
-First, I attempted a monomial fit of the $\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$.
+First, a monomial fit of the $\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ was created.
 The result is shown in Figure~\ref{f:P_BSFC}.
 
 \begin{center}
@@ -474,7 +521,8 @@ The result is shown in Figure~\ref{f:P_BSFC}.
     \end{figure}
 \end{center}
 
-Although the r.m.s. error of the fit is low (0.015), there is a significant deterioration in the quality of the
+Although the r.m.s. error of the fit is low (0.015) due to the small number of data points,
+there is a significant deterioration in the quality of the
 fit as $\frac{P_{shaft}}{P_{shaft,alt}} \xrightarrow[]{} 1$,
 and increasing the number of posynomial terms in the fit does not alleviate this problem. It
 turns out that fitting with respect to lapse rate using the simple relation $1 = L + \frac{P_{shaft}}{P_{shaft,alt}}$
@@ -498,31 +546,42 @@ parametrization can be important to the level of accuracy and fidelity of a mode
 \subsection{Comparing models under different sets of constraints}
 \label{s:compare}
 
-Now we can compare the changes in the results, both in terms of the mission and airframe design, with respect
-to the improved engine model.
+We would first like to see that the behavior that doesn't suit our engineering intuition, namely the
+decrease in engine weight with increased range, disappear. And this is exactly
+what we observe in Figure~\ref{f:wesensimp}.
 
-%TODO: add table with the input values to initial and final missions
+\begin{center}
+\begin{figure}
+    \includegraphics[width=0.45\linewidth]{mission4/W_econtours.png}
+    \caption{The engine weight scales appropriately with range and payload with the improved engine model.}
+    \label{f:wesensimp}
+\end{figure}
+\end{center}
+
+The inputs to the mission model, for both the model with and without lapse rate and \BSFC models,
+has been detailed in Table~\ref{t:missioninputs}.
+
+\begin{footnotesize}
+\begin{center}
+\begin{longtable}{llcl}
+\toprule
+Constants & Value & Units & Description\\ \midrule
+$C$ & 120  & $~\mathrm{\tfrac{1}{hr}}$ & hourly cost index \\
+$Range$ & 3000  & $~\mathrm{km}$ & aircraft range \\
+$T/O factor$ & 2  & $$ & takeoff thrust factor \\
+$V_{min}$ & 25  & $~\mathrm{\tfrac{m}{s}}$ & takeoff speed \\
+$W_p$ & 6250  & $~\mathrm{N}$ & payload weight \\
+$h_{cruise}$ & 5000  & $~\mathrm{m}$ & minimum cruise altitude \\
+    \caption{Inputs to the \textbf{\textit{Mission}} model.}
+    \label{t:missioninputs}
+\end{longtable}
+\end{center}
+\end{footnotesize}
 
 %TODO: add table comparing the results of the different missions
 
 And most importantly, we should see changes in the sensitivity contours that may (or sometimes may not)
 agree with our engineering intuition. This is a valuable feature of optimization coupled in design.
-
-\subsection{Insights from mission design}
-
-\begin{center}
-\begin{figure}
-    \includegraphics[width=0.45\linewidth]{h_cruisesenscontours.png}
-    \caption{}
-    \label{f:h_cruisesens}
-\end{figure}
-\end{center}
-
-Another interesting aspect to investigate is the effect of minimum cruise altitude. In none of the designs
-does minimum cruise altitude have a zero sensitivity, which indicates that the constraint is always tight.
-However, we do observe that, if the
-
-
 
 \section{Multimission design}
 \label{s:multimission}
@@ -540,13 +599,15 @@ hierarchy to do multimission design. Now we vectorize the mission models flown b
         }
         [\textit{\textbf{Multimission}},name=multimission
         [\textit{\textbf{Mission}},name=mission1
-        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=ap1]
-        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=ap2]
+        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=ap1[,name=ap1d,edge=dotted]]
+        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=ap2[,name=ap2d,edge=dotted]]
         ]
-        [[[\textbf{Aircraft},name=ac]]]
+        [[[\textbf{Aircraft},name=ac[,name=acd,edge=dotted]]]]
         [\textit{\textbf{Mission}},name=mission2
-        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=ap3]
-        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=ap4]
+        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=ap3
+        [,name=ap3d,edge=dotted]]
+        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=ap4
+        [,name=ap4d,edge=dotted]]
         ]
         ]
         \draw[->] (ac) -- (ap1);
@@ -555,18 +616,62 @@ hierarchy to do multimission design. Now we vectorize the mission models flown b
         \draw[->] (ac) -- (ap4);
         \draw[->] (ac) -- (mission1);
         \draw[->] (ac) -- (mission2);
-        \node[draw,rectangle,fit={(ap1)}] {};
-        \node[draw,rectangle,fit={(ap2)}] {};
-        \node[draw,rectangle,fit={(ap3)}] {};
-        \node[draw,rectangle,fit={(ap4)}] {};
-        \node[draw,circle,fit={(mission1) (ap1) (ap2)}] {};
-        \node[draw,circle,fit={(mission2) (ap3) (ap4)}] {};
+        \node[draw,rectangle,fit={(ap1) (ap1d)}] {};
+        \node[draw,rectangle,fit={(ap2) (ap2d)}] {};
+        \node[draw,rectangle,fit={(ap3) (ap3d)}] {};
+        \node[draw,rectangle,fit={(ap4) (ap4d)}] {};
+        \node[draw,circle,fit={(mission1) (ap1) (ap2) (ap1d) (ap2d)}] {};
+        \node[draw,circle,fit={(mission2) (ap3) (ap4) (ap3d) (ap4d)}] {};
     \end{forest}
     \caption{Multimission uni-directional graph, with $N_{segments} = 2$ and $N_{missions} = 2$.}
     \label{f:multimission}
 \end{figure}
 
 Now the vectorization has gone down two levels, where each performance model is vectorized $N_{segments} \times N_{missions}$ times,
-and each mission model is vectorized $N_{missions}$ times.
+and each mission model is vectorized $N_{missions}$ times. The single instance of \textbf{Aircraft}
+is passed on as an argument to all of these models, which makes sure that both its
+static and performance constraints are satisfied for each flight segment
+of every mission.
 
+\subsection{Complex objective functions: behavior in log-space}
+
+The objective function of the \textbf{\textit{Multimission}} model has to be
+a posynomial that puts pressure on the variables in every \textbf{\textit{Mission}} model. For example, knowing that
+$W_{f_{mission}} \frac{1}{\mathrm{N}} + C \times t_{flight}$ is a valid objective functions to the single mission,
+the objective function below for $N_{missions}$
+
+\begin{equation}
+    \mathrm{Objective} \geq \sum_{n=1}^{N_{missions}} W_{f_{mission}} \frac{1}{\mathrm{N}} + \mathrm{C} \times t_{flight}
+    \label{e:compObj}
+\end{equation}
+
+will also work, since the same aircraft will fulfill both missions and are linked.
+Assuming that $N_{missions} = 2$, note that an objective of the type below will also work
+
+\begin{equation}
+    \mathrm{Objective} \geq W_{f_{mission_{1}}} \frac{1}{\mathrm{N}} + \mathrm{C}_{2} \times t_{flight_{2}}
+    \label{e:sepObj}
+\end{equation}
+
+but will require some management in variable boundedness since some internal variables,
+namely  $W_{f_{mission_{2}}}$ and $t_{flight_{1}}$, will diverge to numerical infinity. Simply upper bounding the variables
+internally will resolve boundedness issues. For this kind of objective, the
+performance of the aircraft will be a compromise with respect to aircraft optimized purely
+for mission time for the first mission or fuel burn for the second mission.
+
+The SimPleAC will be optimized for the 2-mission scenario for both objectives~\ref{e:compObj} and \ref{e:sepObj} and compared against
+the single mission solution. The inputs to the model are specified in Table~\ref{t:mminputs}.
+
+
+
+\subsection{Potential extensions of multimission design}
+
+Multimission design can
+
+The design of modular systems
+
+Multimission design also allows us to design systems with potential future extensibility. A good example from aircraft design
+is the design of a family of aircraft, and more specifically 'stretchable' aircraft. In
+this case, we could design a series of aircraft that have aerodynamic surfaces and engines
+in common, but have different length fuselages to accommodate different numbers of passengers.
 
