@@ -395,7 +395,7 @@ we can map out the entire design space with respect to variables of interest.
 In this case, the SimPleAC has been optimized
 over a range of payload weight (1000-10000 N) and range (1000-5000km), and the mission fuel weight
 and total weight have been plotted in contour plots in Figure~\ref{f:pareto}. Note that
-every point in the design space represents a fully optimized aircraft. The other inputs
+every point in the design space represents a fully optimized aircraft. The full list of inputs
 to the \textbf{\textit{Mission}} model are detailed in Table~\ref{t:sweepinputs}
 
 \begin{footnotesize}
@@ -403,6 +403,8 @@ to the \textbf{\textit{Mission}} model are detailed in Table~\ref{t:sweepinputs}
 \begin{longtable}{llcl}
 \toprule
 Constants & Value & Units & Description\\ \midrule
+$Range$ & [1000-10000]  & $~\mathrm{km}$ & aircraft range \\
+$W_p$ & [1000-5000]  & $~\mathrm{N}$ & payload weight \\
 $C$ & 120  & $~\mathrm{\tfrac{1}{hr}}$ & hourly cost index \\
 $T/O factor$ & 2  & $$ & takeoff thrust factor \\
 $V_{min}$ & 25  & $~\mathrm{\tfrac{m}{s}}$ & takeoff speed \\
@@ -446,9 +448,34 @@ more and more fuel is allocated within the fuselage as a proportion of total fue
 volume is directly related to increased fuselage drag, it is logical that no fuel is put in the fuselage
 until the fuel volume constraint in the wing becomes tight. And this is the behavior that is observed.
 
+\begin{figure*}[t!]
+    \centering
+    \begin{subfigure}[t]{0.5\linewidth}
+        \centering
+        \includegraphics[width=0.9\linewidth]{mission2/timecostcontours.png}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}[t]{0.5\linewidth}
+        \centering
+        \includegraphics[width=0.9\linewidth]{mission2/Csenscontours.png}
+    \end{subfigure}
+    \caption{We can gain intuition about the relative importance of different components
+    of composite objectives by showing both the costs and their sensitivities together.}
+    \label{f:compobjsens}
+\end{figure*}
+
+For composite objective functions, it can be difficult to have intuitions about how sensitivities
+to parameters can affect the design, since the parameters act on multiple variables of interest. A way
+to attempt to decouple these is to plot both the cost of a variable in the objective and its relevant
+sensitivity next to each other, as shown in Figure~\ref{f:compobjsens}. Taking a look at point [4000N,4000km],
+we can follow the yellow contour to see all of the missions with the same time cost as this mission
+(same average flight speed), and
+and see how the fraction of time cost versus total cost through the sensitivity to the cost index.
+This can help a designer gain intuition about the relative importance of different components of cost.
+
 \section{Model debugging in mission design}
 
-There are still significant weaknesses in the model that mission design often exploits to arrive at solutions
+There are still significant weaknesses in the model that mission design exploits to arrive at solutions
 that do not seem physical. In this specific modeling example, it shows the weaknesses of the engine model.
 
 We can see this through the engine weight contours plots with respect to range and payload as shown in
@@ -464,15 +491,17 @@ right of the contour plot, where the engine weight goes down even as the range i
 \end{figure}
 \end{center}
 
-The first weakness is the fact that the engine can supply the same amount of power
+This is a key example of how optimization cannot replace engineering intuition. Even though our model
+contains many of the key tradeoffs in aircraft design, assumptions can have a significant impact on the
+quality of the optima. The mathematical guarantees and speed of \gls{GP} allow engineers to make observations
+about the Pareto frontier of a problem quickly, and improve the quality of the models.
+
+We can intuit how and why the engine weight does not scale as expected.
+The first weakness of the model is the fact that the engine can supply the same amount of power
 regardless of altitude. For naturally aspirated piston engines, we would expect the maximum power available to
 drop with altitude; adding such a lapse rate will improve how much we trust the engine model.
 The second is the lack of an engine \BSFC model. Empirical data shows that the
 \BSFC of an engine deteriorates at low power outputs.
-
-This is a key example of how optimization cannot replace engineering intuition. Even though our model
-contains many of the key tradeoffs in aircraft design, assumptions can have a significant impact on the
-quality of the optima.
 
 In Sections~\ref{s:lapse} and \ref{s:BSFC}, these improvements will be implemented using more data-based modeling.
 Then in Section\ref{s:compare},

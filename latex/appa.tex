@@ -1,3 +1,6 @@
+\chapter{Appendix}
+\label{app}
+
 \section{Geometric Programming}\label{gp_intro}
 
 Introduced in 1967 by Duffin et al.~\cite{duffingp}, a geometric program \gls{GP} is
@@ -91,7 +94,7 @@ approximation $\hat{f}(x) \leq 0$ is a subset of the original SP's feasible set,
 $f(x) - g(x) \leq 0$. This means SP inequalities do not require a trust region,
 removing the need for trust region parameter tuning and making solving SPs
 substantially more reliable than solving general nonlinear programs. Figure
-\ref{fig:GPapproxs}, where a series of convex (GP compatible) constraints
+\ref{f:GPapproxs}, where a series of convex (GP compatible) constraints
 approximates a non-convex parabolic drag polar in log space, illustrates this
 property.
 
@@ -128,17 +131,17 @@ different points.}
 %\end{figure}
 
 Signomial equality constraints can be approximated by monomials as shown in
-Figure \ref{fig:sigeq} and may require a trust region. Trust regions were not
+Figure~\ref{f:sigeq} and may require a trust region. Trust regions were not
 used in the presented model. Signomial equalities are the least desirable type
 of constraint due the approximations involved. Most constraints in this work
-were relaxed to inequalities and checked for tightness by GPkit\cite{gpkit}. For
+were relaxed to inequalities and checked for tightness by GPkit~\cite{gpkit}. For
 additional details on how signomial equalities are approximated, see Opgenoord
-et al.\cite{sigeqpaper}.
+et al.~\cite{sigeqpaper}.
 
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=.7\textwidth,natwidth=576,natheight=432]{sigeqapprox.eps}
 \caption{The signomial equality constraint $C_{D} = f(C_{L})$ and its
-approximation.}\label{fig:sigeq}
+approximation.}\label{f:sigeq}
 \end{figure}
 
