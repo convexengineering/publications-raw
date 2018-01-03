@@ -182,9 +182,9 @@ class EngineP(Model):
 
 
 class Mission(Model):
-    def setup(self,Nsegments):
-        self.aircraft = SimPleAC()
-        W_f_m   = Variable('W_{f_{m}}','N','total mission fuel')
+    def setup(self,aircraft,Nsegments):
+        self.aircraft = aircraft
+        W_f_m   = Variable('W_{f_m}','N','total mission fuel')
         t_m     = Variable('t_m','hr','total mission time')
 
         with Vectorize(Nsegments):
@@ -201,12 +201,12 @@ class Mission(Model):
             self.aircraftP = self.aircraft.dynamic(state)
 
         # Mission variables
-        hcruise    = Variable('h_{cruise}', 5000, 'm', 'minimum cruise altitude')
-        Range      = Variable("Range", 3000, "km", "aircraft range")
-        W_p        = Variable("W_p", 6250, "N", "payload weight", pr=20.)
-        V_min      = Variable("V_{min}", 25, "m/s", "takeoff speed", pr=20.)
-        TOfac      = Variable('T/O factor', 2.,'-','takeoff thrust factor')
-        cost_index = Variable("C", 120,'1/hr','hourly cost index')
+        hcruise    = Variable('h_{cruise_m}', 'm', 'minimum cruise altitude')
+        Range      = Variable("Range_m", "km", "aircraft range")
+        W_p        = Variable("W_{p_m}", "N", "payload weight", pr=20.)
+        V_min      = Variable("V_{min_m}", "m/s", "takeoff speed", pr=20.)
+        TOfac      = Variable('T/O factor_m', '-','takeoff thrust factor')
+        cost_index = Variable("C_m", '1/hr','hourly cost index')
 
         constraints = []
 
@@ -266,8 +266,16 @@ class Mission(Model):
 
 if __name__ == "__main__":
     # Most basic way to execute the model 
-    m = Mission(5)
-    m.cost = m['W_f']*units('1/N') + m['C']*m['t_m']
+    m = Mission(SimPleAC(),5)
+    m.substitutions.update({
+        'h_{cruise_m}'   :5000*units('m'),
+        'Range_m'        :3000*units('km'),
+        'W_{p_m}'        :6250*units('N'),
+        'C_m'            :120*units('1/hr'),
+        'V_{min_m}'      :25*units('m/s'),
+        'T/O factor_m'   :2,
+    })
+    m.cost = m['W_{f_m}']*units('1/N') + m['C_m']*m['t_m']
     #m = Model(m.cost, Bounded(m))
     #m_relax = relaxed_constants(m,None,None)
     sol = m.localsolve(verbosity = 4)

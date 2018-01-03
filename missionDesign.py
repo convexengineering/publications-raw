@@ -1,4 +1,4 @@
-from SimPleAC_mission4 import Mission
+from SimPleAC_mission2 import Mission
 from gpkit import Model, units, Vectorize, Variable
 from gpkit import GPCOLORS, GPBLU
 from gpkit.constraints.bounded import Bounded
@@ -24,6 +24,8 @@ sol = m.localsolve(verbosity=2,skipsweepfailures=True)
 #                   m['W_p']:(1000,10000)})
 
 # Plotting
+Obj = sol['cost'].reshape((N,M))
+timecost = (sol('C').magnitude*sol('t_m').magnitude).reshape((N,M))
 Vffuse = sol('V_{f_{fuse}}').reshape((N,M))
 Vfwing = sol('V_{f_{wing}}').reshape((N,M))
 Vftotal = sol('V_{f_{avail}}').reshape((N,M))
@@ -34,6 +36,26 @@ W_f = sol('W_f').reshape((N,M))
 Range = sol('Range').reshape((N,M))
 W = sol('W').reshape((N,M))
 AR = sol('A').reshape((N,M))
+
+# Objective contours
+plt.contour(W_p,Range,Obj)
+plt.xlabel('Payload weight (N)')
+plt.ylabel('Range (km)')
+plt.title('Objective contours')
+plt.grid()
+plt.colorbar()
+plt.savefig('figbank/Objcontours.png')
+plt.close()
+
+# Time cost contours
+plt.contour(W_p,Range,timecost)
+plt.xlabel('Payload weight (N)')
+plt.ylabel('Range (km)')
+plt.title('Time cost contours')
+plt.grid()
+plt.colorbar()
+plt.savefig('figbank/timecostcontours.png')
+plt.close()
 
 # Fuel weight contours
 plt.contour(W_p,Range,W_f)
@@ -97,6 +119,7 @@ plt.colorbar()
 plt.savefig('figbank/Wwcoeff2senscontours.png')
 plt.close()
 
+# Engine weight contours
 plt.contour(W_p,Range,W_e)
 plt.xlabel('Payload weight (N)')
 plt.ylabel('Range (km)')
@@ -159,6 +182,17 @@ plt.title('Cost index sensitivity contours')
 plt.grid()
 plt.colorbar()
 plt.savefig('figbank/Csenscontours.png')
+plt.close()
+
+# Fuel weight sensitivity contours
+rhofsens = sol['sensitivities']['constants']['\\rho_f'].reshape((N,M))
+plt.contour(W_p,Range,rhofsens)
+plt.xlabel('Payload weight (N)')
+plt.ylabel('Range (km)')
+plt.title('Fuel weight sensitivity contours')
+plt.grid()
+plt.colorbar()
+plt.savefig('figbank/rhofsenscontours.png')
 plt.close()
 
 # Altitude sweep
