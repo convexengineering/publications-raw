@@ -142,7 +142,7 @@ class Engine(Model):
         BSFC_ref    = Variable("BSFC_{ref}", 0.32, "lbf/(hp*hr)", "reference brake specific fuel consumption")
         eta_prop    = Variable("\\eta_{prop}",0.8,'-',"propeller efficiency")
         P_shaft_ref = Variable("P_{shaft,ref}",149,"kW","reference MSL maximum shaft power")
-        W_e_ref     = Variable("W_{e,ref}",681,"N","reference engine weight")
+        W_e_ref     = Variable("W_{e,ref}",153, "lbf","reference engine weight")
         h_ref       = Variable("h_{ref}",15000,'ft','engine lapse reference altitude')
 
         # Free variables
@@ -176,8 +176,9 @@ class EngineP(Model):
             constraints += [P_shaft <= P_shaft_alt,
                         L == (0.937 * (state['h']/self.engine['h_{ref}'])**0.0922)**10,
                         SignomialEquality(1, L + P_shaft_alt / self.engine['P_{shaft,max}']),
-                        (BSFC/self.engine['BSFC_{ref}'])**(2.29) >= 6.57*(L)**6.60 + 1.14 * (L) ** 0.106,
-                        BSFC >= 0.32*units('lbf/(hp*hr)')]
+                        (BSFC/self.engine['BSFC_{ref}'])**(0.1) >= 0.984*(P_shaft/P_shaft_alt)**-0.0346,
+                        BSFC/self.engine['BSFC_{ref}'] >= 1.,
+                        ]
         return constraints
 
 
@@ -261,6 +262,10 @@ class Mission(Model):
                         (self.aircraft.wing['N_{ult}']**2. * self.aircraft.wing['A'] ** 3. *
                         ((W_p+self.aircraft.fuse['V_{f_{fuse}}']*self.aircraft['g']*self.aircraft['\\rho_f']) *
                          self.aircraft['W'] * self.aircraft.wing['S']))]
+
+        # Upper bounding variables
+        constraints += [t_m <= 100000*units('hr'),
+            W_f_m <= 1e10*units('N')]
 
         return constraints, state, self.aircraft, self.aircraftP
 

@@ -39,8 +39,6 @@ class Multimission(Model):
             self.missions[i]['C_m']          == cost_index[i],
             self.missions[i]['T/O factor_m'] == TOfac[i],
             # Upper bounding relevant variables
-            self.missions[i]['t_m'] <= 100000*units('hr'),
-            self.missions[i]['W_{f_m}'] <= 1e10*units('N'),
             W_f_mm <= 1e11*units('N'),
             ]
 
@@ -57,11 +55,11 @@ if __name__ == "__main__":
     m = Multimission(Nmissions,Nsegments)
     m.substitutions.update({
         'h_{cruise_{mm}}':[5000*units('m'), 5000*units('m')],
-        'Range_{mm}'     :[3000*units('km'), 1000*units('km')],
+        'Range_{mm}'     :[3000*units('km'), 2000*units('km')],
         'W_{p_{mm}}'     :[6250*units('N'),   8000*units('N')],
         'C_{mm}'         :[120*units('1/hr'), 360*units('1/hr')],
     })
     #m.cost = m['W_{f_{mm}}']*units('1/N') + sum(m.missions[i]['C_m']*m.missions[i]['t_m'] for i in range(0,Nmissions))
-    m.cost = m.missions[0]['W_{f_m}']*units('1/N') + m.missions[1]['C_m']*m.missions[1]['t_m']
+    m.cost = (m.missions[0]['W_{f_m}']*units('1/N') + m.missions[1]['C_m']*m.missions[1]['t_m'])
     sol = m.localsolve(verbosity = 4)
 

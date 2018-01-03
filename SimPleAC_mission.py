@@ -154,7 +154,7 @@ class Engine(Model):
         # Dimensional constants
         eta_prop    = Variable("\\eta_{prop}",0.8,'-',"propeller efficiency")
         P_shaft_ref = Variable("P_{shaft,ref}",149,"kW","reference MSL maximum shaft power")
-        W_e_ref     = Variable("W_{e,ref}",681,"N","reference engine weight")
+        W_e_ref     = Variable("W_{e,ref}",153, "lbf","reference engine weight")
 
         # Free variables
         P_shaft_max = Variable("P_{shaft,max}","kW","MSL maximum shaft power")

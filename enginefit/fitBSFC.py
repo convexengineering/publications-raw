@@ -26,13 +26,19 @@ cstrt, rms_error = fit(log(P[0:-1]/Pmax),log(BSFC[0:-1]/BSFCmin),K,Type)
 
 # Plotting
 Lnew = np.linspace(0.1,1,100)
-newPoints = (6.57*(Lnew)**6.60 + 1.14 * (Lnew) ** 0.106)**(1/2.29)
+#newPoints = (6.57*(Lnew)**6.60 + 1.14 * (Lnew) ** 0.106)**(1/2.29)
 #newPoints = (0.992*(Lnew)**-0.0303)**10
-plt.plot(L,BSFC/BSFCmin,label='data')
-#plt.plot(P/Pmax,BSFC/BSFCmin,label='data')
+#newPoints = (2670*(Lnew)**32.7 + 0.925*(Lnew)**-0.140)**(1/0.373)
+newPoints = (.984*Lnew**-0.0346)**10
+for i in range(0,100):
+    if newPoints[i] <= 1.:
+        newPoints[i] = 1.
+#plt.plot(L,BSFC/BSFCmin,label='data')
+plt.plot(P/Pmax,BSFC/BSFCmin,label='data')
 plt.plot(Lnew,newPoints,label='fit')
-plt.xlabel('$1 - P_{shaft}/P_{shaft,alt}$')
+plt.xlabel('$P_{shaft}/P_{shaft,alt}$')
 plt.ylabel('$BSFC/BSFC_{min}$')
-plt.legend(loc=2)
+plt.legend(loc=1)
+plt.grid()
 plt.show()
 
