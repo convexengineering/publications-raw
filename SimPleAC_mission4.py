@@ -271,7 +271,7 @@ class Mission(Model):
 
 if __name__ == "__main__":
     # Most basic way to execute the model 
-    m = Mission(SimPleAC(),5)
+    m = Mission(SimPleAC(),4)
     m.substitutions.update({
         'h_{cruise_m}'   :5000*units('m'),
         'Range_m'        :3000*units('km'),

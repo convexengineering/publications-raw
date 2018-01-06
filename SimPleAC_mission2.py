@@ -166,15 +166,13 @@ class EngineP(Model):
 
         constraints = []
 
-        constraints += [P_shaft <= 0.2*self.engine['P_{shaft,max}']]
-
         return constraints
 
 
 class Mission(Model):
-    def setup(self,Nsegments):
-        self.aircraft = SimPleAC()
-        W_f_m   = Variable('W_{f_{m}}','N','Total mission fuel')
+    def setup(self,aircraft,Nsegments):
+        self.aircraft = aircraft
+        W_f_m   = Variable('W_{f_m}','N','Total mission fuel')
         t_m     = Variable('t_m','hr','Total mission time')
 
         with Vectorize(Nsegments):
@@ -191,11 +189,13 @@ class Mission(Model):
             self.aircraftP = self.aircraft.dynamic(state)
 
         # Mission variables
-        hcruise    = Variable('h_{cruise}', 5000, 'm', 'minimum cruise altitude')
-        Range      = Variable("Range", 3000, "km", "aircraft range")
-        W_p        = Variable("W_p", 6250, "N", "payload weight", pr=20.)
-        V_min      = Variable("V_{min}", 25, "m/s", "takeoff speed", pr=20.)
-        cost_index = Variable("C", 120,'1/hr','hourly cost index')
+        hcruise    = Variable('h_{cruise_m}', 'm', 'minimum cruise altitude')
+        Range      = Variable("Range_m", "km", "aircraft range")
+        W_p        = Variable("W_{p_m}", "N", "payload weight", pr=20.)
+        V_min      = Variable("V_{min_m}", "m/s", "takeoff speed", pr=20.)
+        cost_index = Variable("C_m",'1/hr','hourly cost index')
+        TOfac      = Variable('T/O factor_m', '-','takeoff thrust factor')
+
 
         constraints = []
 
@@ -225,6 +225,9 @@ class Mission(Model):
                         W_f_s >= self.aircraft['g'] * self.aircraftP.engineP['BSFC'] * self.aircraftP.engineP['P_{shaft}'] * t_s,
                         self.aircraftP.engineP['T'] * self.aircraftP['V'] >= self.aircraftP['D'] * self.aircraftP['V'] + Wavg * dhdt,
 
+                        # Max MSL thrust at least 2*climb thrust
+                        self.aircraft.engine['P_{shaft,max}'] >= TOfac*self.aircraftP.engineP['P_{shaft}'][0],
+
                         # Flight time
                         t_s == R_s/self.aircraftP['V'],
 
@@ -249,12 +252,24 @@ class Mission(Model):
                         ((W_p+self.aircraft.fuse['V_{f_{fuse}}']*self.aircraft['g']*self.aircraft['\\rho_f']) *
                          self.aircraft['W'] * self.aircraft.wing['S']))]
 
+        # Upper bounding variables
+        constraints += [t_m <= 100000*units('hr'),
+            W_f_m <= 1e10*units('N')]
+
         return constraints, state, self.aircraft, self.aircraftP
 
 if __name__ == "__main__":
     # Most basic way to execute the model 
-    m = Mission(5)
-    m.cost = m['W_f']*units('1/N') + m['C']*m['t_m']
+    m = Mission(SimPleAC(),4)
+    m.substitutions.update({
+        'h_{cruise_m}'   :5000*units('m'),
+        'Range_m'        :3000*units('km'),
+        'W_{p_m}'        :6250*units('N'),
+        'C_m'            :120*units('1/hr'),
+        'V_{min_m}'      :25*units('m/s'),
+        'T/O factor_m'   :2,
+    })
+    m.cost = m['W_{f_m}']*units('1/N') + m['C_m']*m['t_m']
     #m = Model(m.cost, Bounded(m))
     #m_relax = relaxed_constants(m,None,None)
     sol = m.localsolve(verbosity = 4)

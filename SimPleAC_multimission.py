@@ -9,8 +9,8 @@ from SimPleAC_mission4 import Mission, SimPleAC
 from atmosphere import Atmosphere
 
 class Multimission(Model):
-    def setup(self,Nmissions,Nsegments):
-        self.aircraft = SimPleAC()
+    def setup(self,aircraft,Nmissions,Nsegments):
+        self.aircraft = aircraft
         self.missions = []
         for i in range(0,Nmissions):
             self.missions.append(Mission(self.aircraft,Nsegments))
@@ -51,8 +51,9 @@ class Multimission(Model):
 
 if __name__ == "__main__":
     Nmissions = 2
-    Nsegments = 5
-    m = Multimission(Nmissions,Nsegments)
+    Nsegments = 4
+    aircraft = SimPleAC()
+    m = Multimission(aircraft,Nmissions,Nsegments)
     m.substitutions.update({
         'h_{cruise_{mm}}':[5000*units('m'), 5000*units('m')],
         'Range_{mm}'     :[3000*units('km'), 2000*units('km')],
