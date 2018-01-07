@@ -470,33 +470,64 @@ to attempt to decouple these is to plot both the cost of a variable in the objec
 sensitivity next to each other, as shown in Figure~\ref{f:compobjsens}. Taking a look at point [4000N,4000km],
 we can follow the yellow contour to see all of the missions with the same time cost as this mission
 (same average flight speed), and
-and see how the fraction of time cost versus total cost through the sensitivity to the cost index.
+and see how the fraction of time cost versus total cost varies through the sensitivity to the time cost index.
 This can help a designer gain intuition about the relative importance of different components of cost.
 
-\section{Model debugging in mission design}
+\section{More modeling improvements before multimission design}
 
-There are still significant weaknesses in the model that mission design exploits to arrive at solutions
-that do not seem physical. In this specific modeling example, it shows the weaknesses of the engine model.
+There are still significant weaknesses in the model relating to the engine of the model that require
+improvement before we can perform multimission design in Section~\ref{s:mm}.
+We can see this by observing the sensitivities in Table~\ref{t:sens}.
 
-We can see this through the engine weight contours plots with respect to range and payload as shown in
-Figure~\ref{f:wesens}. There is clearly something unphysical or unintuitive happening towards the top
-right of the contour plot, where the engine weight goes down even as the range increases for constant payload.
+\begin{footnotesize}
+\captionof{table}{A selection of sensitivities of the model.}
+\label{t:sens}
+\begin{longtable}{llcl}
+\toprule
+Variable & Sensitivity & Units & Description \\ \midrule
+\multicolumn{3}{l}{\textbf{Mission}} \\ \\
+$Range$ & +1.1  & $~\mathrm{km}$ & aircraft range \\
+$V_{min}$ & -0.67  & $~\mathrm{\tfrac{m}{s}}$ & takeoff speed \\
+$C$ & +0.46  & $~\mathrm{\tfrac{1}{hr}}$ & hourly cost index \\
+$W_p$ & +0.45  & $~\mathrm{N}$ & payload weight \\
+$h_{cruise}$ & +0.12  & $~\mathrm{m}$ & minimum cruise altitude \\
+ &  &  &  \\
+\multicolumn{3}{l}{\textbf{Mission/SimPleAC}} \\ \\
+$g$ & +0.54  & $~\mathrm{\tfrac{m}{s^{2}}}$ & gravitational acceleration \\
+$\rho_f$ & -0.042  & $~\mathrm{\tfrac{kg}{m^{3}}}$ & density of fuel \\
+ &  &  &  \\
+\multicolumn{3}{l}{\textbf{Mission/SimPleAC/Engine}} \\ \\
+$\eta_{prop}$ & -0.65  & $$ & propeller efficiency \\
+$P_{shaft,ref}$ & -0.067  & $~\mathrm{kW}$ & reference MSL maximum shaft power \\
+$W_{e,ref}$ & +0.044  & $~\mathrm{lbf}$ & reference engine weight \\
+ &  &  &  \\
+\multicolumn{3}{l}{\textbf{Mission/SimPleAC/Wing}} \\ \\
+$(\frac{S}{S_{wet}})$ & +0.45  & $$ & wetted area ratio \\
+$k$ & +0.45  & $$ & form factor \\
+$C_{L,max}$ & -0.33  & $$ & lift coefficient at stall \\
+$e$ & -0.17  & $$ & Oswald efficiency factor \\
+$W_{w_{coeff2}}$ & +0.12  & $~\mathrm{Pa}$ & wing weight coefficient 2 \\
+$\tau$ & -0.11  & $$ & airfoil thickness to chord ratio \\
+$N_{ult}$ & +0.07  & $$ & ultimate load factor \\
+$W_{w_{coeff1}}$ & +0.07  & $~\mathrm{\tfrac{1}{m}}$ & wing weight coefficient 1 \\
+ &  &  &  \\
+\multicolumn{3}{l}{\textbf{Mission/SimPleACP/EngineP}} \\ \\
+$BSFC$ & [ +0.16     +0.14     +0.14     +0.14    ]  & $~\mathrm{\tfrac{g}{\left(hr\cdot kW\right)}}$ & brake specific fuel consumption \\
+\bottomrule
+\end{longtable}
+\end{footnotesize}
 
-\begin{center}
-\begin{figure}
-    \includegraphics[width=0.45\linewidth]{mission2/W_econtours.png}
-    \caption{The engine weight decreases for constant payload towards the right of the graph,
-            an unintuitive result.}
-    \label{f:wesens}
-\end{figure}
-\end{center}
+As we can see, variables internal to the engine model, such as \BSFC and $\eta_{prop}$ have
+large sensitivities (0.59 and -0.65 respectively). The objective of the model
+is as sensitive to these variables as mission input variables such as range and payload, so
+these variables require refinement.
 
-This is a key example of how optimization cannot replace engineering intuition. Even though our model
-contains many of the key tradeoffs in aircraft design, assumptions can have a significant impact on the
-quality of the optima. The mathematical guarantees and speed of \gls{GP} allow engineers to make observations
-about the Pareto frontier of a problem quickly, and improve the quality of the models.
+%This is a key example of how optimization cannot replace engineering intuition. Even though our model
+%contains many of the key tradeoffs in aircraft design, assumptions can have a significant impact on the
+%quality of the optima. The mathematical guarantees and speed of \gls{GP} allow engineers to make observations
+%about the Pareto frontier of a problem quickly, and improve the quality of the models.
 
-We can intuit how and why the engine weight does not scale as expected.
+The author will take a two-pronged approach to improved engine modeling.
 The first weakness of the model is the fact that the engine can supply the same amount of power
 regardless of altitude. For naturally aspirated piston engines, we would expect the maximum power available to
 drop with altitude; adding such a lapse rate will improve how much we trust the engine model.
@@ -504,8 +535,8 @@ The second is the lack of an engine \BSFC model. Empirical data shows that the
 \BSFC of an engine deteriorates at low power outputs.
 
 In Sections~\ref{s:lapse} and \ref{s:BSFC}, these improvements will be implemented using more data-based modeling.
-Then in Section\ref{s:compare},
-we can see how improved modeling affects the results of the model.
+Then in Section\ref{s:multimission},
+we can see how improved modeling affects the results of a multimission model.
 
 \subsection{Engine lapse rate model}
 \label{s:lapse}
@@ -539,78 +570,29 @@ BSFC has downward pressure due to the objective function, and therefore must be 
 it amenable to multiple-term posynomial fits.
 
 First, a monomial fit of the $\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ was created.
-The result is shown in Figure~\ref{f:P_BSFC}.
+The result is shown by the green line in Figure~\ref{f:P_BSFC}.
 
 \begin{center}
     \begin{figure}
         \includegraphics[width=0.5\textwidth]{P_BSFC.png}
-        \caption{$\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ data fit. Note that the fit is
-        not able to capture the tail ends of the curve.}
+        \caption{$\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ data fit. The green fit is
+        not able to capture the tail ends of the curve, which is resolved by the bounding in the red fit.}
         \label{f:P_BSFC}
     \end{figure}
 \end{center}
 
-Although the r.m.s. error of the fit is low (0.015) due to the small number of data points,
+Although the r.m.s. error of the fit is low (0.028) due to the small number of data points (in blue),
 there is a significant deterioration in the quality of the
 fit as $\frac{P_{shaft}}{P_{shaft,alt}} \xrightarrow[]{} 1$,
-and increasing the number of posynomial terms in the fit does not alleviate this problem. It
-turns out that fitting with respect to lapse rate using the simple relation $1 = L + \frac{P_{shaft}}{P_{shaft,alt}}$
-resolves the issue. The fit with respect to lapse rate, which has been implemented in the model, is
-shown in Figure~\ref{f:lapse_BSFC.png}
+and increasing the number of posynomial terms in the fit does not alleviate this problem.
+What we can do is put a lower bound on the \BSFC of the engine that depends on the actual
+lowest \BSFC achieved by the engine. The final \BSFC relation is shown in Equation~\ref{e:BSFCfit}.
 
-\begin{center}
-    \begin{figure}
-        \includegraphics[width=0.5\textwidth]{lapse_BSFC.png}
-        \caption{Engine lapse \% $L$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ data fit. This fit has minimal
-        RMS error.}
-        \label{f:lapse_BSFC}
-    \end{figure}
-\end{center}
-
-The r.m.s. error of the new fit is less than $10^{-10}$, since we are able to find a 2-term posynomial that
-goes through the seven data points to numerical precision.
-The improvement of the fit thanks to a simple variable transformation shows that
-parametrization can be important to the level of accuracy and fidelity of a model.
-
-\subsection{Comparing models under different sets of constraints}
-\label{s:compare}
-
-We would first like to see that the behavior that doesn't suit our engineering intuition, namely the
-decrease in engine weight with increased range, disappear. And this is exactly
-what we observe in Figure~\ref{f:wesensimp}.
-
-\begin{center}
-\begin{figure}
-    \includegraphics[width=0.45\linewidth]{mission4/W_econtours.png}
-    \caption{The engine weight scales appropriately with range and payload with the improved engine model.}
-    \label{f:wesensimp}
-\end{figure}
-\end{center}
-
-The inputs to the mission model, for both the model with and without lapse rate and \BSFC models,
-has been detailed in Table~\ref{t:missioninputs}.
-
-\begin{footnotesize}
-\begin{center}
-\begin{longtable}{llcl}
-\toprule
-Constants & Value & Units & Description\\ \midrule
-$C$ & 120  & $~\mathrm{\tfrac{1}{hr}}$ & hourly cost index \\
-$Range$ & 3000  & $~\mathrm{km}$ & aircraft range \\
-$T/O factor$ & 2  & $$ & takeoff thrust factor \\
-$V_{min}$ & 25  & $~\mathrm{\tfrac{m}{s}}$ & takeoff speed \\
-$W_p$ & 6250  & $~\mathrm{N}$ & payload weight \\
-$h_{cruise}$ & 5000  & $~\mathrm{m}$ & minimum cruise altitude \\
-    \caption{Inputs to the \textbf{\textit{Mission}} model.}
-    \label{t:missioninputs}
-\end{longtable}
-\end{center}
-\end{footnotesize}
-
-%TODO: add table comparing the results of the different missions
-
-And most importantly, we should see changes in the sensitivity contours that may (or sometimes may not)
-agree with our engineering intuition. This is a valuable feature of optimization coupled in design.
+\begin{equation}
+    \label{e:BSFCfit}
+    \left(\frac{\BSFC}{\BSFC_{min}}\right)^{0.1} = .984\left(\frac{P_{shaft}}{P_{shaft,alt}}\right)^{-0.0346},~
+    \left(\frac{\BSFC}{\BSFC_{min}}\right) \geq 1
+\end{equation}
 
 \section{Multimission design}
 \label{s:multimission}
@@ -662,54 +644,86 @@ is passed on as an argument to all of these models, which makes sure that both i
 static and performance constraints are satisfied for each flight segment
 of every mission.
 
-\subsection{Complex objective functions: behavior in log-space}
+\subsection{Multimission objective functions}
 
 The objective function of the \textbf{\textit{Multimission}} model has to be
 a posynomial that puts pressure on the variables in every \textbf{\textit{Mission}} model. For example, knowing that
-$W_{f_{mission}} \frac{1}{\mathrm{N}} + C \times t_{flight}$ is a valid objective functions to the single mission,
+$W_{f_m} \frac{1}{\mathrm{N}} + C \times t_{m}$ is a valid objective functions to the single mission,
 the objective function below for $N_{missions}$
 
 \begin{equation}
-    \mathrm{Objective} \geq \sum_{n=1}^{N_{missions}} W_{f_{mission}} \frac{1}{\mathrm{N}} + \mathrm{C} \times t_{flight}
+    \mathrm{Objective} \geq \sum_{n=1}^{N_{missions}} W_{f_m} \frac{1}{\mathrm{N}} + \mathrm{C} \times t_{m}
     \label{e:compObj}
 \end{equation}
 
-will also work, since the same aircraft will fulfill both missions and are linked.
+will definitely work, since the same aircraft will fulfill both missions and are linked.
 Assuming that $N_{missions} = 2$, note that an objective of the type below will also work
 
 \begin{equation}
-    \mathrm{Objective} \geq W_{f_{mission_{1}}} \frac{1}{\mathrm{N}} + \mathrm{C}_{2} \times t_{flight_{2}}
+    \mathrm{Objective} \geq W_{f_{m_{1}}} \frac{1}{\mathrm{N}} + \mathrm{C}_{2} \times t_{m_{2}}
     \label{e:sepObj}
 \end{equation}
 
 but will require some management in variable boundedness since some internal variables,
-namely  $W_{f_{mission_{2}}}$ and $t_{flight_{1}}$, will diverge to numerical infinity. Simply upper bounding the variables
-internally will resolve boundedness issues. For this kind of objective, the
+namely  $W_{f_{m_{2}}}$ and $t_{m_{1}}$, will diverge to numerical infinity.
+Simply upper bounding the variables
+internally by some large bound will resolve boundedness issues. For this kind of objective, the
 performance of the aircraft will be a compromise with respect to aircraft optimized purely
 for mission time for the first mission or fuel burn for the second mission.
 
-The SimPleAC was optimized for the 2-mission scenario for both objectives~\ref{e:compObj} and \ref{e:sepObj} and compared against
-the single mission solution. The inputs to the model are specified in Table~\ref{t:mminputs}, and the results
+\subsection{Interpreting multimission results}
+
+The SimPleAC was optimized for the 3 different mission scenarios:
+
+\begin{enumerate}
+    \item A single mission (named M1) minimizing fuel burn ($W_{f_m}$).
+    \item A single mission (named M2) minimizing time cost ($\mathrm{C} \times t_{m}$)
+    \item A multimission design performing M1 and M2, minimizing fuel burn over M1 ($W_{f_{m_1}}$), and mission
+                    time over M2 $\mathrm{C}_{2} \times t_{m_{2}}$ (objective in Equation~\ref{e:sepObj}).
+\end{enumerate}
+
+The different mission requirements are detailed in Table~\ref{t:mminputs}. M1 is the same mission as
+the one specified in Section~\ref{s:mission}, simulating a standard ferry mission where we care about fuel
+consumption. M2 is a dash mission delivering more payload than M1, where mission time is the objective. Both missions
+share the same flight altitudes, takeoff thrust factors and minimum takeoff speeds.
 
 \begin{footnotesize}
 \begin{center}
-\begin{longtable}{llcl}
+\begin{longtable}{lllcl}
 \toprule
-Constants & Value & Units & Description\\ \midrule
-$C$ & 120  & $~\mathrm{\tfrac{1}{hr}}$ & hourly cost index \\
-$Range$ & 3000  & $~\mathrm{km}$ & aircraft range \\
-$T/O factor$ & 2  & $$ & takeoff thrust factor \\
-$V_{min}$ & 25  & $~\mathrm{\tfrac{m}{s}}$ & takeoff speed \\
-$W_p$ & 6250  & $~\mathrm{N}$ & payload weight \\
-$h_{cruise}$ & 5000  & $~\mathrm{m}$ & minimum cruise altitude \\
+Input & M1 & M2 & Units & Description\\ \midrule
+$C$ & 120 & 360  & $~\mathrm{\tfrac{1}{hr}}$ & hourly cost index \\
+$Range$ & 3000 & 1000  & $~\mathrm{km}$ & aircraft range \\
+$W_p$ & 6250 & 8000  & $~\mathrm{N}$ & payload weight \\
+$h_{cruise}$ & \multicolumn{2}{c}{5000} & $~\mathrm{m}$ & minimum cruise altitude \\
+$T/O factor$ & \multicolumn{2}{c}{2} & $$ & takeoff thrust factor \\
+$V_{min}$ & \multicolumn{2}{c}{25} & $~\mathrm{\tfrac{m}{s}}$ & takeoff speed \\
     \caption{Inputs to the \textbf{\textit{Multimission}} model.}
     \label{t:mminputs}
 \end{longtable}
 \end{center}
 \end{footnotesize}
 
+The results are shown in Table~\ref{t:mmoutputs}.
+
+\begin{center}
+    \captionof{table}{Results of the single- and multi- mission solutions. Italicized figures
+    have been post-processed.}
+    \input{tables/mmtable.tex}
+    \label{t:mmoutputs}
+\end{center}
+
+The multimission aircraft represents a compromise aircraft that gives adequate
+
+
+Note that, for the two aircraft designed for single missions, the other mission is infeasible. For the M1 aircraft,
+M2 is infeasible due to the wing structural limits. For the M2 aircraft, M1 is infeasible due to inadequate
+fuel volume. When performing this kind of multimission design, we ensure that the aircraft design is at the minimum feasible,
+meaning it is able to perform all of the missions under the sets of static and performance constraints.
 
 \subsection{Potential extensions of multimission design}
+
+Multimission design would be further strengthened by the application of
 
 This thesis serves to demonstrate methods in \gls{GP} modeling and optimization
 rather than provide interesting results, so I will
