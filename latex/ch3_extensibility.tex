@@ -665,7 +665,8 @@ Assuming that $N_{missions} = 2$, note that an objective of the type below will 
 \end{equation}
 
 but will require some management in variable boundedness since some internal variables,
-namely  $W_{f_{m_{2}}}$ and $t_{m_{1}}$, will diverge to numerical infinity.
+namely  $W_{f_{m_{2}}}$ and $t_{m_{1}}$, can and will diverge to numerical infinity since they
+are not necessarily pressured by the objective function.
 Simply upper bounding the variables
 internally by some large bound will resolve boundedness issues. For this kind of objective, the
 performance of the aircraft will be a compromise with respect to aircraft optimized purely
@@ -676,9 +677,9 @@ for mission time for the first mission or fuel burn for the second mission.
 The SimPleAC was optimized for the 3 different mission scenarios:
 
 \begin{enumerate}
-    \item A single mission (named M1) minimizing fuel burn ($W_{f_m}$).
-    \item A single mission (named M2) minimizing time cost ($\mathrm{C} \times t_{m}$)
-    \item A multimission design performing M1 and M2, minimizing fuel burn over M1 ($W_{f_{m_1}}$), and mission
+    \item M1: A single mission minimizing fuel burn ($W_{f_m}$).
+    \item M2: A single mission minimizing time cost ($\mathrm{C} \times t_{m}$)
+    \item MM: A multimission design performing both missions, minimizing fuel burn over M1 ($W_{f_{m_1}}$), and mission
                     time over M2 $\mathrm{C}_{2} \times t_{m_{2}}$ (objective in Equation~\ref{e:sepObj}).
 \end{enumerate}
 
@@ -698,13 +699,15 @@ $W_p$ & 6250 & 8000  & $~\mathrm{N}$ & payload weight \\
 $h_{cruise}$ & \multicolumn{2}{c}{5000} & $~\mathrm{m}$ & minimum cruise altitude \\
 $T/O factor$ & \multicolumn{2}{c}{2} & $$ & takeoff thrust factor \\
 $V_{min}$ & \multicolumn{2}{c}{25} & $~\mathrm{\tfrac{m}{s}}$ & takeoff speed \\
-    \caption{Inputs to the \textbf{\textit{Multimission}} model.}
+    \caption{Inputs to the M1 and M2 \textbf{\textit{Mission}} models.}
     \label{t:mminputs}
 \end{longtable}
 \end{center}
 \end{footnotesize}
 
 The results are shown in Table~\ref{t:mmoutputs}.
+The multimission aircraft represents a compromise aircraft that performs both missions
+with relatively high performance
 
 \begin{center}
     \captionof{table}{Results of the single- and multi- mission solutions. Italicized figures
@@ -713,27 +716,26 @@ The results are shown in Table~\ref{t:mmoutputs}.
     \label{t:mmoutputs}
 \end{center}
 
-The multimission aircraft represents a compromise aircraft that gives adequate
-
-
 Note that, for the two aircraft designed for single missions, the other mission is infeasible. For the M1 aircraft,
 M2 is infeasible due to the wing structural limits. For the M2 aircraft, M1 is infeasible due to inadequate
 fuel volume. When performing this kind of multimission design, we ensure that the aircraft design is at the minimum feasible,
 meaning it is able to perform all of the missions under the sets of static and performance constraints.
 
+Furthermore, there is evidence to suggest that the solve time an \gls{SP} scales sub-linearly with the number of
+variables and constraints. So it might be interesting for a designer to input the entire variety of missions that
+they expect the design the perform into a single multimission framework to ensure feasibility, especially if the
+mission parameters vary significantly.
+
+%TODO: Ask for help with this section.
+
 \subsection{Potential extensions of multimission design}
 
-Multimission design would be further strengthened by the application of
-
-This thesis serves to demonstrate methods in \gls{GP} modeling and optimization
-rather than provide interesting results, so I will
-
-Multimission design can
-
-The design of modular systems
-
-Multimission design also allows us to design systems with potential future extensibility. A good example from aircraft design
+Multimission design and optimization increases the robustness of a design to mission variability.
+It would be further strengthened by the application of robust optimization to the framework. It can be used in the design
+of modular systems, and systems with potential present and future extensibility as well.
+A good example from aircraft design
 is the design of a family of aircraft, and more specifically 'stretchable' aircraft. In
 this case, we could design a series of aircraft that have aerodynamic surfaces and engines
-in common, but have different length fuselages to accommodate different numbers of passengers.
+in common, but have different length fuselages to accommodate different numbers of passengers over different
+routes of interest.
 
