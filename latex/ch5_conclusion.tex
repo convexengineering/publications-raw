@@ -1,28 +1,47 @@
 \chapter{Conclusion}
 \label{ch5:conclusion}
 
-%TODO: much to do here...
-TO BE COMPLETED.
+This thesis has demonstrated methods modeling and optimization using \gls{GP}. It
+was motivated by the need to reduce the activation energy of designers in using
+convex programming in conceptual design.
 
-This thesis serves to demonstrate methods in \gls{GP} modeling and optimization
-rather than provide interesting results, so I will
+In Chapter~\ref{ch2:inequalities}, the ideas of pressure and boundedness were
+defined in the context of a \gls{GP}, to show the intuitive nature of \gls{GP}
+compatible constraints. The basic aircraft design problem was defined,
+and the importance of objective functions and variable freedom
+was identified in achieving bounded convex problems.
+Section~\ref{s:GPlimits} provided justification for the need to use the non-convex
+extension of \gls{GP}s called \gls{SP}s in design, with some loss of mathematical
+guarantees and solution speed. Fuel volume models provided a meaningful use
+case for signomial constraints, and the chapter provided arguments for the use of the signomial
+equality. The product was an \gls{SP}-compatible aircraft model that was systematically defined from
+physical principles, and a sample solution of that model.
 
-In Chapter~\ref{ch2:inequalities},
+Chapter~\ref{ch3:extensibility} begun by introducing the idea of modularity, and improving
+the fidelity of models by using data-based modeling in Section~\ref{s:engine}.
+The aircraft model was modularized
+into component models, and then into performance and static models in order to
+be able to vectorize certain sets of variables and constraints that are repeated between
+different mission segments. A logical (but non-unique) hierarchy of models
+was presented to allow designers to make decisions about where to locate different variables
+and constraints in the modular mission model architecture.
 
-I have defined an aircraft model to show the intuitive nature of \gls{GP}
-compatible constraints, and demonstrated how to model a complex
-starting from scratch
+The chapter also presented a case where environmental modeling becomes critical
+for designs we trust as engineers. While performing tradespace exploration, an intuitive
+way to analyze the components of a multi-objective cost of the \gls{GP} was presented, in
+an effort to draw maximal engineering understanding from the tradespaces that were explored.
 
-I concluded with describing the use cases for signomial equalities.
+Before expanding the a multimission framework in Section~\ref{s:multimission},
+the SimPleAC engine model was improved upon
+in response to the sensitivity information. Potential
+new objective functions were identified and implemented in the context of multimission design
+and optimization.
+A sample solution of a 2-mission multimission aircraft design
+was presented alongside two aircraft optimized for each mission alone to further motivate
+the use of multimission \gls{MDO}.
 
-In Chapter~\ref{ch3:extensibility}, I have first presented an intuitive
-way to analyze the solution of the \gls{GP}, and draw maximal engineering
-understanding from it. I have expanded upon the SimPleAC engine model
-in response to the sensitivity information to improve its fidelity,
-and modularized it into both component models, and performance and static models.
-
-
-%In Chapter~\ref{ch4:modularity}, I have presented SPaircraft, one of the more
-%advanced \gls{SP} models made in GPkit. I have demonstrated how to model
-%a complex component such as the horizontal tail within the GP framework,
-%while making it compatible with different potential tail configurations.
+The author demonstrated how to model a complex engineering system
+starting from scratch in \gls{GP} and \gls{SP}, and extract engineering understanding of
+the trade spaces using tools and methods developed in the \gls{CEG}.
+Although an aircraft design problem was the focus of the thesis,
+these methods are general to engineering design problems with explicit, continuous constraints.

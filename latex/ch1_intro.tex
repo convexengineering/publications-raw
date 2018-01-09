@@ -11,11 +11,12 @@ they provide point solutions without additional information about the design pro
 such as sensitivities, which can provide important engineering insight.
 %
 %The formulation of general non-linear programs as convex optimization problems
-%can be beneficial for the engineering design process. The mathematical guarantees
+%can be beneficial for the engineering design process. In the \cls{CEG}, we
+%have leveraged the mathematical guarantees
 %and speed of convex optimization ca
 
 %TODO: (Mark's comments: only write timeless truths).
-In the \gls{CEG}, we seek to improve the engineering design process by
+In the \gls{CEG}, we have sought to improve the engineering design process by
 leveraging the mathematical guarantees and speed of convex optimization.
 %TODO: (Mark's comments: giving details of GPkit in the Intro is way too early.)
 Our primary software product is GPkit, an
@@ -64,7 +65,7 @@ try to identify the similarities and differences between the terms. For us to be
 able to understand why \gls{GP}s facilitate design, we have to determine what
 features of optimization create barriers to entry for its use in design.
 
-In the context of this thesis, I will define design as the following:
+In the context of this thesis, I will define design as following:
 To design is to conceive the form and function of something.
 In the engineering sense, we can think about the form as the configuration or
 the parametrization. The form usually defines $n$, the number of degrees of freedom
@@ -110,7 +111,7 @@ in development since the 1960's, but have come into the limelight thanks to the 
 polynomial-time algorithms for convex programming~\cite{interior_point} and
 improvements in computing. The form of the \gls{GP} limits its application
 to certain kinds of design
-problems, especially since \gls{GP}s generally require explicit constraints.
+problems, especially since \gls{GP}s generally require explicit continuous constraints.
 But for these problems, \gls{GP} and convex
 optimization naturally integrate into the conceptual design process
 for three primary reasons.
@@ -221,7 +222,7 @@ for three primary reasons.
     implement mission design, and build models that are shared between
     different design problems. Mission design helps engineers gain valuable intuition about
     the tradeoffs in the performance of a design, and multi-point design allows designs to
-    be able to fulfill a variety of missions.
+    be able to satisfy a variety of missions and mission objectives.
 
 \end{enumerate}
 
