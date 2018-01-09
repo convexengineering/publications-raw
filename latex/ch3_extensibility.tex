@@ -157,7 +157,7 @@ required for SimPleAC to fly one flight segment.
         [\textbf{Engine}]
         ]
     \end{forest}
-    \caption{Variable and constraint hierarchy of the single mission SimPleAC model}
+    \caption{Variable and constraint hierarchy of the single mission segment SimPleAC model}
     \label{forest:submodels}
 \end{figure}
 
@@ -192,24 +192,24 @@ uni-directional graph as shown in Figure~\ref{f:missiongraph}.
     \begin{forest}
         sn edges,
         l sep+=1em,
+        s sep=(4-level)*4mm,
         for children={
         l sep+=1em,
         }
         [\textit{\textbf{Mission}},name=mission
         [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=aircraftP2
-        [\textit{\shortstack{Wing\\Perf.}},name=wingP2]
-        [\textit{\shortstack{Engine\\Perf.}},name=engineP2
-        [\textit{Atmosphere},name=atmos2]]]
-        [,name=phantom
-        [\textbf{Aircraft},name=aircraft
-        [\textbf{Wing},name=wing]
-        [\textbf{Fuselage},name=fuse]
-        [\textbf{Engine},name=engine]
-        ]]
+        [\textit{\shortstack{Wing\\Perf.}},name=wingP2,tier=cp]
+        [\textit{\shortstack{Engine\\Perf.}},name=engineP2,tier=cp
+        [\textit{Atmosphere},name=atmos2,tier=a]]]
+        [\textbf{Aircraft},name=aircraft,tier=cp
+        [\textbf{Wing},name=wing,tier=a]
+        [\textbf{Fuselage},name=fuse,tier=a]
+        [\textbf{Engine},name=engine,tier=a]
+        ]
         [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=aircraftP1
-        [\textit{\shortstack{Wing\\Perf.}},name=wingP1]
-        [\textit{\shortstack{Engine\\Perf.}},name=engineP1
-        [\textit{Atmosphere},name=atmos1]]
+        [\textit{\shortstack{Wing\\Perf.}},name=wingP1,tier=cp]
+        [\textit{\shortstack{Engine\\Perf.}},name=engineP1,tier=cp
+        [\textit{Atmosphere},name=atmos1,tier=a]]
         ]
         ]
         \draw[->] (atmos1) -- (wingP1);
@@ -280,16 +280,22 @@ the constraint would be vectorized by the number of flight segments we create.
 \begin{figure}[!h]
     \centering\small\sffamily
     \begin{forest}
+        sn edges,
+        l sep+=1em,
+        s sep=(4-level)*4mm,
+        for children={
+        l sep+=1em,
+        }
     [\textit{\textbf{Mission}},name=mission
     [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=aircraftP
-    [\textbf{Aircraft},name=aircraft
+    [\textit{\shortstack{Wing\\Perf.}},name=wingP,tier=cp]
+    [\textit{\shortstack{Engine\\Perf.}},name=engineP,tier=cp
+    [\textit{Atmosphere},name=atmos]]
+    ]
+    [\textbf{Aircraft},name=aircraft,tier=cp
     [\textbf{Wing},name=wing]
     [\textbf{Fuselage},name=fuse]
     [\textbf{Engine},name=engine]
-    ]
-    [\textit{\shortstack{Wing\\Perf.}},name=wingP]
-    [\textit{\shortstack{Engine\\Perf.}},name=engineP
-    [\textit{Atmosphere},name=atmos]]
     ]
     ]
         \draw[->] (atmos) -- (wingP);
@@ -298,14 +304,16 @@ the constraint would be vectorized by the number of flight segments we create.
         \draw[->] (aircraft) -- (mission);
         \draw[->] (wing) -- (wingP);
         \draw[->] (engine) -- (engineP);
-        \node[draw,rectangle,fit={(engineP)}] {};
-        \node[draw,rectangle,fit={(aircraftP)}] {};
-        \node[draw,rectangle,fit={(engine)}] {};
+        \node[draw,circle,fit={(engineP)}, inner sep=-1pt] {};
+        \node[draw,circle,fit={(aircraftP)}, inner sep=-1pt] {};
+        \node[draw,circle,fit={(engine)}, inner sep=-1pt] {};
+        \node[draw,rectangle,fit={(aircraftP) (engineP) (wingP) (atmos)}] {};
     \end{forest}
-    \caption[Variable hierarchy of thrust constraint~\ref{e:thrustConstr}.]{The models
-    that contain the variables are enclosed in rectangles.
+    \caption[Variable hierarchy of thrust constraint~\ref{e:thrustConstr}.]{Variable hierarchy
+    of thrust constraint~\ref{e:thrustConstr}. The models
+    that contain the variables in the constraint are enclosed in circles.
     Constraint logically resides in \textbf{\textit{Aircraft Perf.}}.
-    The vectorization of performance models has been neglected for clarity.}
+    The vectorization of performance models in the rectangle has been neglected for clarity.}
     \label{f:thrustConstr}
 \end{figure}
 
@@ -607,20 +615,24 @@ hierarchy to do multimission design. Now we vectorize the mission models flown b
     \begin{forest}
         sn edges,
         l sep+=1em,
+        s sep=(4-level)*4mm,
         for children={
         l sep+=1em,
         }
         [\textit{\textbf{Multimission}},name=multimission
         [\textit{\textbf{Mission}},name=mission1
-        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=ap1[,name=ap1d,edge=dotted]]
-        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=ap2[,name=ap2d,edge=dotted]]
+        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},tikz={\node [draw,fit=()(!1)] {};},name=ap1
+        [,name=ap1d,edge=dotted,tier=p]]
+        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},tikz={\node [draw,fit=()(!1)] {};},name=ap2
+        [,name=ap2d,edge=dotted,tier=p]]
         ]
-        [[[\textbf{Aircraft},name=ac[,name=acd,edge=dotted]]]]
+        [\textbf{Aircraft},name=ac,tier=p
+        [,name=ad,edge=dotted]]
         [\textit{\textbf{Mission}},name=mission2
-        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=ap3
-        [,name=ap3d,edge=dotted]]
-        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=ap4
-        [,name=ap4d,edge=dotted]]
+        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},tikz={\node [draw,fit=()(!1)] {};},name=ap3
+        [,name=ap3d,edge=dotted,tier=p]]
+        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},tikz={\node [draw,fit=()(!1)] {};},name=ap4
+        [,name=ap4d,edge=dotted,tier=p]]
         ]
         ]
         \draw[->] (ac) -- (ap1);
@@ -629,10 +641,6 @@ hierarchy to do multimission design. Now we vectorize the mission models flown b
         \draw[->] (ac) -- (ap4);
         \draw[->] (ac) -- (mission1);
         \draw[->] (ac) -- (mission2);
-        \node[draw,rectangle,fit={(ap1) (ap1d)}] {};
-        \node[draw,rectangle,fit={(ap2) (ap2d)}] {};
-        \node[draw,rectangle,fit={(ap3) (ap3d)}] {};
-        \node[draw,rectangle,fit={(ap4) (ap4d)}] {};
         \node[draw,circle,fit={(mission1) (ap1) (ap2) (ap1d) (ap2d)}] {};
         \node[draw,circle,fit={(mission2) (ap3) (ap4) (ap3d) (ap4d)}] {};
     \end{forest}
