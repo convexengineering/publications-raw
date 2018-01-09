@@ -38,7 +38,7 @@ a finite line segment in log-space, and a finite exponential function in linear 
 \begin{figure}
     \centering
     \includegraphics[width=0.8\textwidth]{feas_moneq.png}
-    \caption{The x vs y feasibility set of a simple monomial equality.}
+    \caption{The x-y feasibility set of a simple monomial equality.}
     \label{f:feas_moneq}
 \end{figure}
 
@@ -48,12 +48,12 @@ then we would get a new feasibility set as shown in Figure~\ref{f:feas_posygeq}.
 \begin{figure}
     \centering
     \includegraphics[width=0.8\textwidth]{feas_posygeq.png}
-    \caption{The x vs y feasibility set of lower bounding monomial,
-    and upper-bonding posynomial.}
+    \caption{The x-y feasibility set of lower-bounding monomial,
+    and upper-bounding posynomial.}
     \label{f:feas_posygeq}
 \end{figure}
 
-Using the \gls{GP} form, we can always upper-bound posynomials, and lower bound both posynomials
+Using the \gls{GP} form, we can always upper-bound posynomials, and lower-bound both posynomials
 and monomials to get convex feasible sets. Note that the optimal point, which is at
 $x = 1 - \frac{1}{\sqrt{2}}$, $y = 1 + \frac{1}{\sqrt{2}}$,
 does not change by the relaxation of the monomial equality. This is a key
@@ -67,8 +67,8 @@ whose feasibility set is shown in Figure~\ref{feas_posyleq}.
 \begin{figure}
     \centering
     \includegraphics[width=0.8\textwidth]{feas_posyleq.png}
-    \caption{The x vs y feasibility set of upper bounding monomial,
-    and upper-bonding posynomial.}
+    \caption{The x-y feasibility set of upper-bounding monomial,
+    and upper-bounding posynomial.}
     \label{f:feas_posyleq}
 \end{figure}
 
@@ -202,7 +202,8 @@ because (2) it would always be unbounded towards zero due to the downward pressu
 the objective. A designer may also fix variables (3) if he/she knows their values with
 certainty (eg. gravitational acceleration $g$) or (4) the variable is a normalizing
 coefficient (which we will see in Section~\ref{s:datafit}). We will set the values
-of some of the variables as defined in Table~\ref{t:vars_WandL}.
+of some of the variables as defined in Table~\ref{t:vars_WandL}, where the free variables,
+and constants and their values have been labeled.
 
 \begin{footnotesize}
 \begin{table}
@@ -223,8 +224,7 @@ of some of the variables as defined in Table~\ref{t:vars_WandL}.
         $W_p$ & $~\mathrm{N}$ & payload weight & N & 6250\\
         \bottomrule
     \end{tabular}
-    \caption{Variables introduced in weight vs. lift model. Free variables,
-    and constants and their values have been labeled.}
+    \caption{Variables introduced in weight vs. lift model.}
     \label{t:vars_WandL}
 \end{table} \end{footnotesize}
 
@@ -275,8 +275,8 @@ The new variables we have introduced are detailed in Table~\ref{t:vars_perfMetri
 \end{table} \end{footnotesize}
 
 An important note about variables that are potential alternative objectives: these variables
-must always be lower bounded (or inverted and upper bounded) since the general \gls{GP} is a
-minimization problem. However, if they are not also upper bounded, these variables
+must always be lower-bounded (or inverted and upper-bounded) since the general \gls{GP} is a
+minimization problem. However, if they are not also upper-bounded, these variables
 will likely be unbounded for a given model and run off to +$\infty$. This means that
 performance-quantifying variables will need to be in a monomial form,
 or must be present in a posynomial objective
@@ -307,12 +307,11 @@ The results are shown in Table~\ref{t:WandL_unbounded}.
         $W_w$ & $~\mathrm{N}$  & $0$ \\
         \bottomrule
     \end{tabular}
-    \caption{Unbounded variables in the weight and lift model. More modeling, or direct
-    substitutions are required.}
+    \caption{Unbounded variables in the weight and lift model.}
     \label{t:WandL_unbounded}
 \end{table} \end{footnotesize}
 
-This is not surprising at all, since none of the defined variables lower bound $W_f$,
+This is not surprising at all, since none of the defined variables lower-bound $W_f$,
 the objective function, in the constraints we have defined.
 Without the pressure from the objective, any variables that
 are not both upper- and lower- bounded will tend to blow up. This is indicative usually
@@ -476,7 +475,7 @@ the loss of the mathematical guarantees.
 \subsection{Signomial constraints: adding fuel volume model}
 \label{s:fuel}
 
-In an attempt to lower bound $V_{f_{fuse}}$, we will
+In an attempt to put a lower bound on $V_{f_{fuse}}$, we will
 be adding a fuel volume model to SimPleAC, where fuel can be stored in the wing or
 in the fuselage. The fuel volume will be modeled first instead of the wing
 weight because the wing weight will be a function of the fuel stored in the fuselage.

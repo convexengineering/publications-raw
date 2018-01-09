@@ -27,7 +27,7 @@ interface with solvers. In much of our previous work
 facilitates design.
 
 The mathematical restrictions on the form of constraints remains the biggest
-barrier in using convex programs for engineering design. Firstly, this thesis will
+barrier in using convex programs for engineering design. Chapter~\ref{ch2:inequalities} will
 show that the form of the \gls{GP} actually facilitates the design
 optimization process
 and engineering understanding, rather than impeding it, through the disciplined use
@@ -38,7 +38,7 @@ to have properly conditioned models. Hence this thesis will
 pass on some of the expertise we have developed in the \gls{CEG} building
 \gls{GP}-compatible models from general non-linear physical models.
 
-Section~\ref{ch3:extensibility} will showcase the extensibility of \gls{GP}.
+Chapter~\ref{ch3:extensibility} will showcase the extensibility of \gls{GP}.
 The formulation of the \gls{GP} as a 'bag of
 constraints' instead of a hierarchical set of relations confers advantages
 when trying to expand the fidelity and scope of models, especially in the
@@ -46,7 +46,7 @@ conceptual design stage. Furthermore, the solution to the dual of the \gls{GP}
 provides optimal sensitivities which allow targeted efforts by engineers to
 collaboratively improve models.
 
-Section~\ref{ch3:extensibility} will also discuss the features specific to
+Chapter~\ref{ch3:extensibility} will also discuss the features specific to
 GPkit in facilitating
 an engineering design process that is streamlined and collaborative, and is
 compatible with modern engineering design methodologies. The modularity of the
@@ -56,7 +56,7 @@ requirements both at the sub-system and complete-system levels are satisfied.
 
 The features of \gls{GP} and convex optimization in general will be discussed in
 the context of an aircraft \gls{MDO} problem, but the methods discussed
-are general to other engineering design problems which have explicit constraints.
+are general to other engineering design problems which have explicit, continuous constraints.
 
 \section{Defining design versus optimization} \label{s:DesVsOpt}
 
@@ -111,7 +111,7 @@ in development since the 1960's, but have come into the limelight thanks to the 
 polynomial-time algorithms for convex programming~\cite{interior_point} and
 improvements in computing. The form of the \gls{GP} limits its application
 to certain kinds of design
-problems, especially since \gls{GP}s generally require explicit continuous constraints.
+problems, especially since \gls{GP}s generally require explicit, continuous constraints.
 But for these problems, \gls{GP} and convex
 optimization naturally integrate into the conceptual design process
 for three primary reasons.
@@ -129,7 +129,7 @@ for three primary reasons.
     and boundedness facilitates the conversion of general physical engineering
     equations into optimization-compatible constraint forms.
     This thesis will demonstrate that the mathematical restrictions of the \gls{GP} can be partially
-    overcome through the use of the difference-of-convex
+    overcome through the use of the \gls{DC}
     extension of \gls{GP} called \gls{SP}. \gls{SP}s give us the flexibility to model
     non-log-convex functions, as well as allowing designers to explicitly enforce
     the tightness of
@@ -152,7 +152,9 @@ for three primary reasons.
     the module for generating new guesses from gradient information, which is unreliable
     at best. \gls{GP}s (and the \gls{GP} approximations
     of \gls{SP}s) are solved all-at-once~\cite{martins_mdo}, which means that there are no constraint
-    convergence loops to worry about or parameters to tune. Please refer to \cite{martins_mdo}
+    convergence loops to worry about or parameters to tune. The
+    form of the GP facilitates the addition of variables and constraints while extending
+    model capabilities. Please refer to \cite{martins_mdo}
     for a more in-depth analysis of various \gls{MDO} architectures.
 
     \begin{figure*}[!b]
@@ -204,9 +206,7 @@ for three primary reasons.
             \end{center}
             \caption{Convex, and difference-of-convex (DC) optimization}
         \end{subfigure}
-        \caption{The flow diagrams of two methods of optimization. The 'bag of constraints'
-        form of the GP facilitates the addition of variables and constraints while extending
-        model capabilities, and provides sensitivities to guide modeling efforts.}
+        \caption{The flow diagrams of two methods of optimization.}
         \label{f:optflow}
     \end{figure*}
 

@@ -157,7 +157,7 @@ required for SimPleAC to fly one flight segment.
         [\textbf{Engine}]
         ]
     \end{forest}
-    \caption{Variable and constraint hierarchy of the single mission segment SimPleAC model}
+    \caption{Variable and constraint hierarchy of the single mission SimPleAC model}
     \label{forest:submodels}
 \end{figure}
 
@@ -225,7 +225,8 @@ uni-directional graph as shown in Figure~\ref{f:missiongraph}.
         \node[draw,rectangle,fit={(aircraftP2) (atmos2) (engineP2) (wingP2)}] {};
         \node[draw,rectangle,fit={(aircraftP1) (atmos1) (engineP1) (wingP1)}] {};
     \end{forest}
-    \caption{Variable and constraint hierarchy of the presented aircraft model, for two flight
+    \caption[Variable and constraint hierarchy of the SimPleAC model, for two flight
+    segments.]{Variable and constraint hierarchy of the presented aircraft model, for two flight
     segments. Models that include sizing variables are
     bolded while models that include performance variables are italicized.
     There are models that contain both kinds of variables.}
@@ -301,7 +302,8 @@ the constraint would be vectorized by the number of flight segments we create.
         \node[draw,rectangle,fit={(aircraftP)}] {};
         \node[draw,rectangle,fit={(engine)}] {};
     \end{forest}
-    \caption{The models that contain the variables in Equation~\ref{e:thrustConstr} are enclosed in rectangles.
+    \caption[Variable hierarchy of thrust constraint~\ref{e:thrustConstr}.]{The models
+    that contain the variables are enclosed in rectangles.
     Constraint logically resides in \textbf{\textit{Aircraft Perf.}}.
     The vectorization of performance models has been neglected for clarity.}
     \label{f:thrustConstr}
@@ -426,7 +428,7 @@ $h_{cruise}$ & 5000  & $~\mathrm{m}$ & minimum cruise altitude \\
         \centering
         \includegraphics[width=0.9\linewidth]{mission2/Wcontours.png}
     \end{subfigure}
-    \caption{The fuel and total weight Pareto frontiers with respect to range and payload inputs.}
+    \caption{The fuel and total weight Pareto frontiers with respect to range and payload.}
     \label{f:pareto}
 \end{figure*}
 
@@ -437,16 +439,18 @@ the tradeoffs in fuel storage, and when it is beneficial to store fuel in the wi
 \begin{center}
 \begin{figure}
     \includegraphics[width=0.45\linewidth]{mission2/FuseFuelFraccontours.png}
-    \caption{The lower right of the graph shows where fuel storage in the fuselage is not beneficial.}
+    \caption{Fraction of total fuel stored in fuselage with respect to range and payload.}
     \label{f:fusefuelfrac}
 \end{figure}
 \end{center}
 
 Figure~\ref{f:fusefuelfrac} shows how designs for different range and payload requirements
-allocate fuel differently within the aircraft. As the mission range increases for a given payload weight,
+allocate fuel differently within the aircraft. As the mission range increases for a given payload weight
+(vertical movement on the graph),
 more and more fuel is allocated within the fuselage as a proportion of total fuel. Since fuselage fuel
 volume is directly related to increased fuselage drag, it is logical that no fuel is put in the fuselage
-until the fuel volume constraint in the wing becomes tight. And this is the behavior that is observed.
+until the fuel volume constraint in the wing becomes tight. And this is the behavior that is observed,
+since no fuel is allocated in the fuselage towards the lower right of the graph.
 
 \begin{figure*}[t!]
     \centering
@@ -459,7 +463,8 @@ until the fuel volume constraint in the wing becomes tight. And this is the beha
         \centering
         \includegraphics[width=0.9\linewidth]{mission2/Csenscontours.png}
     \end{subfigure}
-    \caption{We can gain intuition about the relative importance of different components
+    \caption[Time cost and time cost index sensitivity contours.]{Time cost and time cost index sensitivity contours.
+    We can gain intuition about the relative importance of different components
     of composite objectives by showing both the costs and their sensitivities together.}
     \label{f:compobjsens}
 \end{figure*}
@@ -552,7 +557,7 @@ posynomial inequality expression below:
 Since the \BSFC of a normally aspirated piston engine would be expected to improve
 as the $P_{shaft} \xrightarrow[]{} P_{shaft,alt}$, the maximum shaft
 power at altitude has downward pressure on it from the fuel burn objective. This means that the
-inequality doesn't adequately lower bound the $P_{shaft,alt}$. If we try to flip the inequality in
+inequality doesn't adequately lower-bound the $P_{shaft,alt}$. If we try to flip the inequality in
 Constraint~\ref{e:lapse}, then $P_{shaft,alt}$ is upper-unbounded, so with our current parametrization
 of the shaft power, we must use a signomial equality.
 
@@ -572,7 +577,7 @@ The result is shown by the green line in Figure~\ref{f:P_BSFC}.
 \begin{center}
     \begin{figure}
         \includegraphics[width=0.5\textwidth]{P_BSFC.png}
-        \caption{$\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ data fit. The green fit is
+        \caption[$\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ data fit.]{$\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ data fit. The green fit is
         not able to capture the tail ends of the curve, which is resolved by the bounding in the red fit.}
         \label{f:P_BSFC}
     \end{figure}
@@ -664,7 +669,7 @@ Assuming that $N_{missions} = 2$, note that an objective of the type below will 
 but will require some management in variable boundedness since some internal variables,
 namely  $W_{f_{m_{2}}}$ and $t_{m_{1}}$, can and will diverge to numerical infinity since they
 are not necessarily pressured by the objective function.
-Simply upper bounding the variables
+Simply upper-bounding the variables
 internally by some large bound will resolve boundedness issues. For this kind of objective, the
 performance of the aircraft will be a compromise with respect to aircraft optimized purely
 for mission time for the first mission or fuel burn for the second mission.
