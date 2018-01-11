@@ -3,17 +3,17 @@
 
 Modern engineering design, and particularly aerospace design, has come to rely
 heavily on optimization. Time and time again, the importance of fast and
-reliable \gls{MDO} tools has been stressed in the literature. %TODO: cite
+reliable \gls{MDO} tools has been stressed in the literature~\cite{martins_mdo}.
 However most \gls{MDO} tools
 have the downfall of being slow due to the multimodal nature of many
 engineering design problems. Furthermore, these tools act like black boxes since
 they provide point solutions without additional information about the design problem
 such as sensitivities, which can provide important engineering insight.
-%
+
 %The formulation of general non-linear programs as convex optimization problems
-%can be beneficial for the engineering design process. In the \cls{CEG}, we
+%can be beneficial for the engineering design process. In our previous work as the \cls{CEG}, we
 %have leveraged the mathematical guarantees
-%and speed of convex optimization ca
+%and speed of convex optimization to demonstrate
 
 %TODO: (Mark's comments: only write timeless truths).
 In the \gls{CEG}, we have sought to improve the engineering design process by
@@ -23,7 +23,9 @@ Our primary software product is GPkit, an
 open-source, object-oriented software to help build \gls{GP}-compatible models and
 interface with solvers. In much of our previous work
 (\cite{gp_ac_design},\cite{sp_ac_design},\cite{sp_engine}), we have demonstrated that
-\gls{GP} is useful for certain kinds of optimization problems, but have yet to formalize why it
+geometric programming and its non-log-convex extension signomial programming
+are useful for certain kinds of
+optimization problems, but have yet to formalize why it
 facilitates design.
 
 The mathematical restrictions on the form of constraints remains the biggest
@@ -31,7 +33,9 @@ barrier in using convex programs for engineering design. Chapter~\ref{ch2:inequa
 show that the form of the \gls{GP} actually facilitates the design
 optimization process
 and engineering understanding, rather than impeding it, through the disciplined use
-of inequalities to express constraints. Furthermore, GPkit allows for the
+of inequalities to express constraints. Please refer to Appendices~\ref{a:gpintro} and ~\ref{a:spintro}
+for descriptions of forms of a \gls{GP} and a \gls{SP} respectively.
+Furthermore, GPkit allows for the
 monitoring of the boundedness of variables in a model, which facilitates the model
 building process and allows engineers
 to have properly conditioned models. Hence this thesis will
@@ -187,21 +191,20 @@ for three primary reasons.
                 \begin{tikzpicture}[node distance=1.5cm, align=center, scale=0.5]
                     \node (start)        [activityStarts]               {Initialize variables};
                     \node (guess)        [process, left of=start, xshift=-5cm] {Make initial guess};
-                    \node (convexify)    [process, below of=guess]      {Convexify};
+                    \node (convexify)    [process, below of=guess, xshift=2cm]      {Convexify};
                     \node (optimize)     [process, below of=start]  {Optimize convex problem};
                     \node (condition)    [process, below of=optimize]   {Check primal/dual condition};
                     \node (solution)     [activityRuns, below of=condition]   {Solution};
                     \node (sens)         [activityRuns, left of=solution, xshift=-5cm] {Sensitivities};
 
-                    \draw[->] (start) -- node {if DC} (guess);
+                    \draw[->] (start) -- node[yshift=+0.25cm] {if DC} (guess);
                     \draw[->] (start) -- (optimize);
                     \draw[->] (guess) -- (convexify);
                     \draw[->] (convexify) -- (optimize);
                     \draw[->] (optimize) -- (condition);
-                    \draw[->] (condition) -- node[yshift=-0.75cm,xshift=1cm] {if DC \& reltol $> \epsilon$} (guess);
+                    \draw[->] (condition) -| node[yshift=+0.25cm,xshift=1.8cm] {if DC \& reltol $> \epsilon$} (guess);
                     \draw[->] (condition) -- (solution);-
-                    \draw[->] (condition) -| (sens);
-                    % TODO: learn how to label the 'if DC' section
+                    \draw[->] (condition) -- (sens);
                 \end{tikzpicture}}
             \end{center}
             \caption{Convex, and difference-of-convex (DC) optimization}
