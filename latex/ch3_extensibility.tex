@@ -336,8 +336,7 @@ and used widely within the \gls{CEG} in aircraft design.
 %flight profile.
 It defines segment start, end and average weights,
 as well as altitude, and all of its relevant constraints are contained in the \textbf{\textit{Mission}}
-model. Please find the full set of variables belonging to the flight segment model in Appendix~\ref{a:vars}.
-%TODO: add appendices will full list of variables
+model. Please find the full set of variables belonging to the flight segment model in Appendix~\ref{a:flightprofilevars}.
 
 The monomial equality below has been added to the formulation
 
@@ -489,7 +488,7 @@ This can help a designer gain intuition about the relative importance of differe
 \section{More modeling improvements before multimission design}
 
 There are still significant weaknesses in the model relating to the engine of the model that require
-improvement before we can perform multimission design in Section~\ref{s:mm}.
+improvement before we can perform multimission design in Section~\ref{s:multimission}.
 We can see this by observing the sensitivities in Table~\ref{t:sens}.
 
 \begin{footnotesize}
@@ -682,7 +681,7 @@ internally by some large bound will resolve boundedness issues. For this kind of
 performance of the aircraft will be a compromise with respect to aircraft optimized purely
 for mission time for the first mission or fuel burn for the second mission.
 
-\subsection{Interpreting multimission results}
+\subsection{Multimission optimization results}
 
 The SimPleAC was optimized for the 3 different mission scenarios:
 
@@ -690,7 +689,7 @@ The SimPleAC was optimized for the 3 different mission scenarios:
     \item M1: A single mission minimizing fuel burn ($W_{f_m}$).
     \item M2: A single mission minimizing time cost ($\mathrm{C} \times t_{m}$)
     \item MM: A multimission design performing both missions, minimizing fuel burn over M1 ($W_{f_{m_1}}$), and mission
-                    time over M2 $\mathrm{C}_{2} \times t_{m_{2}}$ (objective in Equation~\ref{e:sepObj}).
+                    time over M2 ($\mathrm{C}_{2} \times t_{m_{2}}$) (objective in Equation~\ref{e:sepObj}).
 \end{enumerate}
 
 The different mission requirements are detailed in Table~\ref{t:mminputs}. M1 is the same mission as

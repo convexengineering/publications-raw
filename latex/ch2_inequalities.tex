@@ -62,7 +62,7 @@ posynomial inequalities. The posynomial equality relaxation is explained in grea
 in~\cite{hoburg_thesis}.
 
 However if we convert the monomial equality to  $xy \leq \frac{1}{2}$, we will get an unbounded model,
-whose feasibility set is shown in Figure~\ref{feas_posyleq}.
+whose feasibility set is shown in Figure~\ref{f:feas_posyleq}.
 
 \begin{figure}
     \centering
@@ -98,8 +98,8 @@ Objective functions are the way that a designer puts pressure on the variables
 in the constraints. To begin with, we will consider
 total fuel weight $W_f$ as our objective, which will put
 downward pressure on all of the variables that would cause in greater fuel burn, namely
-drag and weight. We must necessarily put a lower-bound on all variables expected to
-have a positive correlation to the objective function.
+drag and weight. We must necessarily put a lower-bound on all variables in the objective
+that have positive exponents, and upper-bound all variables with negative exponents.
 
 In many design problems
 formulated as \gls{GP}s, many different objectives will put pressure on design
@@ -136,7 +136,7 @@ What does an aircraft need to be able to do to deliver payload of a distance?
 
 Note that these are in no way presented in order of importance, which is reflective
 of the non-hierarchical nature of \gls{GP}s.
-In the basic example, I will choose not to model engines,
+In the basic example, we will choose not to model engines,
 and leave this as an exercise
 to complete in Section~\ref{s:engine} to improve the model.
 
@@ -461,21 +461,31 @@ These variables will need to be properly bounded to complete the SimPleAC model.
     \end{center}
 \end{footnotesize}
 
-\section{Limits of GP and Convexity, and SP modeling} \label{s:GPLimits}
+\section{Limits of GP and Convexity, and SP modeling}
+\label{s:GPlimits}
 
-Even with the demonstrated strengths of \gls{GP}'s in solving certain classes of 
-problems, it is important to recognize that the mathematical framework has limits. 
-Certain constraints can only be expressed as signomial constraints, which are 
-difference-of-posynomial constraints. Even the addition of a single
+Even with the demonstrated strengths of \gls{GP}s in solving certain classes of
+problems, it is important to recognize that the mathematical framework has limits.
+The three distinct types of\gls{GP}-incompatibility in design problems are detailed
+by Hoburg~ \cite{hoburg_thesis}, which are discreteness,
+quasi-convexity, and multi-modality. Discreteness in \gls{GP} can be approached
+by coupling discrete programming methods such as branch-and-bound into a sequential
+\gls{GP}. This is outside of the scope of this thesis.
+Quasi-convexity and to a certain extent multimodality can
+be addressed through a non-log-convex extension of \gls{GP}s called \gls{SP}s, where
+certain constraints are expressed as signomial (or difference-of-posynomial) constraints
+(described in greater detail in Appendix~\ref{a:spintro}).
+Even the addition of a single
 signomial constraint turns the problem from a \gls{GP} to a \gls{SP}, which means
 that the problems loses convexity and all of the mathematical guarantees associated with it. 
 It takes engineering intuition to recognize where and when improved modeling is worth
-the loss of the mathematical guarantees.
+the loss of the mathematical guarantees. Kirschen~\ref{kirschen_thesis} describes in detail how
+signomial constraints are often required to capture fundamental design tradeoffs.
 
 \subsection{Signomial constraints: adding fuel volume model}
 \label{s:fuel}
 
-In an attempt to put a lower bound on $V_{f_{fuse}}$, we will
+In an attempt to put a lower bound $V_{f_{fuse}}$, we will
 be adding a fuel volume model to SimPleAC, where fuel can be stored in the wing or
 in the fuselage. The fuel volume will be modeled first instead of the wing
 weight because the wing weight will be a function of the fuel stored in the fuselage.
