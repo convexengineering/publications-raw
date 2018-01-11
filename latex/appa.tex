@@ -1,7 +1,8 @@
 \chapter{Appendix}
 \label{app}
 
-\section{Geometric Programming}\label{gp_intro}
+\section{Geometric Programming}
+\label{a:gpintro}
 
 Introduced in 1967 by Duffin et al.~\cite{duffingp}, a geometric program \gls{GP} is
 a type of constrained optimization problem that becomes convex after a
@@ -49,7 +50,8 @@ $\mathbf{u} \in \mathbb{R}^n_{++}$ are the decision variables. Once a problem
 has been formulated in the standard form (Equation \ref{e:standardform}), it can
 be solved efficiently.
 
-\section{Signomial Programming}\label{sp_intro}
+\section{Signomial Programming}
+\label{a:spintro}
 It is not always possible to formulate a design problem as a GP. This motivates
 the introduction of signomials. Signomials have the same form as posynomials
 \begin{equation}\label{e:signomial}
@@ -75,11 +77,11 @@ difference of convex optimization problem that can be written in log-space as
 where $f_{i}$ and $g_{i}$ are convex.
 
 There are multiple algorithms that reliably solve signomial programs to
-\textit{local} optima \cite{gpintro, spsolutions}. A common solution heuristic,
+\textit{local} optima~\cite{gpintro, spsolutions}. A common solution heuristic,
 referred to as difference of convex programming or the convex-concave procedure,
 involves solving a sequence of GPs, where each GP is a local approximation to
 the SP, until convergence occurs. It is worth noting that the introduction of
-even a single signomial constraint to any GP turns the GP into a SP, thus losing
+even a single signomial constraint to any GP turns the GP into a \gls{SP}, thus losing
 the guarantee of solution convergence to a global optimum. Despite the
 possibility of convergence to a local, not global, optimum, SPs are a powerful
 tool. The convex approximation, $\hat{f}(x)$, to the non-convex signomial in
@@ -145,3 +147,30 @@ et al.~\cite{sigeqpaper}.
 approximation.}\label{f:sigeq}
 \end{figure}
 
+\section{Flight segment model variables}
+\label{a:flightprofilevars}
+
+\begin{footnotesize}
+    \begin{table}
+        \centering
+        \begin{tabular}{ l c l c c }
+            \toprule
+            Variable & Units & Description & Free & Value \\
+            \midrule
+            $\frac{dh}{dt}$  & $~\mathrm{\tfrac{m}{hr}}$ & climb rate & Y & - \\
+            $h$ & $~\mathrm{m}$ & final segment flight altitude & Y & - \\
+            $h_{avg}$ & $~\mathrm{m}$ & average segment flight altitude & Y & - \\
+            $R_s$ & $~\mathrm{km}$ & range flown in segment & Y & -\\
+            $W_{start}$  & $~\mathrm{N}$ & weight at the beginning of flight segment & Y & - \\
+            $W_{end}$ & $~\mathrm{N}$ & weight at the end of flight segment & Y & - \\
+            $W_{avg}$ & $~\mathrm{N}$ & segment average weight & Y & - \\
+            $W_{f_s}$ & $~\mathrm{N}$ & segment fuel burn & Y & - \\
+            $W_{f_m}$  & $~\mathrm{N}$ & total mission fuel & Y & -\\
+            $t_s$ & $~\mathrm{hr}$ & time spent in flight segment & Y & - \\
+            $t_m$  & $~\mathrm{hr}$ & total mission time & Y & - \\
+            \bottomrule
+        \end{tabular}
+        \caption{Variables introduced in flight segment model.}
+        \label{t:vars_flightprofile}
+    \end{table}
+\end{footnotesize}
