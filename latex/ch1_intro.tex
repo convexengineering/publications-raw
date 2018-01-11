@@ -19,7 +19,7 @@ such as sensitivities, which can provide important engineering insight.
 In the \gls{CEG}, we have sought to improve the engineering design process by
 leveraging the mathematical guarantees and speed of convex optimization.
 %TODO: (Mark's comments: giving details of GPkit in the Intro is way too early.)
-Our primary software product is GPkit, an
+Our primary software product is GPkit~\cite{gpkit}, an
 open-source, object-oriented software to help build \gls{GP}-compatible models and
 interface with solvers. In much of our previous work
 (\cite{gp_ac_design},\cite{sp_ac_design},\cite{sp_engine}), we have demonstrated that
@@ -29,12 +29,11 @@ optimization problems, but have yet to formalize why it
 facilitates design.
 
 The mathematical restrictions on the form of constraints remains the biggest
-barrier in using convex programs for engineering design. Chapter~\ref{ch2:inequalities} will
+barrier in using optimization in engineering design. Chapter~\ref{ch2:inequalities} will
 show that the form of the \gls{GP} actually facilitates the design
 optimization process
 and engineering understanding, rather than impeding it, through the disciplined use
-of inequalities to express constraints. Please refer to Appendices~\ref{a:gpintro} and ~\ref{a:spintro}
-for descriptions of forms of a \gls{GP} and a \gls{SP} respectively.
+of inequalities to express constraints.
 Furthermore, GPkit allows for the
 monitoring of the boundedness of variables in a model, which facilitates the model
 building process and allows engineers
@@ -99,7 +98,7 @@ Both design and
 optimization explore feasible and infeasible sets, but differ in a fundamental way.
 Design is based on feasibility, whereas optimization is based on optimality.
 This observation seems banal, but gives insight as to why there is a barrier
-to entry for optimization methods (and especially so for more restrictive forms).
+to entry for optimization methods, and especially so for more restrictive forms.
 The distinction allows design to be performed
 in non-restrictive mathematical forms, since non-linear feasibility problems are
 much easier to solve than non-linear optimization problems. Optimization is
@@ -132,7 +131,7 @@ for three primary reasons.
     form makes boundedness of variables explicit. This understanding of pressure
     and boundedness facilitates the conversion of general physical engineering
     equations into optimization-compatible constraint forms.
-    This thesis will demonstrate that the mathematical restrictions of the \gls{GP} can be partially
+    Certain mathematical restrictions of the \gls{GP} can be partially
     overcome through the use of the \gls{DC}
     extension of \gls{GP} called \gls{SP}. \gls{SP}s give us the flexibility to model
     non-log-convex functions, as well as allowing designers to explicitly enforce
@@ -218,13 +217,13 @@ for three primary reasons.
     model yield the greatest returns in terms of fidelity to improved modeling, so engineers can target
     their efforts.
 
-    \item \textit{Models are amenable to mission and multi-point design, and are compatible with modern
+    \item \textit{Models are amenable to mission and multi-mission design, and are compatible with modern
     engineering design methodologies.}
 
     The design tools available in GPkit make it easy to
     implement mission design, and build models that are shared between
     different design problems. Mission design helps engineers gain valuable intuition about
-    the tradeoffs in the performance of a design, and multi-point design allows designs to
+    the tradeoffs in the performance of a design, and multi-mission design allows designs to
     be able to satisfy a variety of missions and mission objectives.
 
 \end{enumerate}

@@ -9,7 +9,7 @@ having to restructure the optimization formulation. This property,
 coupled with the object-oriented modeling framework of GPkit, allows
 \gls{GP} compatible models to be continuously extensible.
 This section will demonstrate common methods used to extend the capability
-and improve the fidelity of \gls{GP}- and \gls{SP} compatible models.
+and improve the fidelity of \gls{GP}- and \gls{SP}- compatible models.
 
 \section{Improving fidelity: Adding a simple engine model to the SimPleAC}
 \label{s:engine}
@@ -21,7 +21,8 @@ unlimited power. This is obviously unphysical, and requires refinement.
 
 Before even thinking about modeling, we would like to leverage the object-oriented
 GPkit models to put the variables describing the engine into a submodel (currently only
-BSFC). We do this by creating a new class called \textbf{Engine} and creating a \textit{setup}
+BSFC). In the GPkit software, we do this by creating a new class (an object in the Python language)
+called \textbf{Engine} and creating a \textit{setup}
 method that returns the constraints within it.
 
 \begin{python}
@@ -453,7 +454,7 @@ the tradeoffs in fuel storage, and when it is beneficial to store fuel in the wi
 
 Figure~\ref{f:fusefuelfrac} shows how designs for different range and payload requirements
 allocate fuel differently within the aircraft. As the mission range increases for a given payload weight
-(vertical movement on the graph),
+(upward movement on the graph),
 more and more fuel is allocated within the fuselage as a proportion of total fuel. Since fuselage fuel
 volume is directly related to increased fuselage drag, it is logical that no fuel is put in the fuselage
 until the fuel volume constraint in the wing becomes tight. And this is the behavior that is observed,

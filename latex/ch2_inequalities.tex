@@ -4,7 +4,9 @@
 This section will demonstrate how the form of the \gls{GP} (monomial
 equalities and posynomial inequalities) helps engineers gain intuition
 about the way that each variable is pressured
-by a given objective function. The intuition gained in turn helps formulate
+by a given objective function. Please refer to Appendices~\ref{a:gpintro} and ~\ref{a:spintro}
+for detailed descriptions of the forms of \gls{GP}s and \gls{SP}s respectively.
+The intuition gained in turn helps formulate
 constraints that can properly bound each variable in the model.
 GPkit, \gls{CEG}'s \gls{GP} modeling framework,
 facilitates process by providing feedback to designers about
@@ -56,8 +58,8 @@ then we would get a new feasibility set as shown in Figure~\ref{f:feas_posygeq}.
 Using the \gls{GP} form, we can always upper-bound posynomials, and lower-bound both posynomials
 and monomials to get convex feasible sets. Note that the optimal point, which is at
 $x = 1 - \frac{1}{\sqrt{2}}$, $y = 1 + \frac{1}{\sqrt{2}}$,
-does not change by the relaxation of the monomial equality. This is a key
-observation that will allow us to turn most equalities into \gls{GP}-compatible
+does not change when the monomial equality is relaxed. This is a key
+observation that will allow us to turn the equalities in most physical models into \gls{GP}-compatible
 posynomial inequalities. The posynomial equality relaxation is explained in greater detail
 in~\cite{hoburg_thesis}.
 
@@ -142,7 +144,7 @@ to complete in Section~\ref{s:engine} to improve the model.
 
 \section{GP Modeling from Physics}
 
-Oftentimes, \gls{GP} model creation starts haphazardly, with the designer having a
+Oftentimes, optimization model creation starts haphazardly, with the designer having a
 vague idea about the set of physical a problem, and some basic
 set of assumptions about the configuration. In this section, we will
 generate variables and constraints with abandon, and think about how to make
@@ -178,7 +180,8 @@ model below for steady state flight:
 where the lift of the aircraft is equal to weight of the aircraft with half-fuel, 
 which is a crude estimate of the average weight of the aircraft throughout the flight.
 Again, the \gls{GP} form is seamless here, since lift is related to
-induced drag, and so it is pressured downward by the objective function.
+induced drag, and so it is pressured downward, towards the \gls{LHS}
+of the inequality by the objective function.
 
 We would also like the fully-fueled aircraft to be able to fly at a minimum speed 
 of $V_{min}$ without stalling, so we add the following constraint:
@@ -201,8 +204,8 @@ more detailed modeling to determine their values. Payload weight is also set
 because (2) it would always be unbounded towards zero due to the downward pressure from
 the objective. A designer may also fix variables (3) if he/she knows their values with
 certainty (eg. gravitational acceleration $g$) or (4) the variable is a normalizing
-coefficient (which we will see in Section~\ref{s:datafit}). We will set the values
-of some of the variables as defined in Table~\ref{t:vars_WandL}, where the free variables,
+coefficient (which we will see in Section~\ref{s:datafit}). The values
+of some of the variables are set as defined in Table~\ref{t:vars_WandL}, where the free variables,
 and constants and their values have been labeled.
 
 \begin{footnotesize}
@@ -232,7 +235,7 @@ Note that the atmospheric variable $\rho$ in Table~\ref{t:vars_TandD}, and other
 atmospheric variables in Section~\ref{ch2:inequalities} are set
 to be constant. The behavior of these variables with altitude
 will be modeled in more detail in Section~\ref{s:mission} when
-I model the flight profile of the aircraft.
+the flight profile of the aircraft is modeled.
 
 \subsection{Alternate objective functions: adding performance metrics}
 \label{s:altobj}
@@ -323,12 +326,12 @@ specific fuel consumption (\BSFC) for the 'engine' of the aircraft, which is ass
 to provide as much thrust as needed. Since $T \geq D$:
 
 \begin{equation}
-    W_f \geq \BSFC \times T_{flight} \times D
+    W_f \geq \BSFC \times t_{flight} \times DV
     \label{e:W_f}
 \end{equation}
 
 the fuel weight required is the product of the \BSFC, time of flight, and the
-total drag on the aircraft.
+total drag power on the aircraft.
 The drag of the aircraft is the product of dynamic pressure ($\frac{1}{2} \rho V^2$),
 the planform area $S$, and the coefficient of drag of the aircraft:
 

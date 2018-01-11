@@ -1,4 +1,4 @@
-from SimPleAC_mission2 import Mission,SimPleAC
+from SimPleAC_mission4 import Mission,SimPleAC
 from gpkit import Model, units, Vectorize, Variable
 from gpkit import GPCOLORS, GPBLU
 from gpkit.constraints.bounded import Bounded
@@ -13,7 +13,6 @@ W_p = np.linspace(1000,10000,M)
 #Vmin = np.linspace(25,100,N)
 
 m = Mission(SimPleAC(),4)
-m.cost = m['W_{f_m}']*units('1/N') + m['C_m']*m['t_m']
 m.substitutions.update({
         'h_{cruise_m}'   :5000*units('m'),
         'Range_m'        :3000*units('km'),
@@ -24,6 +23,7 @@ m.substitutions.update({
 })
 m.substitutions.update({'Range_m':('sweep',Range),
                          'W_{p_m}'  :('sweep',W_p)})
+m.cost = m['W_{f_m}']*units('1/N') + m['C_m']*m['t_m']
 
 # Solving
 sol = m.localsolve(verbosity=2,skipsweepfailures=True)
