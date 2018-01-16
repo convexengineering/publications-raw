@@ -3,7 +3,7 @@
 
 Recalling from Figure~\ref{f:optflow}, traditional gradient-based design optimization tools implement
 convergence loops that assume structure within a given design problem.
-The 'bag of constraints' form of the GP means that constraints can be
+The `bag of constraints' form of the GP means that constraints can be
 added to the problem without
 having to restructure the optimization formulation. This property,
 coupled with the object-oriented modeling framework of GPkit, allows
@@ -108,7 +108,7 @@ the relation we obtain for the one-term (monomial) approximation is as follows:
 
 Note that the root mean square error of this fit is 0.414, which primarily has to do with
 the level of variation in the data. Since engine weight will have downward pressure
-on it from the objective, we can easily use a two-term posynomial approximation to
+on it from the objective function, we can easily use a two-term posynomial approximation to
 improve its error.
 
 \begin{equation}
@@ -382,6 +382,7 @@ in \gls{GP} is performed by Burton~\cite{gassolar}, where wind speeds are integr
 a loitering aircraft optimization problem.
 
 \subsection{Objective of the mission model}
+\label{s:missionobj}
 
 Recalling from Section~\ref{s:altobj}, upper-unbounded performance metrics often have to
 reside in the objective function to be bounded. As such, mission time $t_m$ has been added
@@ -473,7 +474,7 @@ since no fuel is allocated in the fuselage towards the lower right of the graph.
     \end{subfigure}
     \caption[Time cost and time cost index sensitivity contours.]{Time cost and time cost index sensitivity contours.
     We can gain intuition about the relative importance of different components
-    of composite objectives by showing both the costs and their sensitivities together.}
+    of composite objective functions by showing both the costs and their sensitivities together.}
     \label{f:compobjsens}
 \end{figure*}
 

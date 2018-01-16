@@ -36,6 +36,8 @@ We can draw the feasibility set of the above problem in both linear and log spac
 as shown in Figure~\ref{f:feas_moneq}. One expects that, given only two variables
 related through an equality and bounded by inequalities, the feasibility space is
 a finite line segment in log-space, and a finite exponential function in linear space.
+The black dot in Figure~\ref{f:feas_moneq} is the global optimum of the feasibility set
+($x = 1 - \frac{1}{\sqrt{2}}$, $y = 1 + \frac{1}{\sqrt{2}}$).
 
 \begin{figure}
     \centering
@@ -46,6 +48,13 @@ a finite line segment in log-space, and a finite exponential function in linear 
 
 However, if we had decided to impose $xy \geq \frac{1}{2}$ instead of $xy = \frac{1}{2}$,
 then we would get a new feasibility set as shown in Figure~\ref{f:feas_posygeq}.
+Using the \gls{GP} form, we can always upper-bound posynomials, and lower-bound both posynomials
+and monomials to get convex feasible sets. Note that the optimal point, which is at
+$x = 1 - \frac{1}{\sqrt{2}}$, $y = 1 + \frac{1}{\sqrt{2}}$,
+does not change when the monomial equality is relaxed. This is a key
+observation that will allow us to turn the equalities in most physical models into \gls{GP}-compatible
+posynomial inequalities. The posynomial equality relaxation is explained in greater detail
+in~\cite{hoburg_thesis}.
 
 \begin{figure}
     \centering
@@ -55,16 +64,14 @@ then we would get a new feasibility set as shown in Figure~\ref{f:feas_posygeq}.
     \label{f:feas_posygeq}
 \end{figure}
 
-Using the \gls{GP} form, we can always upper-bound posynomials, and lower-bound both posynomials
-and monomials to get convex feasible sets. Note that the optimal point, which is at
-$x = 1 - \frac{1}{\sqrt{2}}$, $y = 1 + \frac{1}{\sqrt{2}}$,
-does not change when the monomial equality is relaxed. This is a key
-observation that will allow us to turn the equalities in most physical models into \gls{GP}-compatible
-posynomial inequalities. The posynomial equality relaxation is explained in greater detail
-in~\cite{hoburg_thesis}.
-
 However if we convert the monomial equality to  $xy \leq \frac{1}{2}$, we will get an unbounded model,
 whose feasibility set is shown in Figure~\ref{f:feas_posyleq}.
+Since minimizing $x$ is our objective, and both variables are upper-bounded,
+they both collapse towards numerical precision zero,
+giving a non-sensical feasibility set shown in Figure~\ref{f:feas_posyleq}. This section will
+demonstrate methods to create \gls{GP}-compatible models that are adequately bounded to avoid such
+singularities towards zero or infinity, which for the most part do not
+exist in real physical models. The models will be created within GPkit~\cite{gpkit}.
 
 \begin{figure}
     \centering
@@ -74,13 +81,6 @@ whose feasibility set is shown in Figure~\ref{f:feas_posyleq}.
     \label{f:feas_posyleq}
 \end{figure}
 
-Since $x$ is our objective, and both variables are upper-bounded, they both collapse towards numerical
-precision zero,
-giving a non-sensical feasibility set shown in Figure~\ref{f:feas_posyleq}. This section will
-demonstrate methods to create \gls{GP}-compatible models that are adequately bounded to avoid such
-singularities towards zero or infinity, which for the most part do not
-exist in real physical models. The models will be created within GPkit~\cite{gpkit}.
-
 \section{Defining the design problem}
 
 \gls{GP}s are amenable to solving a large variety of design problems (see~\cite{gpintro} for an
@@ -89,7 +89,7 @@ design methodologies that leverage convex optimization since the author's backgr
 Aircraft epitomize the nature of complex engineering problems. The physical 
 relations describing their motion are nonlinear, and all of their subsystems are 
 coupled through the primary forces in flight (thrust, weight, lift, drag).
-The goal of the aircraft in question will be to perform a basic 'ferry' mission, that
+The goal of the aircraft in question will be to perform a basic `ferry' mission, that
 is to carry a given payload
 over a distance while minimizing an objective function.
 
@@ -99,19 +99,19 @@ over a distance while minimizing an objective function.
 Objective functions are the way that a designer puts pressure on the variables 
 in the constraints. To begin with, we will consider
 total fuel weight $W_f$ as our objective, which will put
-downward pressure on all of the variables that would cause in greater fuel burn, namely
-drag and weight. We must necessarily put a lower-bound on all variables in the objective
+downward pressure on all of the variables that would cause greater fuel burn, namely
+drag and weight. We must necessarily put a lower-bound on all variables in the objective function
 that have positive exponents, and upper-bound all variables with negative exponents.
 
 In many design problems
 formulated as \gls{GP}s, many different objectives will put pressure on design
-in the same direction. For example, an aircraft designed for fuel weight will look
+in the same direction. For example, an aircraft optimized for fuel weight will look
 different compared to one
-that has been designed for total weight or payload-fuel consumption, but all of
-these different objective will put a downward pressure on drag and weight.
+that has been designed for total weight or payload-fuel consumption, but each
+of these objectives will put a downward pressure on drag and weight.
 As such, this model will be able to take in a number of objective functions
 and be properly constrained and bounded. According to Raymer, an important
-principle of aircraft design is 'that there is no such thing as a free lunch!'
+principle of aircraft design is `that there is no such thing as a free lunch!'
 ~\cite[pg.26]{raymer}. An improvement in any of the other objective functions
 will result in reduced performance with respect to others.
 
@@ -145,8 +145,8 @@ to complete in Section~\ref{s:engine} to improve the model.
 \section{GP Modeling from Physics}
 
 Oftentimes, optimization model creation starts haphazardly, with the designer having a
-vague idea about the set of physical a problem, and some basic
-set of assumptions about the configuration. In this section, we will
+vague idea about the set of physics that govern a problem, and some basic
+assumptions about the configuration. In this section, we will
 generate variables and constraints with abandon, and think about how to make
 sure each variable is adequately bounded later. Each subsection is intended
 to introduce the reader to an important aspect of \gls{GP} modeling,
@@ -163,25 +163,27 @@ The aircraft has weight, which consists of the payload, wing, and fuel weights.
     W \geq W_p + W_w + W_f
 \end{equation}
 
-Note that we have already had to make determination about the relations between
-the two sides of the equation. Since heavier aircraft burn more fuel, we are justified
-to put total weight as greater than the sum of the component weights. Weight relations
-are especially amenable to being represented by posynomials, since most objective
-functions penalize higher weight.
+Note that we have already had to make determination about the relation between
+the two sides of the equation. Heavier aircraft burn more fuel, so we are justified
+to put total weight as greater than the sum of the component weights since
+$W$ will be pressured downward by the objective. Furthermore, we can
+always add more weight to the aircraft by adding ballast to it, even if this would likely
+worsen the objective. So we allow for slackness in this constraint, even
+if we know intuitively that it will almost always be tight as explained in Section~\ref{s:objective}.
 
 The aircraft has to sustain steady level flight, which means
-that it needs to generate enough lift to carry itself. We use the naive $W \leq L$ 
+that it needs to generate enough lift to carry itself. We use the naive
+lift is greater than weight ($L \geq W$)
 model below for steady state flight:
 
 \begin{equation}
-    W_p + W_w + 0.5 W_f \leq \frac{1}{2} \rho S C_L V^2
+   \frac{1}{2} \rho V^2 S C_L  \geq  W_p + W_w + 0.5 W_f
 \end{equation}
 
 where the lift of the aircraft is equal to weight of the aircraft with half-fuel, 
 which is a crude estimate of the average weight of the aircraft throughout the flight.
 Again, the \gls{GP} form is seamless here, since lift is related to
-induced drag, and so it is pressured downward, towards the \gls{LHS}
-of the inequality by the objective function.
+induced drag, and so it is pressured downward into the posynomial on the \gls{RHS} of the equation.
 
 We would also like the fully-fueled aircraft to be able to fly at a minimum speed 
 of $V_{min}$ without stalling, so we add the following constraint:
@@ -198,33 +200,36 @@ At this point, we have introduced a large set of variables, some of which are in
 parameters, and the others free variables. The decision of whether to keep variables free or fixed
 can shape the whole model development process in all forms of optimization.
 The decision can be influenced by many
-factors in a \gls{GP}. In this case, we set the lift coefficient and takeoff speed
-to be constants since (1) we would need
-more detailed modeling to determine their values. Payload weight is also set
-because (2) it would always be unbounded towards zero due to the downward pressure from
-the objective. A designer may also fix variables (3) if he/she knows their values with
-certainty (eg. gravitational acceleration $g$) or (4) the variable is a normalizing
-coefficient (which we will see in Section~\ref{s:datafit}). The values
-of some of the variables are set as defined in Table~\ref{t:vars_WandL}, where the free variables,
-and constants and their values have been labeled.
+factors in a \gls{GP}, with four in particular that stand out in this model.
+We set the lift coefficient and takeoff speed
+to be constants since (I) we would need
+more detailed modeling to determine their values. Payload weight is set
+because (II) it would always be unbounded towards zero due to the downward pressure from
+the objective. A designer may also fix variables (III) if he/she knows their values with
+certainty (eg. gravitational acceleration $g$) or (IV) the variable is a normalizing
+coefficient (which we will see in Section~\ref{s:datafit}).
+The variables have been defined in Table~\ref{t:vars_WandL}, where the variables that
+have associated values are fixed variables.
+The remaining variables are free variables, to be optimized once the model
+is appropriately bounded.
 
 \begin{footnotesize}
 \begin{table}
     \centering
-    \begin{tabular}{ l c l c c}
+    \begin{tabular}{ l c c l}
         \toprule
-        Variable & Units & Description & Free & Value \\
+        \textbf{Variable} & \textbf{Value} & \textbf{Units} & \textbf{Description} \\
         \midrule
-        $\rho$ & $~\mathrm{\tfrac{kg}{m^{3}}}$ & density of air & N & 1.23 \\
-        $C_L$ & $~\mathrm{-}$ & wing lift coefficient & Y & - \\
-        $C_{L,max}$ & $$ & lift coefficient at stall & N &  1.6 \\
-        $S$ & $~\mathrm{m^{2}}$ & total wing area & Y & - \\
-        $V$ & $~\mathrm{\tfrac{m}{s}}$ & cruising speed & Y & - \\
-        $V_{min}$ & $~\mathrm{\tfrac{m}{s}}$ & takeoff speed & N & 25 \\
-        $W$ & $~\mathrm{N}$ & total aircraft weight & Y & -\\
-        $W_f$ & $~\mathrm{N}$ & fuel weight & Y & -\\
-        $W_w$ & $~\mathrm{N}$ & wing weight & Y & - \\
-        $W_p$ & $~\mathrm{N}$ & payload weight & N & 6250\\
+        $\rho$ & 1.23 & $~\mathrm{\tfrac{kg}{m^{3}}}$ & density of air \\
+        $C_L$ & \ldots & $~\mathrm{-}$ & wing lift coefficient \\
+        $C_{L,max}$ & 1.6 & $~\mathrm{-}$ & lift coefficient at stall \\
+        $S$ & \ldots & $~\mathrm{m^{2}}$ & total wing area \\
+        $V$ & \ldots & $~\mathrm{\tfrac{m}{s}}$ & cruising speed \\
+        $V_{min}$ & 25 & $~\mathrm{\tfrac{m}{s}}$ & takeoff speed \\
+        $W$ & \ldots & $~\mathrm{N}$ & total aircraft weight \\
+        $W_f$ & \ldots & $~\mathrm{N}$ & fuel weight \\
+        $W_w$ & \ldots & $~\mathrm{N}$ & wing weight \\
+        $W_p$ & 6250 & $~\mathrm{N}$ & payload weight \\
         \bottomrule
     \end{tabular}
     \caption{Variables introduced in weight vs. lift model.}
@@ -237,7 +242,7 @@ to be constant. The behavior of these variables with altitude
 will be modeled in more detail in Section~\ref{s:mission} when
 the flight profile of the aircraft is modeled.
 
-\subsection{Alternate objective functions: adding performance metrics}
+\subsection{Alternate objectives: adding performance metrics}
 \label{s:altobj}
 
 As multi-objective designers, we may also be interested in knowing about
@@ -245,7 +250,7 @@ additional performance metrics that can serve as part of objective functions. A
 few that are particularly relevant to aircraft will be introduced here.
 
 The time of flight of the aircraft, which is a useful metric to calculate cost,
-is simply the range over velocity:
+is simply the aircraft's range divided by its cruise velocity:
 
 \begin{equation}
     T_{flight} \geq \frac{\mathrm{Range}}{V}
@@ -262,28 +267,29 @@ The new variables we have introduced are detailed in Table~\ref{t:vars_perfMetri
 \begin{footnotesize}
 \begin{table}
     \centering
-    \begin{tabular}{ l c l c c }
+    \begin{tabular}{ l c c l}
         \toprule
-        Variable & Units & Description & Free & Value \\
+        \textbf{Variable} & \textbf{Value} & \textbf{Units} & \textbf{Description} \\
         \midrule
-        $C_D$ & $~\mathrm{-}$ & drag coefficient & Y & - \\
-        $C_L$ & $~\mathrm{-}$ & wing lift coefficient & Y & - \\
-        $L/D$ & $~\mathrm{-}$ & lift-to-drag ratio & Y & - \\
-        $Range$ & $~\mathrm{km}$ & aircraft range & N & 3000 \\
-        $T_{flight}$ & $~\mathrm{hr}$ & flight time & Y & - \\
+        $C_D$ & \ldots & $~\mathrm{-}$ & drag coefficient \\
+        $C_L$ & \ldots & $~\mathrm{-}$ & wing lift coefficient \\
+        $L/D$ & \ldots & $~\mathrm{-}$ & lift-to-drag ratio \\
+        $Range$ & 3000 & $~\mathrm{km}$ & aircraft range \\
+        $T_{flight}$ & \ldots & $~\mathrm{hr}$ & flight time \\
         \bottomrule
     \end{tabular}
     \caption{Variables introduced to define new performance metrics.}
     \label{t:vars_perfMetrics}
 \end{table} \end{footnotesize}
 
-An important note about variables that are potential alternative objectives: these variables
+An important note about variables that are potential alternate objectives: these variables
 must always be lower-bounded (or inverted and upper-bounded) since the general \gls{GP} is a
 minimization problem. However, if they are not also upper-bounded, these variables
 will likely be unbounded for a given model and run off to +$\infty$. This means that
 performance-quantifying variables will need to be in a monomial form,
 or must be present in a posynomial objective
-function as shown in Equation~\ref{e:posyobj} for boundedness.
+function as shown in Equation~\ref{e:posyobj} for boundedness. We shall see this coming into play
+in Section~\ref{s:missionobj}.
 
 \begin{equation}
     \mathrm{Objective} \geq \sum\limits^n_{i=1}c_{i}\prod\limits^n_{i=1}  v^{k_{i,j}}
@@ -407,22 +413,21 @@ The new variables are detailed in Table~\ref{t:vars_TandD}.
 \begin{footnotesize}
 \begin{table}
     \centering
-    \begin{tabular}{ l c l c c }
+    \begin{tabular}{ l c c l}
         \toprule
-        Variable & Units & Description & Free & Value \\
+        \textbf{Variable} & \textbf{Value} & \textbf{Units} & \textbf{Description} \\
         \midrule
-        $A$ & $-$ & aspect ratio & Y & - \\
-        $\BSFC$ & $\mathrm{\frac{g}{kW*hr}}$ & brake specific fuel consumption & N & 400 \\
-        $(CDA0)$ & $~\mathrm{m^{2}}$ & fuselage drag area & Y & - \\
-        $C_f$ & $-$ & skin friction coefficient & Y & - \\
-        $D$ & $~\mathrm{N}$ & total drag force & Y & - \\
-        $e$ & $-$ & Oswald efficiency factor & N & 0.92 \\
-        $k$ & $-$ & form factor & N & 1.17 \\
-        $\mu$ & $~\mathrm{\tfrac{kg}{m\cdot s}}$ & viscosity of air & N &
-            $\mathrm{1.78 \times 10^{-5}}$ \\
-        $Re$ & $-$ & Reynolds number & Y & - \\
-        $\left(\frac{S}{S_{wet}}\right)$ & $-$ & wetted area ratio & N & 2.075 \\
-        $V_{f_{fuse}}$ & $~\mathrm{m^{3}}$ & fuel volume in the fuselage & Y & - \\
+        $A$ & \ldots & $-$ & aspect ratio\\
+        $\BSFC$ & 400 & $\mathrm{\frac{g}{kW*hr}}$ & brake specific fuel consumption \\
+        $(CDA0)$ & \ldots & $~\mathrm{m^{2}}$ & fuselage drag area \\
+        $C_f$ & \ldots & $-$ & skin friction coefficient \\
+        $D$ & \ldots & $~\mathrm{N}$ & total drag force \\
+        $e$ & 0.92 & $-$ & Oswald efficiency factor \\
+        $k$ & 1.17 & $-$ & form factor \\
+        $\mu$ & $\mathrm{1.78 \times 10^{-5}}$ & $~\mathrm{\tfrac{kg}{m\cdot s}}$ & viscosity of air \\
+        $Re$ & \ldots & $-$ & Reynolds number \\
+        $\left(\frac{S}{S_{wet}}\right)$ & 2.075 & $-$ & wetted area ratio \\
+        $V_{f_{fuse}}$ & $~\mathrm{m^{3}}$ & \ldots & fuel volume in the fuselage \\
         \bottomrule
     \end{tabular}
     \caption{Variables introduced in thrust and drag model.}
@@ -482,7 +487,7 @@ Even the addition of a single
 signomial constraint turns the problem from a \gls{GP} to a \gls{SP}, which means
 that the problems loses convexity and all of the mathematical guarantees associated with it. 
 It takes engineering intuition to recognize where and when improved modeling is worth
-the loss of the mathematical guarantees. Kirschen~\ref{kirschen_thesis} describes in detail how
+the loss of the mathematical guarantees. Kirschen~\cite{kirschen_thesis} describes in detail how
 signomial constraints are often required to capture fundamental design tradeoffs.
 
 \subsection{Signomial constraints: adding fuel volume model}
@@ -554,16 +559,16 @@ but any other coefficient would work.)
 \begin{footnotesize}
 \begin{table}
     \centering
-    \begin{tabular}{ l c l c c }
+    \begin{tabular}{ l c c l}
         \toprule
-        Variable & Units & Description & Free & Value \\
+        \textbf{Variable} & \textbf{Value} & \textbf{Units} & \textbf{Description} \\
         \midrule
-        $\rho_f$ & $~\mathrm{\tfrac{kg}{m^{3}}}$ & density of fuel & N & 817 \\
-        $g$ & $~\mathrm{\tfrac{m}{s^{2}}}$ & gravitational acceleration & N & 9.81 \\
-        $\tau$ & $$ & airfoil thickness to chord ratio & N & 0.12 \\
-        $V_f$ & $~\mathrm{m^{3}}$ & fuel volume & Y & - \\
-        $V_{f_{avail}}$ & $~\mathrm{m^{3}}$ & fuel volume available & Y & - \\
-        $V_{f_{wing}}$ & $~\mathrm{m^{3}}$ & fuel volume in the wing & Y & - \\
+        $\rho_f$ & 817 & $~\mathrm{\tfrac{kg}{m^{3}}}$ & density of fuel \\
+        $g$ & 9.81 & $~\mathrm{\tfrac{m}{s^{2}}}$ & gravitational acceleration \\
+        $\tau$ & 0.12 & $$ & airfoil thickness to chord ratio \\
+        $V_f$ & \ldots & $~\mathrm{m^{3}}$ & fuel volume \\
+        $V_{f_{avail}}$ & \ldots & $~\mathrm{m^{3}}$ & fuel volume available \\
+        $V_{f_{wing}}$ & \ldots & $~\mathrm{m^{3}}$ & fuel volume in the wing \\
         \bottomrule
     \end{tabular}
     \caption{Variables introduced in the fuel model.}
@@ -649,16 +654,15 @@ the final set of variables in Table~\ref{t:vars_wingstrcmodel}.
 \begin{footnotesize}
 \begin{table}
     \centering
-    \begin{tabular}{ l c l c c }
+    \begin{tabular}{ l c c l}
         \toprule
-        Variable & Units & Description & Free & Value \\
+        \textbf{Variable} & \textbf{Value} & \textbf{Units} & \textbf{Description} \\
         \midrule
-        $N_{ult}$ & $-$ & ultimate load factor & N & 3.3 \\
-        $W_{w_{coeff1}}$ & $~\mathrm{\tfrac{1}{m}}$ & wing weight coefficient 1 & N &
-                $\mathrm{2\times 10^{-5}}$ \\
-        $W_{w_{coeff2}}$ & $~\mathrm{Pa}$ & wing weight coefficient 2 & N & 60 \\
-        $W_{w_{strc}}$ & $~\mathrm{N}$ & wing structural weight & Y & - \\
-        $W_{w_{surf}}$ & $~\mathrm{N}$ & wing skin weight & Y & - \\
+        $N_{ult}$ & 3.3 & $-$ & ultimate load factor \\
+        $W_{w_{coeff1}}$ & $\mathrm{2\times 10^{-5}}$ & $~\mathrm{\tfrac{1}{m}}$ & wing weight coefficient 1 \\
+        $W_{w_{coeff2}}$ & 60 & $~\mathrm{Pa}$ & wing weight coefficient 2 \\
+        $W_{w_{strc}}$ & \ldots & $~\mathrm{N}$ & wing structural weight \\
+        $W_{w_{surf}}$ & \ldots & $~\mathrm{N}$ & wing skin weight \\
     \bottomrule
     \end{tabular}
     \caption{Variables introduced in the wing structural model.}
