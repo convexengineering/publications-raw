@@ -14,8 +14,8 @@ y = Variable('y')
 constraints = []
 constraints += [x + y <= 2,
                 x*y <= 1./2.,
-                #1 >= 10**-10/x,
-                #1 >= 10**-10/y
+                1 >= 10**-10/x,
+                1 >= 10**-10/y
                 ]
 m = Model(x,constraints)
 sol = m.solve()
@@ -40,7 +40,7 @@ plot_feasibilities(x,y,m)
 
 
 # m = Mission(5)
-# m.cost = m['W_f'] * units('1/N') + m['Cost Index'] * m['t_m']
+# m.cost = m['W_f'] * units('1/N') + m['C'] * m['t_m']
 # sol = m.localsolve()
 #
 # substitutions = {'V_{f_{wing}}':sol('V_{f_{wing}}').magnitude*sol('V_{f_{wing}}').units,

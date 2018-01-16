@@ -82,7 +82,7 @@ def plot_feasibilities(x, y, m, rm=None, rmtype=None):
         axes[0].add_patch(p)
     plot_uncertainty_set(axes[0])
     axes[0].axis("equal")
-    # axes[0].set_ylim([0.1, 1])
+    #axes[0].set_ylim([1e-10, 6e-9])
     axes[0].set_ylabel(y)
 
     perimeter = np.array([orig_a, orig_b]).T
@@ -93,8 +93,8 @@ def plot_feasibilities(x, y, m, rm=None, rmtype=None):
         p = Polygon(perimeter, True, color=GPCOLORS[1], alpha=0.5, linewidth=0)
         axes[1].add_patch(p)
     plot_uncertainty_set(axes[1])
-    # axes[1].set_xlim([0, 6])
-    # axes[1].set_ylim([0, 1])
+    #axes[1].set_xlim([1e-10, 6e-9])
+    #axes[1].set_ylim([1e-10, 6e-9])
     axes[1].set_xlabel(x)
     axes[1].set_ylabel(y)
 
