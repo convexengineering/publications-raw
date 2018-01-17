@@ -115,7 +115,7 @@ property.
     \end{subfigure}
     \begin{subfigure}[b]{0.5\linewidth}
         \centering
-        \includegraphics[width=.4\textwidth,natwidth=576,natheight=432]{posyapprox3.eps}
+        \includegraphics[width=0.9\linewidth]{posyapprox3.eps}
         \caption{Convex approximation about $C_{L} = 0.20.$}
     \end{subfigure}
     \caption{A signomial inequality constraint and GP approximations about two
@@ -142,7 +142,7 @@ et al.~\cite{sigeqpaper}.
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=.7\textwidth,natwidth=576,natheight=432]{sigeqapprox.eps}
+\includegraphics[width=0.45\linewidth]{sigeqapprox.eps}
 \caption{The signomial equality constraint $C_{D} = f(C_{L})$ and its
 approximation.}\label{f:sigeq}
 \end{figure}
@@ -153,21 +153,21 @@ approximation.}\label{f:sigeq}
 \begin{footnotesize}
     \begin{table}
         \centering
-        \begin{tabular}{ l c l c c }
+        \begin{tabular}{l c l}
             \toprule
-            Variable & Units & Description & Free & Value \\
+            Variable & Units & Description \\
             \midrule
-            $\frac{dh}{dt}$  & $~\mathrm{\tfrac{m}{hr}}$ & climb rate & Y & - \\
-            $h$ & $~\mathrm{m}$ & final segment flight altitude & Y & - \\
-            $h_{avg}$ & $~\mathrm{m}$ & average segment flight altitude & Y & - \\
-            $R_s$ & $~\mathrm{km}$ & range flown in segment & Y & -\\
-            $W_{start}$  & $~\mathrm{N}$ & weight at the beginning of flight segment & Y & - \\
-            $W_{end}$ & $~\mathrm{N}$ & weight at the end of flight segment & Y & - \\
-            $W_{avg}$ & $~\mathrm{N}$ & segment average weight & Y & - \\
-            $W_{f_s}$ & $~\mathrm{N}$ & segment fuel burn & Y & - \\
-            $W_{f_m}$  & $~\mathrm{N}$ & total mission fuel & Y & -\\
-            $t_s$ & $~\mathrm{hr}$ & time spent in flight segment & Y & - \\
-            $t_m$  & $~\mathrm{hr}$ & total mission time & Y & - \\
+            $\frac{dh}{dt}$  & $~\mathrm{\tfrac{m}{hr}}$ & climb rate \\
+            $h$ & $~\mathrm{m}$ & segment flight altitude\\
+            $h_{avg}$ & $~\mathrm{m}$ & segment flight altitude\\
+            $R_s$ & $~\mathrm{km}$ & segment range\\
+            $W_{start}$  & $~\mathrm{N}$ & segment beginning weight\\
+            $W_{end}$ & $~\mathrm{N}$ & segment end weight\\
+            $W_{avg}$ & $~\mathrm{N}$ & segment average weight\\
+            $W_{f_s}$ & $~\mathrm{N}$ & segment fuel burn\\
+            $W_{f_m}$  & $~\mathrm{N}$ & total mission fuel\\
+            $t_s$ & $~\mathrm{hr}$ & segment time\\
+            $t_m$  & $~\mathrm{hr}$ & total mission time\\
             \bottomrule
         \end{tabular}
         \caption{Variables introduced in flight segment model.}

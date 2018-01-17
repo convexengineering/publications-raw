@@ -172,19 +172,19 @@ class EngineP(Model):
 class Mission(Model):
     def setup(self,aircraft,Nsegments):
         self.aircraft = aircraft
-        W_f_m   = Variable('W_{f_m}','N','Total mission fuel')
-        t_m     = Variable('t_m','hr','Total mission time')
+        W_f_m   = Variable('W_{f_m}','N','total mission fuel')
+        t_m     = Variable('t_m','hr','total mission time')
 
         with Vectorize(Nsegments):
-            Wavg    = Variable('W_{avg}','N','Segment average weight')
-            Wstart  = Variable('W_{start}', 'N', 'Weight at the beginning of flight segment')
-            Wend    = Variable('W_{end}', 'N','Weight at the end of flight segment')
+            Wavg    = Variable('W_{avg}','N','segment average weight')
+            Wstart  = Variable('W_{start}', 'N', 'segment beginning weight')
+            Wend    = Variable('W_{end}', 'N','segment end weight')
             h       = Variable('h','m','Flight altitude')
             havg    = Variable('h_{avg}','m','average segment flight altitude')
             dhdt    = Variable('\\frac{dh}{dt}','m/hr','Climb rate')
-            W_f_s   = Variable('W_{f_s}','N', 'Segment fuel burn')
-            t_s     = Variable('t_s','hr','Time spent in flight segment')
-            R_s     = Variable('R_s','km','Range flown in segment')
+            W_f_s   = Variable('W_{f_s}','N', 'segment fuel burn')
+            t_s     = Variable('t_s','hr','segment time')
+            R_s     = Variable('R_s','km','segment range')
             state   = Atmosphere()
             self.aircraftP = self.aircraft.dynamic(state)
 

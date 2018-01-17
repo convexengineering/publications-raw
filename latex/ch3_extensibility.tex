@@ -23,13 +23,15 @@ Before even thinking about modeling, we would like to leverage the object-orient
 GPkit models to put the variables describing the engine into a submodel (currently only
 BSFC). In the GPkit software, we do this by creating a new class (an object in the Python language)
 called \textbf{Engine} and creating a \textit{setup}
-method that returns the constraints within it.
+method that returns the constraints within it. The model and variable objects in the sample code
+are imported from GPkit.
 
 \begin{python}
     class Engine(Model):
         def setup(self):
             # Dimensional constants
-            BSFC = Variable("BSFC", 400, "g/(kw*hr)", "brake specific fuel consumption")
+            BSFC = Variable("BSFC", 400, "g/(kw*hr)",
+                                    "brake specific fuel consumption")
             constraints = []
             return constraints
 \end{python}
@@ -164,11 +166,10 @@ required for SimPleAC to fly one flight segment.
 
 Tree or graph structures such as in Figure~\ref{forest:submodels} are informative, since
 it provides an intuitive representation of the way constraints and variables
-are passed between GPkit models. Due to the serial nature of object creation in software engineering,
-variables and constraints from one model can only be called by models that are higher in the tree diagram.
-
-
-The way the \gls{SP} is solved at the end has no
+are passed between GPkit models. In this basic framework,
+variables and constraints from one model can only be called by models that are higher in
+the tree diagram. This reconciles the fact that object creation in software engineering is serial, whereas
+the components of the system being optimized are interconnected. The way the \gls{SP} is solved at the end has no
 hierarchy, but as we will see in Section~\ref{s:mission} a hierarchical representation
 will facilitate the vectorization of constraints required for mission design.
 
@@ -194,29 +195,28 @@ uni-directional graph as shown in Figure~\ref{f:missiongraph}.
         sn edges,
         l sep+=1em,
         s sep=(4-level)*4mm,
-        for children={
-        l sep+=1em,
-        }
-        [\textit{\textbf{Mission}},name=mission
-        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=aircraftP2
-        [\textit{\shortstack{Wing\\Perf.}},name=wingP2,tier=cp]
-        [\textit{\shortstack{Engine\\Perf.}},name=engineP2,tier=cp
-        [\textit{Atmosphere},name=atmos2,tier=a]]]
-        [\textbf{Aircraft},name=aircraft,tier=cp
-        [\textbf{Wing},name=wing,tier=a]
-        [\textbf{Fuselage},name=fuse,tier=a]
-        [\textbf{Engine},name=engine,tier=a]
-        ]
-        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=aircraftP1
-        [\textit{\shortstack{Wing\\Perf.}},name=wingP1,tier=cp]
-        [\textit{\shortstack{Engine\\Perf.}},name=engineP1,tier=cp
-        [\textit{Atmosphere},name=atmos1,tier=a]]
-        ]
-        ]
+    [\textit{\textbf{Mission}},name=mission
+    [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=aircraftP1
+    [\textit{\shortstack{Wing\\Perf.}},name=wingP1,tier=cp]
+    [\textit{Atmosphere},name=atmos1,tier=a]
+    [\textit{\shortstack{Engine\\Perf.}},name=engineP1,tier=cp]
+    ]
+    [\textbf{Aircraft},name=aircraft,tier=cp
+    [\textbf{Wing},name=wing,tier=a]
+    [\textbf{Fuselage},name=fuse,tier=a]
+    [\textbf{Engine},name=engine,tier=a]
+    ]
+    [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=aircraftP2
+    [\textit{\shortstack{Wing\\Perf.}},name=wingP2,tier=cp]
+    [\textit{Atmosphere},name=atmos2,tier=a]
+    [\textit{\shortstack{Engine\\Perf.}},name=engineP2,tier=cp]
+    ]
+    ]
+%
         \draw[->] (atmos1) -- (wingP1);
-        \draw[->] (atmos1) -- (aircraftP1);
+        \draw[->] (atmos1) -- (engineP1);
         \draw[->] (atmos2) -- (wingP2);
-        \draw[->] (atmos2) -- (aircraftP2);
+        \draw[->] (atmos2) -- (engineP2);
         \draw[->] (aircraft) -- (aircraftP1);
         \draw[->] (aircraft) -- (aircraftP2);
         \draw[->] (wing) -- (wingP1);
@@ -290,13 +290,13 @@ the constraint would be vectorized by the number of flight segments we create.
     [\textit{\textbf{Mission}},name=mission
     [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},name=aircraftP
     [\textit{\shortstack{Wing\\Perf.}},name=wingP,tier=cp]
-    [\textit{\shortstack{Engine\\Perf.}},name=engineP,tier=cp
-    [\textit{Atmosphere},name=atmos]]
+    [\textit{Atmosphere},name=atmos,tier=a]
+    [\textit{\shortstack{Engine\\Perf.}},name=engineP,tier=cp]
     ]
     [\textbf{Aircraft},name=aircraft,tier=cp
-    [\textbf{Wing},name=wing]
-    [\textbf{Fuselage},name=fuse]
-    [\textbf{Engine},name=engine]
+    [\textbf{Wing},name=wing,tier=a]
+    [\textbf{Fuselage},name=fuse,tier=a]
+    [\textbf{Engine},name=engine,tier=a]
     ]
     ]
         \draw[->] (atmos) -- (wingP);
@@ -393,6 +393,9 @@ to the objective function through a cost index as such:
     \label{e:missionobj}
 \end{equation}
 
+Another method to achieve proper boundedness is to add an arbitrary large upper bound. However
+this will result in the bounding constraint being tight and giving unphysical results, and so
+this thesis will implement the objective in~\ref{e:missionobj} instead.
 Cost index $\mathrm{C}$ is defined as a separate parameter so that we can observe the sensitivity
 of the variable post-optimization.
 
@@ -410,27 +413,29 @@ every point in the design space represents a fully optimized aircraft. The full 
 to the \textbf{\textit{Mission}} model are detailed in Table~\ref{t:sweepinputs}
 
 \begin{footnotesize}
-\begin{center}
-\begin{longtable}{llcl}
-\toprule
-Constants & Value & Units & Description\\ \midrule
-$Range$ & [1000-10000]  & $~\mathrm{km}$ & aircraft range \\
-$W_p$ & [1000-5000]  & $~\mathrm{N}$ & payload weight \\
-$C$ & 120  & $~\mathrm{\tfrac{1}{hr}}$ & hourly cost index \\
-$T/O factor$ & 2  & $$ & takeoff thrust factor \\
-$V_{min}$ & 25  & $~\mathrm{\tfrac{m}{s}}$ & takeoff speed \\
-$h_{cruise}$ & 5000  & $~\mathrm{m}$ & minimum cruise altitude \\
-    \caption{Inputs to the design space exploration of the \textbf{\textit{Mission}} model.}
-    \label{t:sweepinputs}
-\end{longtable}
-\end{center}
+    \begin{center}
+        \begin{table}
+            \begin{tabular}{llcl}
+                \toprule
+                Constants & Value & Units & Description\\ \midrule
+                $Range$ & [1000-10000]  & $~\mathrm{km}$ & aircraft range \\
+                $W_p$ & [1000-5000]  & $~\mathrm{N}$ & payload weight \\
+                $C$ & 120 & $~\mathrm{\tfrac{1}{hr}}$ & hourly cost index \\
+                $T/O factor$ & 2 & $$ & takeoff thrust factor \\
+                $V_{min}$ & 25 & $~\mathrm{\tfrac{m}{s}}$ & takeoff speed \\
+                $h_{cruise}$ & 5000 & $~\mathrm{m}$ & minimum cruise altitude \\
+            \end{tabular}
+            \caption{Inputs to the design space exploration of the \textbf{\textit{Mission}} model.}
+            \label{t:sweepinputs}
+        \end{table}
+    \end{center}
 \end{footnotesize}
 
 \begin{figure*}[t!]
     \centering
     \begin{subfigure}[t]{0.5\linewidth}
         \centering
-        \includegraphics[width=0.9\linewidth]{mission2/W_fcontours.png}
+        \includegraphics[width=0.9\linewidth]{mission2/Wfcontours.png}
     \end{subfigure}%
     ~
     \begin{subfigure}[t]{0.5\linewidth}
@@ -447,7 +452,7 @@ the tradeoffs in fuel storage, and when it is beneficial to store fuel in the wi
 
 \begin{center}
 \begin{figure}
-    \includegraphics[width=0.45\linewidth]{mission2/FuseFuelFraccontours.png}
+    \includegraphics[width=0.45\linewidth]{mission2/vffusefraccontours.png}
     \caption{Fraction of total fuel stored in fuselage with respect to range and payload.}
     \label{f:fusefuelfrac}
 \end{figure}
@@ -583,14 +588,13 @@ it amenable to multiple-term posynomial fits.
 First, a monomial fit of the $\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ was created.
 The result is shown by the green line in Figure~\ref{f:P_BSFC}.
 
-\begin{center}
-    \begin{figure}
-        \includegraphics[width=0.5\textwidth]{P_BSFC.png}
-        \caption[$\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ data fit.]{$\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ data fit. The green fit is
-        not able to capture the tail ends of the curve, which is resolved by the bounding in the red fit.}
-        \label{f:P_BSFC}
-    \end{figure}
-\end{center}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{P_BSFC.png}
+    \caption[$\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ data fit.]{$\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ data fit. The green fit is
+    not able to capture the tail ends of the curve, which is resolved by the bounding in the red fit.}
+    \label{f:P_BSFC}
+\end{figure}
 
 Although the r.m.s. error of the fit is low (0.028) due to the small number of data points (in blue),
 there is a significant deterioration in the quality of the
@@ -737,8 +741,6 @@ variables and constraints. So it might be interesting for a designer to input th
 they expect the design the perform into a single multimission framework to ensure feasibility, especially if the
 mission parameters vary significantly.
 
-%TODO: Ask for help with this section.
-
 \subsection{Potential extensions of multimission design}
 
 Multimission design and optimization increases the robustness of a design to mission variability.
@@ -746,7 +748,7 @@ It would be further strengthened by the application of robust optimization to th
 of modular systems, and systems with potential present and future extensibility as well.
 A good example from aircraft design
 is the design of a family of aircraft, and more specifically 'stretchable' aircraft. In
-this case, we could design a series of aircraft that have aerodynamic surfaces and engines
+this case, a series of aircraft could be designed that have aerodynamic surfaces and engines
 in common, but have different length fuselages to accommodate different numbers of passengers over different
 routes of interest.
 
