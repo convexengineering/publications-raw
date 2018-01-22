@@ -13,17 +13,13 @@ they provide point solutions\footnote{A point solution is a design that
 is optimal for a given mission, but does not consider the
 feasibility of other potentially interesting missions.}
 without additional information about the design problem
-such as sensitivities, which can provide important engineering insight.
+such as sensitivities\footnote{The (optimal) sensitivity is the local expected
+fractional change in the objective value of the optimal solution per
+fractional change in a variable or constraint value~\cite{gpintro}.},
+which can provide important engineering insight.
 
-%The formulation of general non-linear programs as convex optimization problems
-%can be beneficial for the engineering design process. In our previous work as the \cls{CEG}, we
-%have leveraged the mathematical guarantees
-%and speed of convex optimization to demonstrate
-
-%TODO: (Mark's comments: only write timeless truths).
 In the \gls{CEG}, we have sought to improve the engineering design process by
 leveraging the mathematical guarantees and speed of convex optimization.
-%TODO: (Mark's comments: giving details of GPkit in the Intro is way too early.)
 Our primary software product is GPkit~\cite{gpkit}, an
 open-source, object-oriented software to help build \gls{GP}-compatible models and
 interface with solvers. The seminal works
