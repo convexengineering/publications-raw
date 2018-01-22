@@ -55,7 +55,7 @@ collaboratively and in a disciplined manner.
 If we think of an engine as an input-output system, we can determine how it
 would interact with the SimPleAC system, and create appropriately bounded
 sets of variables.
-At the most basic level, the engine provides shaft power, consumes fuel,
+At the most basic level, an engine provides shaft power, consumes fuel,
 and has weight. The model is missing both the shaft power and weight description
 of the engine. If we abstract away the propeller (the relation between shaft
 power and thrust power) through a propeller efficiency,
@@ -79,7 +79,7 @@ To be able to fit the engine power vs. weight data, we take several important st
     data with potentially high standard deviation onto a single line,
     it is important to fit the ranges of data we care about.
     \item \textbf{Normalize the data.} Normalizing the data
-    by some known quantity is preferable, fits should not be dependent on the
+    by some known quantity is preferable, since fits should not be dependent on the
     units that are used while performing it. This also helps the fit integrate
     seamlessly into GPkit, since dimensional fits would require units manipulation
     to avoid errors. The data can be normalized by any
@@ -114,8 +114,8 @@ on it from the objective function, we can easily use a two-term posynomial appro
 improve its error.
 
 \begin{equation}
-    \left(\frac{W_{eng}}{W_{eng,max}}\right)^{0.801} \geq 0.0330 \left(\frac{P_{shaft}}{P_{shaft,max}}\right)^{0.167}
-    +1.59 \left(\frac{P_{shaft}}{P_{shaft,max}}\right)^{1.36}
+    \left(\frac{W_{eng}}{W_{eng,max}}\right)^{1.92} \geq 4.41\times10^{-3} \left(\frac{P_{shaft}}{P_{shaft,max}}\right)^{0.759}
+    +1.44 \left(\frac{P_{shaft}}{P_{shaft,max}}\right)^{2.90}
 \end{equation}
 
 This relation has an r.m.s. error of 0.346, which is a significant improvement.
@@ -240,19 +240,22 @@ by the number of flight segments, $N_{segments} = 2$. Each
 one of the performance models contain variables that change between flight segments.
 Note that the fuselage is the only subcomponent not to have a performance model.
 This is because the only performance variable of the fuselage is its drag
-coefficient, which is assumed to not change between flight segments, making it static. I
-have also added a \textbf{\textit{Mission}} model, which links flight segments together,
-and an \textit{Atmosphere} model, which describes the conditions in which the aircraft
+coefficient, which is assumed to not change between flight segments, making it static.
+A \textbf{\textit{Mission}} model that links flight segments together has been added,
+as well as an \textit{Atmosphere} model, which describes the conditions in which the aircraft
 operates.
 
-The static aircraft model, and the atmospheric state are passed as an argument to multiple
+The static aircraft model and the atmospheric state are passed as an argument to multiple
 performance models within this framework. To transform our previously static model to
 the performance-static model hierarchy we have identified,
 we have to determine which variables
 belong in which node of the tree. Table~\ref{t:missionvars} details the full
 decomposition of the model into its submodels in the format defined
 by Figure~\ref{f:missiongraph}. This is as simple as identifying which variables
-we do not expect to change during flight segments, and which ones we do.
+we do not expect to change during flight segments, and which ones we do. Note that
+some of the variables from the previous sections
+have been renamed (e.g.\ $T_{flight} \rightarrow t_m$ and $W_f \rightarrow W_{f_m}$)
+to clarify their purpose within this framework.
 
 \begin{center}
     \captionof{table}{Variables of SimPleAC in performance modeling, detailed in the
@@ -318,7 +321,7 @@ the constraint would be vectorized by the number of flight segments we create.
     \label{f:thrustConstr}
 \end{figure}
 
-Now, we have used a framework to modularize our constraints, which makes it
+Now we have used a framework to modularize our constraints, which makes it
 amenable to vectorization and mission design.
 
 \subsection{Linking performance models: flight segments}
@@ -327,7 +330,7 @@ Although the variables in the performance models are vectorized, they can be con
 against each other. If each of the \textit{\textbf{Aircraft Performance}} models were operating
 independently of
 each other simulating different missions, then they would simply be merged in the bag of constraints
-of \textbf{\textit{Mission}}. However, we know that the models are related through since the aircraft
+of \textbf{\textit{Mission}}. However, we know that the models are related since the aircraft
 burns fuel throughout the mission, changing its flight characteristics.
 
 The derivation of the \gls{SP}-compatible flight segment models has been detailed in~\cite{sp_ac_design},
@@ -362,7 +365,7 @@ avoid the potential lower-unboundedness of the lengths of certain segments.
 \subsection{Characterizing the environment: atmospheric model}
 \label{s:atmos}
 
-We have created a mission and flight segment model without having we have to have a better understanding
+We have created a mission and flight segment model without having to have a better understanding
 of the environment in which the aircraft operates. So far, we have assumed that
 the aircraft flies at a constant altitude (sea level) for a single mission segment,
 and is subject to the same air density and viscosity.
@@ -370,7 +373,7 @@ An atmospheric model is essential to capturing the tradeoffs between flight alti
 and lift and drag characteristics.
 This simplification is overcome through vectorization.
 
-Tony Tao's atmosphere fits have been borrowed for this purpose. These are
+Tony Tao's atmosphere fits have been borrowed for this purpose~\cite{tao_thesis}. These are
 2-term softmax-affine fits of the atmospheric
 quantities of interest ($\rho$ and $\mu$ in this thesis) with respect to altitude. The constraints
 are guaranteed to be tight through signomial equalities, as explained in Section~\ref{s:sigeq}.
@@ -487,7 +490,7 @@ to parameters can affect the design, since the parameters act on multiple variab
 to attempt to decouple these is to plot both the cost of a variable in the objective and its relevant
 sensitivity next to each other, as shown in Figure~\ref{f:compobjsens}. Taking a look at point [4000N,4000km],
 we can follow the yellow contour to see all of the missions with the same time cost as this mission
-(same average flight speed), and
+(same average flight speed),
 and see how the fraction of time cost versus total cost varies through the sensitivity to the time cost index.
 This can help a designer gain intuition about the relative importance of different components of cost.
 
@@ -545,19 +548,19 @@ these variables require refinement.
 %quality of the optima. The mathematical guarantees and speed of \gls{GP} allow engineers to make observations
 %about the Pareto frontier of a problem quickly, and improve the quality of the models.
 
-The author will take a two-pronged approach to improved engine modeling.
-The first weakness of the model is the fact that the engine can supply the same amount of power
-regardless of altitude. For naturally aspirated piston engines, we would expect the maximum power available to
-drop with altitude; adding such a lapse rate will improve how much we trust the engine model.
-The second is the lack of an engine \BSFC model. Empirical data shows that the
+The following sections will take a two-pronged approach to improved engine modeling.
+The first weakness of the current model is the fact that the engine can supply the same amount of power
+regardless of altitude. The maximum power of naturally aspirated piston engines drops
+with altitude; adding a lapse rate will improve how much we trust the engine model.
+The second weakness is the lack of an engine \BSFC model. Empirical data shows that the
 \BSFC of an engine deteriorates at low power outputs.
 In Sections~\ref{s:lapse} and \ref{s:BSFC}, these improvements will be implemented using more data-based modeling.
 
 \subsection{Engine lapse rate model}
 \label{s:lapse}
 
-Data-based modeling techniques have been detailed in Section~\ref{s:datafit}, so the author will
-not linger here. But much in the same way posynomial fits were created for the relationship between
+Data-based modeling techniques have been detailed in Section~\ref{s:datafit}.
+In the same way posynomial fits were created for the relationship between
 engine maximum power and weight, the lapse rate of the engine was fitted with respect to throttle level.
 This model requires the insertion of another signomial equality into the model. Consider the
 posynomial inequality expression below:
@@ -579,7 +582,8 @@ of the shaft power, we must use a signomial equality.
 
 The \BSFC is one of the variables that the model is most sensitive to (total sensitivity over all mission segments of 0.59),
 and it has yet to be modeled. As
-stated in Section~\ref{s:lapse}, the \BSFC of a naturally-aspirated piston engine improves as the engine puts out more power.
+stated in Section~\ref{s:lapse}, the \BSFC of a naturally-aspirated piston engine improves as the engine
+puts out more power relative to its maximum power at a given altitude.
 
 BSFC has downward pressure due to the objective function, and therefore must be lower-bounded. This makes
 it amenable to multiple-term posynomial fits.
@@ -654,7 +658,7 @@ hierarchy to do multimission design. Now we vectorize the mission models flown b
 
 Now the vectorization has gone down two levels, where each performance model is vectorized $N_{segments} \times N_{missions}$ times,
 and each mission model is vectorized $N_{missions}$ times. The single instance of \textbf{Aircraft}
-is passed on as an argument to all of these models, which makes sure that both its
+is passed on as an argument to all of these models, which ensures that both its
 static and performance constraints are satisfied for each flight segment
 of every mission.
 
@@ -670,7 +674,7 @@ the objective function below for $N_{missions}$
     \label{e:compObj}
 \end{equation}
 
-will definitely work, since the same aircraft will fulfill both missions and are linked.
+will definitely work, since the same aircraft will fulfill two missions that are thus linked.
 Assuming that $N_{missions} = 2$, note that an objective of the type below will also work
 
 \begin{equation}
@@ -721,21 +725,22 @@ $V_{min}$ & \multicolumn{2}{c}{25} & $~\mathrm{\tfrac{m}{s}}$ & takeoff speed \\
 
 The results are shown in Table~\ref{t:mmoutputs}.
 The multimission aircraft represents a compromise aircraft that performs both missions
-with relatively high performance
+with relatively high performance.
 
 \begin{center}
-    \captionof{table}{Results of the single- and multi- mission solutions. Italicized figures
+    \captionof{table}{Results of the single- and multi- mission solutions. Italicized values
     have been post-processed.}
     \input{tables/mmtable.tex}
     \label{t:mmoutputs}
 \end{center}
 
-Note that, for the two aircraft designed for single missions, the other mission is infeasible. For the M1 aircraft,
+Note that for the two aircraft designed for single missions, the other mission is infeasible. For the M1 aircraft,
 M2 is infeasible due to the wing structural limits. For the M2 aircraft, M1 is infeasible due to inadequate
-fuel volume. When performing this kind of multimission design, we ensure that the aircraft design is at the minimum feasible,
+fuel volume. When performing this kind of multimission design, we ensure that the aircraft design is
+feasible for each mission,
 meaning it is able to perform all of the missions under the sets of static and performance constraints.
 
-Furthermore, there is evidence to suggest that the solve time an \gls{SP} scales sub-linearly with the number of
+Furthermore, there is evidence to suggest that the solve time of an \gls{SP} scales sub-linearly with the number of
 variables and constraints. So it might be interesting for a designer to input the entire variety of missions that
 they expect the design the perform into a single multimission framework to ensure feasibility, especially if the
 mission parameters vary significantly.
