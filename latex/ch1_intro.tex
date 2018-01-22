@@ -6,7 +6,8 @@ heavily on optimization. Time and time again, \gls{MDO} research has stressed
 the importance of fast and
 reliable tools for engineering design~\cite{martins_mdo}.
 However most \gls{MDO} tools
-have the downfall of being slow, due to the multimodal nature of many
+have the downfall of being slow, due to the multimodal\footnote{Multimodal problems have multiple
+locally optimal solutions.} nature of many
 engineering design problems. Furthermore, these tools act like black boxes since
 they provide point solutions\footnote{A point solution is a design that
 is optimal for a given mission, but does not consider the
@@ -33,7 +34,8 @@ are useful for certain kinds of
 optimization problems, but have yet to formalize why it
 facilitates design.
 
-The mathematical restrictions on the form of constraints remains the biggest
+The mathematical restrictions on the form of constraints in the \gls{GP} formulation
+remains the biggest
 barrier in using optimization in engineering design. Chapter~\ref{ch2:inequalities} will
 show that the form of the \gls{GP} actually facilitates the design
 optimization process
@@ -69,8 +71,8 @@ are general to other engineering design problems which have explicit, continuous
 \section{Distinguishing between design and optimization} \label{s:DesVsOpt}
 
 It is difficult to find definitions of design and optimization that
-try to identify the similarities and differences between the terms. For us to be
-able to understand why \gls{GP}s facilitate design, we have to determine what
+identify the similarities and differences between the terms.
+To understand why \gls{GP}s facilitate design, it's useful to determine what
 features of optimization create barriers to entry for its use in design.
 
 In the context of this thesis, I will define design as following:
@@ -84,7 +86,7 @@ being designed. It is oftentimes the aspect of the design that we can
 quantify (i.e. the performance), and has some physics that can be modeled.
 
 An important aspect of design is that it is a process that explores an
-n-dimensional feasible space of possible solutions.
+$n$-dimensional feasible space of possible solutions.
 We can think about the feasible set of a design as all of the designs
 that satisfy the functional requirements. But without a clear method of comparing
 the relative performances of designs, the classical
@@ -96,12 +98,12 @@ element in a set of feasible solutions with the lowest desired objective
 value. It is also a process, which is sensitive to the elements contained within the set
 (related to the form), and the choice of objective function (related to the
 function).
-In many ways, optimization is a natural extension of design, because it allows
-for an explicit mathematical representation of the form and function.
+In many ways, optimization is a natural extension of design, because it requires
+an explicit mathematical representation of the form and function.
 
 By these definitions, both design and
 optimization explore feasible and infeasible sets, but differ in a fundamental way.
-Design is based on feasibility, whereas optimization is based on optimality.
+Design is based on feasibility, whereas optimization seeks optimality.
 This observation gives insight as to why there is a barrier
 to entry for optimization methods, and especially so for more restrictive forms.
 The distinction allows design to be performed
@@ -169,8 +171,9 @@ for three primary reasons.
     \begin{figure*}[!b]
         \begin{subfigure}[b]{0.5\linewidth}
             \begin{center}
-                \resizebox{0.75\textwidth}{!}{
+                \resizebox{0.9\textwidth}{!}{
                 \begin{tikzpicture}[node distance=1.5cm, align=center,scale=0.6]
+                    \tikzstyle{every node}=[font=\small]
                     \node (start)        [activityStarts]                   {Initialize variables};
                     \node (guess)        [process, below of=start]          {Make a feasible initial guess};
                     \node (evaluate)     [process, below of=guess]          {Evaluate design};
@@ -192,22 +195,23 @@ for three primary reasons.
         \end{subfigure}
         \begin{subfigure}[b]{0.5\linewidth}
             \begin{center}
-                \resizebox{0.75\textwidth}{!}{
+                \resizebox{0.9\textwidth}{!}{
                 \begin{tikzpicture}[node distance=1.5cm, align=center, scale=0.6]
+                    \tikzstyle{every node}=[font=\small]
                     \node (start)        [activityStarts]               {Initialize variables};
-                    \node (guess)        [process, left of=start, xshift=-5cm, yshift=-1.5cm] {Make initial guess};
-                    \node (convexify)    [process, below of=guess, xshift=2cm]      {Convexify};
+                    \node (guess)        [process, left of=start, xshift=-3cm, yshift=-1.5cm] {Make initial guess};
+                    \node (convexify)    [process, below of=guess]      {Convexify};
                     \node (optimize)     [process, below of=start, yshift=-1.5cm]  {Optimize convex problem};
                     \node (condition)    [process, below of=optimize]   {Check primal/dual condition};
                     \node (solution)     [activityRuns, below of=condition]   {Solution};
-                    \node (sens)         [activityRuns, left of=solution, xshift=-5cm] {Sensitivities};
+                    \node (sens)         [activityRuns, left of=solution, xshift=-3cm] {Sensitivities};
 
-                    \draw[->] (start) -| node[yshift=+0.25cm,xshift=1.8cm] {if DC} (guess);
+                    \draw[->] (start) -| node[yshift=+0.25cm,xshift=1cm] {if DC} (guess);
                     \draw[->] (start) -- (optimize);
-                    \draw[->] (guess) -| (convexify);
+                    \draw[->] (guess) -- (convexify);
                     \draw[->] (convexify) -- (optimize);
                     \draw[->] (optimize) -- (condition);
-                    \draw[->] (condition) -| node[yshift=+0.25cm,xshift=1.8cm] {if DC \& reltol $> \epsilon$} (guess);
+                    \draw[->] (condition) -| node[xshift=1cm] {\shortstack{if DC \& \\ reltol $> \epsilon$}} (convexify);
                     \draw[->] (condition) -- (solution);-
                     \draw[->] (condition) -- (sens);
                 \end{tikzpicture}}
@@ -218,8 +222,9 @@ for three primary reasons.
         \label{f:optflow}
     \end{figure*}
 
-    A big advantage of convexity is that we can effectively use sensitivity information
-    to determine which parts of the
+    A big advantage of the convexity of \gls{GP} is the low-cost computation of constraint and variable
+    sensitivities by leveraging Lagrange duality~\cite{hoburg_thesis}.
+    This helps determine which parts of the
     model yield the greatest returns in terms of fidelity to improved modeling, so engineers can target
     their efforts.
 
