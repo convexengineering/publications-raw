@@ -123,7 +123,7 @@ Both fits are shown with the data in Figure~\ref{f:enginefit}.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.6\textwidth]{enginePvsW.png}
+    \includegraphics[width=0.8\textwidth]{enginePvsW.png}
     \caption{Engine MSL power versus weight fits for $K=1,2$ posynomial terms with underlying data.}
     \label{f:enginefit}
 \end{figure}
@@ -311,7 +311,7 @@ the constraint would be vectorized by the number of flight segments we create.
         \node[draw,circle,fit={(engineP)}, inner sep=-1pt] {};
         \node[draw,circle,fit={(aircraftP)}, inner sep=-1pt] {};
         \node[draw,circle,fit={(engine)}, inner sep=-1pt] {};
-        \node[draw,rectangle,fit={(aircraftP) (engineP) (wingP) (atmos)}] {};
+        \node[draw,rectangle,fit={(aircraftP) (engineP) (wingP) (atmos)},label=below:{Segment}] {};
     \end{forest}
     \caption[Variable hierarchy of thrust constraint~\ref{e:thrustConstr}.]{Variable hierarchy
     of thrust constraint~\ref{e:thrustConstr}. The models
@@ -442,12 +442,12 @@ to the \textbf{\textit{Mission}} model are detailed in Table~\ref{t:sweepinputs}
     \centering
     \begin{subfigure}[t]{0.5\linewidth}
         \centering
-        \includegraphics[width=0.9\linewidth]{mission2/Wfcontours.png}
+        \includegraphics[width=0.95\linewidth]{mission2/Wfcontours.png}
     \end{subfigure}%
     ~
     \begin{subfigure}[t]{0.5\linewidth}
         \centering
-        \includegraphics[width=0.9\linewidth]{mission2/Wcontours.png}
+        \includegraphics[width=0.95\linewidth]{mission2/Wcontours.png}
     \end{subfigure}
     \caption{The fuel and total weight contours with respect to range and payload.}
     \label{f:pareto}
@@ -459,7 +459,7 @@ the tradeoffs in fuel storage, and when it is beneficial to store fuel in the wi
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.45\linewidth]{mission2/vffusefraccontours.png}
+    \includegraphics[width=0.475\linewidth]{mission2/vffusefraccontours.png}
     \caption{Fraction of total fuel stored in fuselage with respect to range and payload.}
     \label{f:fusefuelfrac}
 \end{figure}
@@ -476,12 +476,12 @@ since no fuel is allocated in the fuselage towards the lower right of the graph.
     \centering
     \begin{subfigure}[t]{0.5\linewidth}
         \centering
-        \includegraphics[width=0.9\linewidth]{mission2/timecostcontours.png}
+        \includegraphics[width=0.95\linewidth]{mission2/timecostcontours.png}
     \end{subfigure}%
     ~
     \begin{subfigure}[t]{0.5\linewidth}
         \centering
-        \includegraphics[width=0.9\linewidth]{mission2/Csenscontours.png}
+        \includegraphics[width=0.95\linewidth]{mission2/Csenscontours.png}
     \end{subfigure}
     \caption[Time cost and time cost index sensitivity contours.]{Time cost and time cost index sensitivity contours.
     We can gain intuition about the relative importance of different components
@@ -592,7 +592,7 @@ The result is shown by the green line in Figure~\ref{f:P_BSFC}.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\textwidth]{P_BSFC.png}
+    \includegraphics[width=0.6\textwidth]{P_BSFC.png}
     \caption[$\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ data fit.]{$\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ data fit. The green fit is
     not able to capture the tail ends of the curve, which is resolved by the bounding in the red fit.}
     \label{f:P_BSFC}
@@ -622,7 +622,7 @@ hierarchy to do multimission design. Now we vectorize the mission models flown b
     \begin{forest}
         sn edges,
         l sep+=1em,
-        s sep=(4-level)*4mm,
+        s sep=(4-level)*5mm,
         for children={
         l sep+=1em,
         }
@@ -648,8 +648,8 @@ hierarchy to do multimission design. Now we vectorize the mission models flown b
         \draw[->] (ac) -- (ap4);
         \draw[->] (ac) -- (mission1);
         \draw[->] (ac) -- (mission2);
-        \node[draw,circle,fit={(mission1) (ap1) (ap2) (ap1d) (ap2d)},inner sep=0.5cm,label=Mission 1] {};
-        \node[draw,circle,fit={(mission2) (ap3) (ap4) (ap3d) (ap4d)},inner sep=0.5cm,label=Mission 2] {};
+        \node[draw,circle,fit={(mission1) (ap1) (ap2) (ap1d) (ap2d)},inner sep=0.34cm,label=Mission 1] {};
+        \node[draw,circle,fit={(mission2) (ap3) (ap4) (ap3d) (ap4d)},inner sep=0.34cm,label=Mission 2] {};
     \end{forest}
     \caption{Multimission uni-directional graph, with $N_{segments} = 2$ and $N_{missions} = 2$.}
     \label{f:multimission}

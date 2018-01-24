@@ -62,5 +62,5 @@ plt.plot(Pplot/1000, maxW*(0.00441* (Pplot/maxP)**0.759 +
 plt.xlabel('Mean sea level maximum power (kW)')
 plt.ylabel('Engine weight (lbs)')
 plt.grid(True)
-plt.legend(loc=2,fontsize=14)
+plt.legend(loc=2,fontsize=18)
 plt.show()

@@ -31,9 +31,9 @@ sol = m.localsolve(verbosity=2,skipsweepfailures=True)
 #                   m['W_p']:(1000,10000)})
 
 # Enlarging fonts
-SMALL_SIZE = 14
-MEDIUM_SIZE = 16
-BIGGER_SIZE = 18
+SMALL_SIZE = 17
+MEDIUM_SIZE = 21
+BIGGER_SIZE = 24
 
 plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
 plt.rc('axes', titlesize=BIGGER_SIZE)     # fontsize of the axes title
@@ -70,9 +70,9 @@ CS = plt.contour(W_p,Range,Obj,colors='k')
 plt.xlabel('Payload weight (N)')
 plt.ylabel('Range (km)')
 plt.title('Objective contours')
-plt.clabel(CS,inline=1,fontsize=12,fmt='%1.3g')
+plt.clabel(CS,inline=1,fontsize=18,fmt='%1.3g')
 plt.grid()
-plt.savefig('figbank/Objcontours.png')
+plt.savefig('figbank/Objcontours.png',bbox_inches="tight")
 plt.close()
 
 # Time cost contours
@@ -80,9 +80,9 @@ CS = plt.contour(W_p,Range,timecost,colors='k')
 plt.xlabel('Payload weight (N)')
 plt.ylabel('Range (km)')
 plt.title('Time cost contours')
-plt.clabel(CS,inline=1,fontsize=12,fmt='%1.3g')
+plt.clabel(CS,inline=1,fontsize=18,fmt='%1.3g')
 plt.grid()
-plt.savefig('figbank/timecostcontours.png')
+plt.savefig('figbank/timecostcontours.png',bbox_inches="tight")
 plt.close()
 
 # Fuel weight contours
@@ -90,9 +90,9 @@ CS = plt.contour(W_p,Range,W_f,colors='k')
 plt.xlabel('Payload weight (N)')
 plt.ylabel('Range (km)')
 plt.title('Fuel weight contours (N)')
-plt.clabel(CS,inline=1,fontsize=12,fmt='%1.3g')
+plt.clabel(CS,inline=1,fontsize=18,fmt='%1.3g')
 plt.grid()
-plt.savefig('figbank/Wfcontours.png')
+plt.savefig('figbank/Wfcontours.png',bbox_inches="tight")
 plt.close()
 
 # Total weight contours
@@ -100,9 +100,9 @@ CS = plt.contour(W_p,Range,W,colors='k')
 plt.xlabel('Payload weight (N)')
 plt.ylabel('Range (km)')
 plt.title('Total weight contours (N)')
-plt.clabel(CS,inline=1,fontsize=12,fmt='%1.3g')
+plt.clabel(CS,inline=1,fontsize=18,fmt='%1.3g')
 plt.grid()
-plt.savefig('figbank/Wcontours.png')
+plt.savefig('figbank/Wcontours.png',bbox_inches="tight")
 plt.close()
 
 # Fuselage fuel fraction contours
@@ -110,9 +110,9 @@ CS = plt.contour(W_p,Range,Vffuse/Vftotal,colors='k')
 plt.xlabel('Payload weight (N)')
 plt.ylabel('Range (km)')
 plt.title('Fuselage fuel fraction contours')
-plt.clabel(CS,inline=1,fontsize=12,fmt='%1.3g')
+plt.clabel(CS,inline=1,fontsize=18,fmt='%1.3g')
 plt.grid()
-plt.savefig('figbank/vffusefraccontours.png')
+plt.savefig('figbank/vffusefraccontours.png',bbox_inches="tight")
 plt.close()
 
 # Excess wing volume contours
@@ -120,9 +120,9 @@ CS = plt.contour(W_p,Range,Vfwing/Vftotal,colors='k')
 plt.xlabel('Payload weight (N)')
 plt.ylabel('Range (km)')
 plt.title('Wing fuel fraction contours')
-plt.clabel(CS,inline=1,fontsize=12,fmt='%1.3g')
+plt.clabel(CS,inline=1,fontsize=18,fmt='%1.3g')
 plt.grid()
-plt.savefig('figbank/vfwingfraccontours.png')
+plt.savefig('figbank/vfwingfraccontours.png',bbox_inches="tight")
 plt.close()
 
 # Wing weight sensitivity contours
@@ -130,18 +130,18 @@ CS = plt.contour(W_p,Range,Wwcoeff1sens,colors='k')
 plt.xlabel('Payload weight (N)')
 plt.ylabel('Range (km)')
 plt.title('$W_{w_{\mathrm{coeff1}}}$ sensitivity contours')
-plt.clabel(CS,inline=1,fontsize=12,fmt='%1.3g')
+plt.clabel(CS,inline=1,fontsize=18,fmt='%1.3g')
 plt.grid()
-plt.savefig('figbank/Wwcoeff1senscontours.png')
+plt.savefig('figbank/Wwcoeff1senscontours.png',bbox_inches="tight")
 plt.close()
 
 CS = plt.contour(W_p,Range,Wwcoeff2sens,colors='k')
 plt.xlabel('Payload weight (N)')
 plt.ylabel('Range (km)')
 plt.title('$W_{w_{\mathrm{coeff2}}}$ sensitivity contours')
-plt.clabel(CS,inline=1,fontsize=12,fmt='%1.3g')
+plt.clabel(CS,inline=1,fontsize=18,fmt='%1.3g')
 plt.grid()
-plt.savefig('figbank/Wwcoeff2senscontours.png')
+plt.savefig('figbank/Wwcoeff2senscontours.png',bbox_inches="tight")
 plt.close()
 
 # Engine weight contours
@@ -149,9 +149,9 @@ CS = plt.contour(W_p,Range,W_e,colors='k')
 plt.xlabel('Payload weight (N)')
 plt.ylabel('Range (km)')
 plt.title('Engine weight contours (N)')
-plt.clabel(CS,inline=1,fontsize=12,fmt='%1.3g')
+plt.clabel(CS,inline=1,fontsize=18,fmt='%1.3g')
 plt.grid()
-plt.savefig('figbank/W_econtours.png')
+plt.savefig('figbank/W_econtours.png',bbox_inches="tight")
 plt.close()
 
 # Engine weight sensitivity contours
@@ -159,9 +159,9 @@ CS = plt.contour(W_p,Range,W_e_refsens,colors='k')
 plt.xlabel('Payload weight (N)')
 plt.ylabel('Range (km)')
 plt.title('Engine weight sensitivity contours')
-plt.clabel(CS,inline=1,fontsize=12,fmt='%1.3g')
+plt.clabel(CS,inline=1,fontsize=18,fmt='%1.3g')
 plt.grid()
-plt.savefig('figbank/Wesenscontours.png')
+plt.savefig('figbank/Wesenscontours.png',bbox_inches="tight")
 plt.close()
 
 # Max lift coefficient sensitivity contours
@@ -169,9 +169,9 @@ CS = plt.contour(W_p,Range,CLmaxsens,colors='k')
 plt.xlabel('Payload weight (N)')
 plt.ylabel('Range (km)')
 plt.title('$C_{L,max}$ sensitivity contours')
-plt.clabel(CS,inline=1,fontsize=12,fmt='%1.3g')
+plt.clabel(CS,inline=1,fontsize=18,fmt='%1.3g')
 plt.grid()
-plt.savefig('figbank/CLmaxsenscontours.png')
+plt.savefig('figbank/CLmaxsenscontours.png',bbox_inches="tight")
 plt.close()
 
 # Cruise altitude sensitivity contours
@@ -179,9 +179,9 @@ CS = plt.contour(W_p,Range,h_cruisesens,colors='k')
 plt.xlabel('Payload weight (N)')
 plt.ylabel('Range (km)')
 plt.title('Cruise altitude sensitivity contours')
-plt.clabel(CS,inline=1,fontsize=12,fmt='%1.3g')
+plt.clabel(CS,inline=1,fontsize=18,fmt='%1.3g')
 plt.grid()
-plt.savefig('figbank/hcruisesenscontours.png')
+plt.savefig('figbank/hcruisesenscontours.png',bbox_inches="tight")
 plt.close()
 
 # Min velocity sensitivity contours
@@ -189,9 +189,9 @@ CS = plt.contour(W_p,Range,Vminsens,colors='k')
 plt.xlabel('Payload weight (N)')
 plt.ylabel('Range (km)')
 plt.title('$V_{min}$ sensitivity contours')
-plt.clabel(CS,inline=1,fontsize=12,fmt='%1.3g')
+plt.clabel(CS,inline=1,fontsize=18,fmt='%1.3g')
 plt.grid()
-plt.savefig('figbank/Vminsenscontours.png')
+plt.savefig('figbank/Vminsenscontours.png',bbox_inches="tight")
 plt.close()
 
 # Cost index sensitivity contours
@@ -199,9 +199,9 @@ CS = plt.contour(W_p,Range,Csens,colors='k')
 plt.xlabel('Payload weight (N)')
 plt.ylabel('Range (km)')
 plt.title('Cost index sensitivity contours')
-plt.clabel(CS,inline=1,fontsize=12,fmt='%1.3g')
+plt.clabel(CS,inline=1,fontsize=18,fmt='%1.3g')
 plt.grid()
-plt.savefig('figbank/Csenscontours.png')
+plt.savefig('figbank/Csenscontours.png',bbox_inches="tight")
 plt.close()
 
 # Fuel weight sensitivity contours
@@ -209,7 +209,7 @@ CS = plt.contour(W_p,Range,rhofsens,colors='k')
 plt.xlabel('Payload weight (N)')
 plt.ylabel('Range (km)')
 plt.title('Fuel weight sensitivity contours')
-plt.clabel(CS,inline=1,fontsize=12,fmt='%1.3g')
+plt.clabel(CS,inline=1,fontsize=18,fmt='%1.3g')
 plt.grid()
-plt.savefig('figbank/rhofsenscontours.png')
+plt.savefig('figbank/rhofsenscontours.png',bbox_inches="tight")
 plt.close()
