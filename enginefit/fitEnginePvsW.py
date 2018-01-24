@@ -40,15 +40,27 @@ cstrt, rms_error = fit(logPin,logWin,K,Type)
 #           + 1.44 * (u_1)**2.90
 # rms_error 0.346
 
+# Enlarging fonts
+SMALL_SIZE = 14
+MEDIUM_SIZE = 18
+BIGGER_SIZE = 18
+
+plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
+plt.rc('axes', titlesize=BIGGER_SIZE)     # fontsize of the axes title
+plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
+plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
+plt.rc('figure', titlesize=MEDIUM_SIZE)  # fontsize of the figure title
 
 # Plotting data
 plt.plot(P[indices]/1000,W[indices],'r*',label='Data')
 Pplot = np.linspace(1,150000,100)
-plt.plot(Pplot/1000,maxW*(0.984118 * (Pplot/maxP)**0.117039)**10,label='K=1')
+plt.plot(Pplot/1000,maxW*(0.984118 * (Pplot/maxP)**0.117039)**10,'k--',label='K=1')
 plt.plot(Pplot/1000, maxW*(0.00441* (Pplot/maxP)**0.759 +
-                           1.44* (Pplot/maxP)**2.90)**(1/1.92),label='K=2')
+                           1.44* (Pplot/maxP)**2.90)**(1/1.92),'k',label='K=2')
 plt.xlabel('Mean sea level maximum power (kW)')
 plt.ylabel('Engine weight (lbs)')
 plt.grid(True)
-plt.legend(loc=2)
+plt.legend(loc=2,fontsize=14)
 plt.show()
