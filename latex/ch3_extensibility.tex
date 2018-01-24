@@ -11,10 +11,10 @@ coupled with the object-oriented modeling framework of GPkit, allows
 This section will demonstrate common methods used to extend the capability
 and improve the fidelity of \gls{GP}- and \gls{SP}- compatible models.
 
-\section{Improving fidelity: Adding a simple engine model to the SimPleAC}
+\section{Improving fidelity: Adding a simple engine model}
 \label{s:engine}
 
-The SimPleAC currently has an engine that weighs nothing and magically supplies
+The aircraft currently has an engine that weighs nothing and magically supplies
 unlimited power. This is obviously unphysical, and requires refinement.
 
 \subsection{Creating an engine submodel}
@@ -223,8 +223,8 @@ uni-directional graph as shown in Figure~\ref{f:missiongraph}.
         \draw[->] (engine) -- (engineP1);
         \draw[->] (wing) -- (wingP2);
         \draw[->] (engine) -- (engineP2);
-        \node[draw,rectangle,fit={(aircraftP2) (atmos2) (engineP2) (wingP2)}] {};
-        \node[draw,rectangle,fit={(aircraftP1) (atmos1) (engineP1) (wingP1)}] {};
+        \node[draw,rectangle,fit={(aircraftP2) (atmos2) (engineP2) (wingP2)},label=Segment 2] {};
+        \node[draw,rectangle,fit={(aircraftP1) (atmos1) (engineP1) (wingP1)},label=Segment 1] {};
     \end{forest}
     \caption[Variable and constraint hierarchy of the SimPleAC model, for two flight
     segments.]{Variable and constraint hierarchy of the presented aircraft model, for two flight
@@ -317,7 +317,8 @@ the constraint would be vectorized by the number of flight segments we create.
     of thrust constraint~\ref{e:thrustConstr}. The models
     that contain the variables in the constraint are enclosed in circles.
     Constraint logically resides in \textbf{\textit{Aircraft Perf.}}.
-    The vectorization of performance models in the rectangle has been neglected for clarity.}
+    The vectorization of flight segment performance models in the
+    rectangle has been neglected for clarity.}
     \label{f:thrustConstr}
 \end{figure}
 
@@ -365,7 +366,7 @@ avoid the potential lower-unboundedness of the lengths of certain segments.
 \subsection{Characterizing the environment: atmospheric model}
 \label{s:atmos}
 
-We have created a mission and flight segment model without having to have a better understanding
+We have created a mission and flight segment framework without having a model
 of the environment in which the aircraft operates. So far, we have assumed that
 the aircraft flies at a constant altitude (sea level) for a single mission segment,
 and is subject to the same air density and viscosity.
@@ -388,14 +389,15 @@ a loitering aircraft optimization problem.
 \label{s:missionobj}
 
 Recalling from Section~\ref{s:altobj}, upper-unbounded performance metrics often have to
-reside in the objective function to be bounded. As such, mission time $t_m$ has been added
-to the objective function through a cost index as such:
+reside in the objective function to be bounded. As such, mission fuel $W_{f_m}$ and mission time $t_m$ are
+combined into a composite objective function through a cost index $C$,
 
 \begin{equation}
     \mathrm{Objective} \geq W_f \frac{1}{\mathrm{N}} + \mathrm{C} \times t_m
     \label{e:missionobj}
 \end{equation}
 
+and $W_{f_m}$ is divided by newtons to achieve uniform units (non-dimensional).
 Another method to achieve proper boundedness is to add an arbitrary large upper bound. However
 this will result in the bounding constraint being tight and giving unphysical results, and so
 this thesis will implement the objective in~\ref{e:missionobj} instead.
@@ -408,6 +410,8 @@ There are a few interesting methods that we can use to explore
 potential designs using~\gls{GP}s. So instead of showing the single optimum of the
 SimPleAC with a full mission profile, leveraging the speed of convex optimization,
 we can map out the entire design space with respect to variables of interest.
+Please refer to~\cite{power_of_log} for details on the computational advantages of the \gls{GP}
+and \gls{SP} compared to other non-linear optimization methods.
 
 In this case, the SimPleAC has been optimized
 over a range of payload weight (1000-10000 N) and range (1000-5000km), and the mission fuel weight
@@ -445,7 +449,7 @@ to the \textbf{\textit{Mission}} model are detailed in Table~\ref{t:sweepinputs}
         \centering
         \includegraphics[width=0.9\linewidth]{mission2/Wcontours.png}
     \end{subfigure}
-    \caption{The fuel and total weight Pareto frontiers with respect to range and payload.}
+    \caption{The fuel and total weight contours with respect to range and payload.}
     \label{f:pareto}
 \end{figure*}
 
@@ -543,11 +547,6 @@ large sensitivities (0.59 and -0.65 respectively). The objective of the model
 is as sensitive to these variables as mission input variables such as range and payload, so
 these variables require refinement.
 
-%This is a key example of how optimization cannot replace engineering intuition. Even though our model
-%contains many of the key tradeoffs in aircraft design, assumptions can have a significant impact on the
-%quality of the optima. The mathematical guarantees and speed of \gls{GP} allow engineers to make observations
-%about the Pareto frontier of a problem quickly, and improve the quality of the models.
-
 The following sections will take a two-pronged approach to improved engine modeling.
 The first weakness of the current model is the fact that the engine can supply the same amount of power
 regardless of altitude. The maximum power of naturally aspirated piston engines drops
@@ -629,17 +628,17 @@ hierarchy to do multimission design. Now we vectorize the mission models flown b
         }
         [\textit{\textbf{Multimission}},name=multimission
         [\textit{\textbf{Mission}},name=mission1
-        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},tikz={\node [draw,fit=()(!1)] {};},name=ap1
+        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},tikz={\node [draw,fit=()(!1),label=below:{Segment 1}] {};},name=ap1
         [,name=ap1d,edge=dotted,tier=p]]
-        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},tikz={\node [draw,fit=()(!1)] {};},name=ap2
+        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},tikz={\node [draw,fit=()(!1),label=below:{Segment 2}] {};},name=ap2
         [,name=ap2d,edge=dotted,tier=p]]
         ]
         [\textbf{Aircraft},name=ac,tier=p
         [,name=ad,edge=dotted]]
         [\textit{\textbf{Mission}},name=mission2
-        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},tikz={\node [draw,fit=()(!1)] {};},name=ap3
+        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},tikz={\node [draw,fit=()(!1),label=below:{Segment 1}] {};},name=ap3
         [,name=ap3d,edge=dotted,tier=p]]
-        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},tikz={\node [draw,fit=()(!1)] {};},name=ap4
+        [\textit{\textbf{\shortstack{Aircraft\\Perf.}}},tikz={\node [draw,fit=()(!1),label=below:{Segment 2}] {};},name=ap4
         [,name=ap4d,edge=dotted,tier=p]]
         ]
         ]
@@ -649,8 +648,8 @@ hierarchy to do multimission design. Now we vectorize the mission models flown b
         \draw[->] (ac) -- (ap4);
         \draw[->] (ac) -- (mission1);
         \draw[->] (ac) -- (mission2);
-        \node[draw,circle,fit={(mission1) (ap1) (ap2) (ap1d) (ap2d)}] {};
-        \node[draw,circle,fit={(mission2) (ap3) (ap4) (ap3d) (ap4d)}] {};
+        \node[draw,circle,fit={(mission1) (ap1) (ap2) (ap1d) (ap2d)},inner sep=0.5cm,label=Mission 1] {};
+        \node[draw,circle,fit={(mission2) (ap3) (ap4) (ap3d) (ap4d)},inner sep=0.5cm,label=Mission 2] {};
     \end{forest}
     \caption{Multimission uni-directional graph, with $N_{segments} = 2$ and $N_{missions} = 2$.}
     \label{f:multimission}
