@@ -389,15 +389,15 @@ a loitering aircraft optimization problem.
 \label{s:missionobj}
 
 Recalling from Section~\ref{s:altobj}, upper-unbounded performance metrics often have to
-reside in the objective function to be bounded. As such, mission fuel $W_{f_m}$ and mission time $t_m$ are
-combined into a composite objective function through a cost index $C$,
+reside in the objective function to be bounded. We combine mission fuel $W_{f_m}$ and mission time $t_m$
+into a composite objective function through a cost index $C$ for boundedness,
 
 \begin{equation}
     \mathrm{Objective} \geq W_f \frac{1}{\mathrm{N}} + \mathrm{C} \times t_m
     \label{e:missionobj}
 \end{equation}
 
-and $W_{f_m}$ is divided by newtons to achieve uniform units (non-dimensional).
+and divide $W_{f_m}$ by newtons to achieve uniform units (non-dimensional).
 Another method to achieve proper boundedness is to add an arbitrary large upper bound. However
 this will result in the bounding constraint being tight and giving unphysical results, and so
 this thesis will implement the objective in~\ref{e:missionobj} instead.
@@ -420,8 +420,8 @@ every point in the design space represents a fully optimized aircraft. The full 
 to the \textbf{\textit{Mission}} model are detailed in Table~\ref{t:sweepinputs}
 
 \begin{footnotesize}
-    \begin{center}
         \begin{table}
+            \centering
             \begin{tabular}{llcl}
                 \toprule
                 Constants & Value & Units & Description\\ \midrule
@@ -435,7 +435,6 @@ to the \textbf{\textit{Mission}} model are detailed in Table~\ref{t:sweepinputs}
             \caption{Inputs to the design space exploration of the \textbf{\textit{Mission}} model.}
             \label{t:sweepinputs}
         \end{table}
-    \end{center}
 \end{footnotesize}
 
 \begin{figure*}[t!]
@@ -504,43 +503,45 @@ There are still significant weaknesses in the model relating to the engine of th
 improvement before we can perform multimission design in Section~\ref{s:multimission}.
 We can see this by observing the sensitivities in Table~\ref{t:sens}.
 
-\begin{footnotesize}
-\captionof{table}{A selection of sensitivities of the model.}
-\label{t:sens}
-\begin{longtable}{llcl}
-\toprule
-Variable & Sensitivity & Units & Description \\ \midrule
-\multicolumn{3}{l}{\textbf{Mission}} \\ \\
-$Range$ & +1.1  & $~\mathrm{km}$ & aircraft range \\
-$V_{min}$ & -0.67  & $~\mathrm{\tfrac{m}{s}}$ & takeoff speed \\
-$C$ & +0.46  & $~\mathrm{\tfrac{1}{hr}}$ & hourly cost index \\
-$W_p$ & +0.45  & $~\mathrm{N}$ & payload weight \\
-$h_{cruise}$ & +0.12  & $~\mathrm{m}$ & minimum cruise altitude \\
- &  &  &  \\
-\multicolumn{3}{l}{\textbf{Mission/SimPleAC}} \\ \\
-$g$ & +0.54  & $~\mathrm{\tfrac{m}{s^{2}}}$ & gravitational acceleration \\
-$\rho_f$ & -0.042  & $~\mathrm{\tfrac{kg}{m^{3}}}$ & density of fuel \\
- &  &  &  \\
-\multicolumn{3}{l}{\textbf{Mission/SimPleAC/Engine}} \\ \\
-$\eta_{prop}$ & -0.65  & $$ & propeller efficiency \\
-$P_{shaft,ref}$ & -0.067  & $~\mathrm{kW}$ & reference MSL maximum shaft power \\
-$W_{e,ref}$ & +0.044  & $~\mathrm{lbf}$ & reference engine weight \\
- &  &  &  \\
-\multicolumn{3}{l}{\textbf{Mission/SimPleAC/Wing}} \\ \\
-$(\frac{S}{S_{wet}})$ & +0.45  & $$ & wetted area ratio \\
-$k$ & +0.45  & $$ & form factor \\
-$C_{L,max}$ & -0.33  & $$ & lift coefficient at stall \\
-$e$ & -0.17  & $$ & Oswald efficiency factor \\
-$W_{w_{coeff2}}$ & +0.12  & $~\mathrm{Pa}$ & wing weight coefficient 2 \\
-$\tau$ & -0.11  & $$ & airfoil thickness to chord ratio \\
-$N_{ult}$ & +0.07  & $$ & ultimate load factor \\
-$W_{w_{coeff1}}$ & +0.07  & $~\mathrm{\tfrac{1}{m}}$ & wing weight coefficient 1 \\
- &  &  &  \\
-\multicolumn{3}{l}{\textbf{Mission/SimPleACP/EngineP}} \\ \\
-$BSFC$ & [ +0.16     +0.14     +0.14     +0.14    ]  & $~\mathrm{\tfrac{g}{\left(hr\cdot kW\right)}}$ & brake specific fuel consumption \\
-\bottomrule
-\end{longtable}
-\end{footnotesize}
+    \begin{table}
+        \footnotesize
+        \centering
+        \begin{tabular}{l c l}
+            \toprule
+            Variable/Model & Sensitivity & Variable description \\ \midrule
+            \multicolumn{3}{l}{\textbf{Mission}} \\
+            $Range$ & +1.1 & aircraft range \\
+            $V_{min}$ & -0.67 & takeoff speed \\
+            $C$ & +0.46 & hourly cost index \\
+            $W_p$ & +0.45 & payload weight \\
+            $h_{cruise}$ & +0.12 & minimum cruise altitude \\
+            & & \\
+            \multicolumn{3}{l}{\textbf{Mission/SimPleAC}} \\
+            $g$ & +0.54 & gravitational acceleration \\
+            $\rho_f$ & -0.042 & density of fuel \\
+            & & \\
+            \multicolumn{3}{l}{\textbf{Mission/SimPleAC/Engine}} \\
+            $\eta_{prop}$ & -0.65 & propeller efficiency \\
+            $P_{shaft,ref}$ & -0.067 & reference MSL maximum shaft power \\
+            $W_{e,ref}$ & +0.044 & reference engine weight \\
+            & & \\
+            \multicolumn{3}{l}{\textbf{Mission/SimPleAC/Wing}} \\
+            $(\frac{S}{S_{wet}})$ & +0.45 & wetted area ratio \\
+            $k$ & +0.45 & form factor \\
+            $C_{L,max}$ & -0.33 & lift coefficient at stall \\
+            $e$ & -0.17 & Oswald efficiency factor \\
+            $W_{w_{coeff2}}$ & +0.12 & wing weight coefficient 2 \\
+            $\tau$ & -0.11 & airfoil thickness to chord ratio \\
+            $N_{ult}$ & +0.07 & ultimate load factor \\
+            $W_{w_{coeff1}}$ & +0.07 & wing weight coefficient 1 \\
+            & & \\
+            \multicolumn{3}{l}{\textbf{Mission/SimPleACP/EngineP}} \\
+            $BSFC$ & [ +0.16 +0.14 +0.14 +0.14    ] & brake specific fuel consumption \\
+            \bottomrule
+        \end{tabular}
+        \caption{A selection of sensitivities of the solution to design parameters.}
+        \label{t:sens}
+    \end{table}
 
 As we can see, variables internal to the engine model, such as \BSFC and $\eta_{prop}$ have
 large sensitivities (0.59 and -0.65 respectively). The objective of the model
