@@ -14,14 +14,13 @@ the boundedness of a model.
 
 A simple aircraft optimization problem named SimPleAC\footnote{S and P have been capitalized to designate that
 the model will be a 'signomial program', and AC is an acronym for 'aircraft'.} will be derived and will serve as
-a demonstration of the intuitive structure of geometric and signomial programs, and show
+a demonstration of the intuitive structure of \gls{GP}s and \gls{SP}s, and show
 how we can introduce new constraints to bound the feasibility sets of models.
 
 \section{Making feasibility sets and boundedness explicit}
 
 Consider the simple design problem below, where we define a simple bilinear
-monomial equality with respect to $x$ and $y$, and constrain the sum of the variables
-to be less than 2:
+monomial equality with respect to $x$ and $y$, and constrain the sum of the variables:
 
 \begin{equation*}
 \begin{aligned}
@@ -42,7 +41,7 @@ The black dot in Figure~\ref{f:feas_moneq} is the global optimum of the feasibil
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\textwidth]{feas_moneq.png}
+    \includegraphics[width=0.68\textwidth]{feas_moneq.png}
     \caption{The $x$-$y$ feasibility set of a simple monomial equality.}
     \label{f:feas_moneq}
 \end{figure}
@@ -52,14 +51,14 @@ then we would get a new feasibility set as shown in Figure~\ref{f:feas_posygeq}.
 Using the \gls{GP} form, we can always upper-bound posynomials, and lower-bound both posynomials
 and monomials to get convex feasible sets. Note that the optimal point, which is at
 $x = 1 - \frac{1}{\sqrt{2}}$, $y = 1 + \frac{1}{\sqrt{2}}$,
-does not change when the monomial equality is relaxed. This is a key
-observation that will allow us to turn the equalities in most physical models into \gls{GP}-compatible
+does not change when the monomial equality is relaxed. This key
+observation will allow us to turn the equalities in most physical models into \gls{GP}-compatible
 posynomial inequalities. The posynomial equality relaxation is explained in greater detail
 in~\cite{hoburg_thesis}.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\textwidth]{feas_posygeq.png}
+    \includegraphics[width=0.68\textwidth]{feas_posygeq.png}
     \caption{The $x$-$y$ feasibility set of lower-bounding monomial,
     and upper-bounding posynomial.}
     \label{f:feas_posygeq}
@@ -74,9 +73,9 @@ demonstrate methods to create \gls{GP}-compatible models that are adequately bou
 singularities towards zero or infinity, which for the most part do not
 exist in real physical models. The models will be created within GPkit~\cite{gpkit}.
 
-\begin{figure}
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{feas_posyleq.png}
+    \includegraphics[width=0.68\textwidth]{feas_posyleq.png}
     \caption{The $x$-$y$ feasibility set of upper-bounding monomial,
     and upper-bounding posynomial.}
     \label{f:feas_posyleq}
@@ -236,7 +235,7 @@ is appropriately bounded.
     \label{t:vars_WandL}
 \end{table} \end{footnotesize}
 
-Note that the atmospheric variable $\rho$ in Table~\ref{t:vars_TandD}, and other
+Note that the atmospheric variable $\rho$ in Table~\ref{t:vars_WandL}, and other
 atmospheric variables in Section~\ref{ch2:inequalities} are set
 to be constant. The behavior of these variables with altitude
 will be modeled in more detail in Section~\ref{s:mission} when
@@ -303,8 +302,8 @@ If we attempt to run our current model, we would find that it is unbounded in ma
 The results are shown in Table~\ref{t:WandL_unbounded}.
 
 \begin{footnotesize}
-\begin{table}
-    \centering
+\begin{table}[H]
+    \begin{center}
     \begin{tabular}{ l c l }
         \toprule
         Unbounded variable & Units & Direction \\
@@ -316,6 +315,7 @@ The results are shown in Table~\ref{t:WandL_unbounded}.
         $W_w$ & $~\mathrm{N}$  & $0$ \\
         \bottomrule
     \end{tabular}
+    \end{center}
     \caption{Unbounded variables in the weight and lift model.}
     \label{t:WandL_unbounded}
 \end{table} \end{footnotesize}
@@ -361,7 +361,7 @@ the wing profile drag, and the wing induced drag coefficients \cite{gp_ac_design
 \end{equation}
 
 The individual components of the drag are represented as monomial equalities, again borrowing
-from \cite{gp_ac_design} for constraints~\ref{e:cdfuse} through~\ref{e:cdinduced}.
+constraints~\ref{e:cdfuse} through~\ref{e:cdinduced} from \cite{gp_ac_design}.
 The fuselage drag is a function of its drag area $\CDA_0$ and the planform area of the wing:
 
 \begin{equation}
@@ -401,7 +401,7 @@ turbulent flat plate flow:
 \end{equation}
 
 The induced drag of the wing is calculated with a span efficiency factor $e$, and is a
-function of the $C_L$ and aspect ratio \AR of the wing.
+function of the $C_L$ and aspect ratio~\AR of the wing.
 
 \begin{equation}
     C_{D_{induced}} = \frac{C_L^2}{\pi \AR e}
@@ -434,39 +434,26 @@ The new variables are detailed in Table~\ref{t:vars_TandD}.
     \label{t:vars_TandD}
 \end{table} \end{footnotesize}
 
-%\begin{python}
-%        # Thrust and drag model
-%        C_D_fuse = CDA0 / S
-%        C_D_wpar = k * C_f * S_wetratio
-%        C_D_ind  = C_L ** 2 / (np.pi * A * e)
-%        constraints += [W_f >= BSFC * T_flight * D,
-%                    D >= 0.5 * rho * S * C_D * V ** 2,
-%                    C_D >= C_D_fuse + C_D_wpar + C_D_ind,
-%                    V_f_fuse == 10*units('m')*CDA0,
-%                    Re <= (rho / mu) * V * (S / A) ** 0.5,
-%                    C_f >= 0.074 / Re ** 0.2]
-%\end{python}
-
 As shown in Table~\ref{t:WLTD_unbounded}, attempting to run the model as is
 results in both the fuselage fuel
 volume $V_{f_{fuse}}$ and the wing weight $W_w$ still having no lower bounds.
 These variables will need to be properly bounded to complete the SimPleAC model.
 
 \begin{footnotesize}
+    \begin{table}
     \begin{center}
-        \begin{table}
-            \begin{tabular}{ l c l }
-                \toprule
-                Unbounded variable & Units & Direction \\
-                \midrule
-                $V_{f_{fuse}}$ &  $~\mathrm{m^3}$  & $0$ \\
-                $W_w$ & $~\mathrm{N}$  & $0$ \\
-                \bottomrule
-            \end{tabular}
-            \caption{Unbounded variables within the GP formulation}
-            \label{t:WLTD_unbounded}
-        \end{table}
+    \begin{tabular}{ l c l }
+            \toprule
+            Unbounded variable & Units & Direction \\
+            \midrule
+            $V_{f_{fuse}}$ &  $~\mathrm{m^3}$  & $0$ \\
+            $W_w$ & $~\mathrm{N}$  & $0$ \\
+            \bottomrule
+        \end{tabular}
+        \caption{Unbounded variables within the GP formulation}
+        \label{t:WLTD_unbounded}
     \end{center}
+    \end{table}
 \end{footnotesize}
 
 \section{Limits of GP and Convexity, and SP modeling}
@@ -543,14 +530,14 @@ express $V_{f_{wing}}$.
 
 \begin{equation}
 \label{e:vfwing}
-V_{f_{wing}}^2 \leq 9\times10^{-4} \mathrm{m}^4 \times \frac{S \tau^2}{\AR}
+V_{f_{wing}}^2 \leq 9\times10^{-4} ~\mathrm{m}^4 \times \frac{S \tau^2}{\AR}
 \end{equation}
 
 Such variable transformations can be useful to have a minimal parametrization of designs.
 One can solve the minimal problem, and
 post-process the results of the optimization problem to get a complete geometry
 as necessary. The new variables introduced to bound fuel volume are in Table~\ref{t:vars_fuelmodel}.
-(In the final form of the Equation~\ref{e:vfwing} the constant $9\times10^{-4} \mathrm{m}^4$ was picked as the coefficient in
+(In the final form of the Equation~\ref{e:vfwing} the constant $9\times10^{-4}~\mathrm{m}^4$ was picked as the coefficient in
 front of the relation by tuning it after the model was developed,
 but any other coefficient would work.)
 

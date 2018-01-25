@@ -94,7 +94,7 @@ To be able to fit the engine power vs. weight data, we take several important st
     functions, ISMA functions can locally adjust the softness of the fit to
     reduce the error of the fit.
     \item \textbf{Choose the number of posynomial terms in the fit.} The number of
-    terms will likely depend on the root-mean square (RMS) error of the fit, and
+    terms will likely depend on the root-mean-square (RMS) error of the fit, and
     the kind of pressure on the variable. RMS error can be reduced by including
     more posynomial terms, but only if the variable of interest has downward
     pressure on it from the objective function (since it is on the greater side
@@ -108,28 +108,29 @@ the relation we obtain for the one-term (monomial) approximation is as follows:
     \left(\frac{W_{eng}}{W_{eng,max}}\right)^{0.100} = 0.988 \left(\frac{P_{shaft}}{P_{shaft,max}}\right)^{0.117}
 \end{equation}
 
-Note that the root mean square error of this fit is 0.414, which primarily has to do with
+This fit, shown by the dashed line in Figure~\ref{f:enginefit}, has a root mean square error of 0.414,
+which has to do both with the quality of the fit and
 the level of variation in the data. Since engine weight will have downward pressure
 on it from the objective function, we can easily use a two-term posynomial approximation to
 improve its error.
 
-\begin{equation}
-    \left(\frac{W_{eng}}{W_{eng,max}}\right)^{1.92} \geq 4.41\times10^{-3} \left(\frac{P_{shaft}}{P_{shaft,max}}\right)^{0.759}
-    +1.44 \left(\frac{P_{shaft}}{P_{shaft,max}}\right)^{2.90}
-\end{equation}
-
-This relation has an r.m.s. error of 0.346, which is a significant improvement.
-Both fits are shown with the data in Figure~\ref{f:enginefit}.
-
-\begin{figure}
+\begin{figure}[!htb]
     \centering
     \includegraphics[width=0.8\textwidth]{enginePvsW.png}
     \caption{Engine MSL power versus weight fits for $K=1,2$ posynomial terms with underlying data.}
     \label{f:enginefit}
 \end{figure}
 
-With a SMA approximation, more terms do not improve the r.m.s.
-error of the fit on the given data, due to the large standard deviation of the data used.
+\begin{equation}
+    \left(\frac{W_{eng}}{W_{eng,max}}\right)^{1.92} \geq 4.41\times10^{-3} \left(\frac{P_{shaft}}{P_{shaft,max}}\right)^{0.759}
+    +1.44 \left(\frac{P_{shaft}}{P_{shaft,max}}\right)^{2.90}
+\end{equation}
+
+This relation has an RMS error of 0.346, which is a significant improvement.
+Both fits are shown with the data in Figure~\ref{f:enginefit} for comparison.
+
+With a SMA approximation, adding more than two terms to the fit do not improve its RMS
+error on the given data, due to the large standard deviation of the data used.
 As such, we will proceed with the 2-term posynomial fit.
 
 \subsubsection{Other constraints in engine model}
@@ -586,20 +587,20 @@ stated in Section~\ref{s:lapse}, the \BSFC of a naturally-aspirated piston engin
 puts out more power relative to its maximum power at a given altitude.
 
 BSFC has downward pressure due to the objective function, and therefore must be lower-bounded. This makes
-it amenable to multiple-term posynomial fits.
-
-First, a monomial fit of the $\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ was created.
-The result is shown by the green line in Figure~\ref{f:P_BSFC}.
+it amenable to posynomial fits.
+A monomial fit of the $\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ was created.
+The result is shown by the dashed line in Figure~\ref{f:P_BSFC}.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.6\textwidth]{P_BSFC.png}
-    \caption[$\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ data fit.]{$\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ data fit. The green fit is
-    not able to capture the tail ends of the curve, which is resolved by the bounding in the red fit.}
+    \caption[$\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ data fit.]{$\frac{\BSFC}{\BSFC_{min}}$
+    versus $\frac{P_{shaft}}{P_{shaft,alt}}$ data fit. The dashed monomial fit is
+    not able to capture the tail ends of the curve, which is resolved by the bounded fit.}
     \label{f:P_BSFC}
 \end{figure}
 
-Although the r.m.s. error of the fit is low (0.028) due to the small number of data points (in blue),
+Although the RMS error of the fit is low (0.028) due to the small number of data points,
 there is a significant deterioration in the quality of the
 fit as $\frac{P_{shaft}}{P_{shaft,alt}} \xrightarrow[]{} 1$,
 and increasing the number of posynomial terms in the fit does not alleviate this problem.
