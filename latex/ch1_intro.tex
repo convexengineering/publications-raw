@@ -2,11 +2,12 @@
 \label{ch1_intro}
 
 Modern engineering design, and particularly aerospace design, has come to rely
-heavily on optimization. Time and time again, \gls{MDO} research has stressed
+heavily on optimization. \gls{MDO} research has stressed
 the importance of fast and
 reliable tools for engineering design~\cite{martins_mdo}.
 However most \gls{MDO} tools
-have the downfall of being slow, due to the multimodal\footnote{Multimodal problems have multiple
+suffer from poor time performance,
+due to the multimodal\footnote{Multimodal problems have multiple
 locally optimal solutions.} nature of many
 engineering design problems.
 Furthermore, these tools act like black boxes since
@@ -14,9 +15,7 @@ they provide point solutions\footnote{A point solution is a design that
 is optimal for a given mission, but does not consider the
 feasibility of other potentially interesting missions.}
 without additional information about the design problem
-such as sensitivities\footnote{The (optimal) sensitivity is the local expected
-fractional change in the objective value of the optimal solution per
-fractional change in a variable or constraint value~\cite{gpintro}.},
+such as sensitivities,
 which can provide important engineering insight.
 
 In the \gls{CEG}, we have sought to improve the engineering design process by
@@ -24,16 +23,16 @@ leveraging the mathematical guarantees and speed of convex optimization.
 Our primary software product is GPkit~\cite{gpkit}, an
 open-source, object-oriented software to help build \gls{GP}-compatible models and
 interface with solvers. The seminal works
-in the field of convex optimization (\cite{duffingp},\cite{gpintro}) and much of \gls{CEG}'s previous work
-(\cite{gp_ac_design},\cite{sp_ac_design},\cite{sp_engine}) have demonstrated that
+in the field of convex optimization (\cite{gpintro},\cite{duffingp}) and much of \gls{CEG}'s previous work
+(\cite{gp_ac_design},\cite{power_of_log},\cite{sp_ac_design},\cite{sp_engine}) have demonstrated that
 geometric programming and its non-log-convex extension signomial programming
 are useful for certain kinds of
 optimization problems, but have yet to formalize why it
 facilitates design.
 
 The mathematical restrictions on the form of constraints in the \gls{GP} formulation
-remains the biggest
-barrier in using optimization in engineering design. Chapter~\ref{ch2:inequalities} will
+remain the biggest
+barriers in using optimization in engineering design. Chapter~\ref{ch2:inequalities} will
 show that the form of the \gls{GP} actually facilitates the design
 optimization process
 and engineering understanding, rather than impeding it, through the disciplined use
@@ -50,7 +49,10 @@ The formulation of the \gls{GP} as a `bag of constraints' instead of a
 hierarchical set of relations confers advantages
 when trying to expand the fidelity and scope of models, especially in the
 conceptual design stage. Furthermore, the solution to the dual of the \gls{GP}
-provides optimal sensitivities which allow targeted efforts by engineers to
+provides optimal sensitivities\footnote{The (optimal) sensitivity is the local expected
+fractional change in the objective value of the optimal solution per
+fractional change in a variable or constraint value~\cite{gpintro}.}
+which allow targeted efforts by engineers to
 collaboratively improve models.
 
 Chapter~\ref{ch3:extensibility} will also discuss the features specific to
@@ -137,7 +139,7 @@ for three primary reasons.
     equations into optimization-compatible constraint forms.
     Certain mathematical restrictions of the \gls{GP} can be partially
     overcome through the use of the \gls{DC}
-    extension of \gls{GP} called \gls{SP}. \gls{SP}s give us the flexibility to model
+    extension of the \gls{GP} called the \gls{SP}. \gls{SP}s give us the flexibility to model
     non-log-convex functions, as well as allowing designers to explicitly enforce
     the tightness of
     constraints through the use of signomial equalities when the direction of pressure
