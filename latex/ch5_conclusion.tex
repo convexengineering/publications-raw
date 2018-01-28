@@ -2,35 +2,34 @@
 \label{ch5:conclusion}
 
 This thesis has demonstrated methods to modeling and optimization using \gls{GP}. It
-is motivated by the need to reduce the activation energy of designers in using
-optimization to perform conceptual design. The \gls{GP} and \gls{SP} are the
+is motivated by the need to reduce the activation energy required to use
+optimization for conceptual design. The \gls{GP} and \gls{SP} are the
 mathematical frameworks that enable the intuitive formulation of general
 physical relations into optimization-compatible constraints.
 
 In Chapter~\ref{ch2:inequalities}, the ideas of pressure and boundedness were
-defined in the context of a \gls{GP}, to show the intuitive nature of \gls{GP}
-compatible constraints. The basic aircraft design problem was defined,
+defined in the context of a \gls{GP}. The basic aircraft design problem was defined,
 and the importance of objective functions and variable freedom
 was identified in achieving bounded convex problems.
 Section~\ref{s:GPlimits} provided justification for the need to use the non-convex
 extension of \gls{GP}s called \gls{SP}s in design, with some loss of mathematical
 guarantees and solution speed. Fuel volume models provided a meaningful use
 case for signomial constraints, and the chapter provided arguments for the use of the signomial
-equality. The product was an \gls{SP}-compatible aircraft model that was systematically defined from
-physical principles, and a sample solution of that model.
+equality. The result was a fully bounded \gls{SP}-compatible aircraft model that captures
+fundamental tradeoffs in conceptual aircraft design.
 
-Chapter~\ref{ch3:extensibility} begun by introducing the idea of modularity, and improving
-the fidelity of models by using data-based modeling in Section~\ref{s:engine}.
-The aircraft model was modularized
+Chapter~\ref{ch3:extensibility} introduced the idea of modularity, and improved
+the fidelity of the aircraft model by using data-based modeling in Section~\ref{s:engine}.
+The model was subsequently modularized
 into component models, and then into performance and static models in order to
 be able to vectorize certain sets of variables and constraints that are repeated between
 different mission segments. A logical (but non-unique) hierarchy of models
 was presented to allow designers to make decisions about where to locate different variables
-and constraints in the modular mission model architecture.
+and constraints in the modular mission architecture.
 
 Chapter~\ref{ch3:extensibility} also presented a case where environmental modeling becomes critical
 for designs we trust as engineers. While performing tradespace exploration, an intuitive
-way to analyze the components of a multi-objective cost of the \gls{GP} was presented, in
+way to analyze the components of a multi-objective \gls{GP} was presented, in
 an effort to draw maximal engineering understanding from the tradespaces that were explored.
 
 Before the model was integrated into a multimission framework in Section~\ref{s:multimission},
@@ -49,5 +48,5 @@ it has outlined methods that allow designers to extract engineering understandin
 the trade spaces using convex and difference-of-convex methods.
 Although an aircraft design problem was the focus of the thesis,
 these methods are general to engineering design problems with explicit, continuous constraints,
-and help lower the barriers to using optimization in engineering design.
+and lower the barriers to using optimization in engineering design.
 
