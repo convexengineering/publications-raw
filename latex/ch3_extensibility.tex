@@ -9,7 +9,7 @@ having to restructure the optimization formulation. This property,
 coupled with the object-oriented modeling framework of GPkit, allows
 \gls{GP} compatible models to be continuously extensible.
 This section will demonstrate common methods used to extend the capability
-and improve the fidelity of \gls{GP}- and \gls{SP}- compatible models.
+and improve the fidelity of \gls{GP}- and \gls{SP}-compatible models.
 
 \section{Improving fidelity: Adding a simple engine model}
 \label{s:engine}
@@ -21,9 +21,11 @@ unlimited power. This is obviously unphysical, and requires refinement.
 
 Before even thinking about modeling, we would like to leverage the object-oriented
 GPkit models to put the variables describing the engine into a submodel (currently only
-BSFC). In the GPkit software, we do this by creating a new class (an object in the Python language)
+consisting of the \BSFC~variable).
+In the GPkit software, we do this by creating a new class (an object in the Python language)
 called \textbf{Engine} and creating a \textit{setup}
-method that returns the constraints within it. The model and variable objects in the sample code
+method that returns the constraints within it. The \textbf{Model} and \textbf{Variable}
+objects in the sample code
 are imported from GPkit.
 
 \begin{python}
@@ -48,7 +50,7 @@ as follows:
             return constraints, self.components
 \end{python}
 
-This restructuring of the model yields the exact same overall \gls{GP} formulation
+This restructuring of the model yields the exact same \gls{GP} formulation
 as the unstructured problem, but gives us the flexibility to develop submodels
 collaboratively and in a disciplined manner.
 
@@ -73,7 +75,7 @@ and have data to support it. Using GPfit~\cite{gpfitpaper}, we will try to fit t
 \gls{GP} compatible relations between engine weight and maximum power. This section
 will try to highlight the best practices when making data-based models.
 
-To be able to fit the engine power vs. weight data, we take several important steps.
+To be able to fit the engine power versus weight data, we take several important steps.
 \begin{itemize}
     \item \textbf{Comb the data.} Since we are essentially projecting
     data with potentially high standard deviation onto a single line,
@@ -82,7 +84,7 @@ To be able to fit the engine power vs. weight data, we take several important st
     by some known quantity is preferable, since fits should not be dependent on the
     units that are used while performing it. This also helps the fit integrate
     seamlessly into GPkit, since dimensional fits would require units manipulation
-    to avoid errors. The data can be normalized by any
+    to avoid errors. The data can be normalized by
     reference quantities (in this case using the maximum power and weight values
     from the data set).
     \item \textbf{Choose the type of fit.} In~\cite{gpfitpaper}, \textit{softmax-affine}
@@ -93,12 +95,12 @@ To be able to fit the engine power vs. weight data, we take several important st
     functions are often good approximations. However, if kinks are expected in the
     functions, ISMA functions can locally adjust the softness of the fit to
     reduce the error of the fit.
-    \item \textbf{Choose the number of posynomial terms in the fit.} The number of
-    terms will likely depend on the root-mean-square (RMS) error of the fit, and
-    the kind of pressure on the variable. RMS error can be reduced by including
+    \item \textbf{Choose the number of posynomial terms in the fit.} The number of posynomial
+    terms can be changed to better capture the trends in the data.
+    RMS error can be reduced by including
     more posynomial terms, but only if the variable of interest has downward
     pressure on it from the objective function (since it is on the greater side
-    of the inequality).
+    of the inequality). Otherwise fits are limited to monomial equalities in $n$-dimensions.
 \end{itemize}
 
 After having performed these intermediate steps on the engine data,
@@ -165,11 +167,11 @@ required for SimPleAC to fly one flight segment.
     \label{forest:submodels}
 \end{figure}
 
-Tree or graph structures such as in Figure~\ref{forest:submodels} are informative, since
-it provides an intuitive representation of the way constraints and variables
+Uni-directional graph structures such as in Figure~\ref{forest:submodels} are informative, since
+they provide an intuitive representation of the way constraints and variables
 are passed between GPkit models. In this basic framework,
-variables and constraints from one model can only be called by models that are higher in
-the tree diagram. This reconciles the fact that object creation in software engineering is serial, whereas
+variables and constraints from one model can only be called by models that are higher and connected in
+the diagram. This reconciles the fact that object creation in software engineering is serial, whereas
 the components of the system being optimized are interconnected. The way the \gls{SP} is solved at the end has no
 hierarchy, but as we will see in Section~\ref{s:mission} a hierarchical representation
 will facilitate the vectorization of constraints required for mission design.
@@ -180,14 +182,14 @@ will facilitate the vectorization of constraints required for mission design.
 \label{s:mission}
 
 The SimPleAC defined so far works well to demonstrate the
-capabilities of \gls{SP} in helping explore tradeoffs in engineering design.
+capabilities of \gls{SP}s in helping explore tradeoffs in engineering design.
 However, often in the design process, we will want to test the performance of a
 design in different conditions, and/or during different phases of a mission.
 This requires the vectorization of
 constraints that relate to the performance of the design. What we'd like to do
 is to have a single aircraft optimize both its static sizing variables (having
 to do with the airframe), and its flight performance simultaneously. This requires a major
-augmentation of the model tree defined in Figure~\ref{forest:submodels}, into a
+augmentation of the model graph defined in Figure~\ref{forest:submodels}, into a
 uni-directional graph as shown in Figure~\ref{f:missiongraph}.
 
 \begin{figure}[!h]
@@ -250,7 +252,7 @@ The static aircraft model and the atmospheric state are passed as an argument to
 performance models within this framework. To transform our previously static model to
 the performance-static model hierarchy we have identified,
 we have to determine which variables
-belong in which node of the tree. Table~\ref{t:missionvars} details the full
+belong in which node of the graph. Table~\ref{t:missionvars} details the full
 decomposition of the model into its submodels in the format defined
 by Figure~\ref{f:missiongraph}. This is as simple as identifying which variables
 we do not expect to change during flight segments, and which ones we do. Note that
@@ -275,9 +277,9 @@ we can consider the constraint for thrust power in Equation~\ref{e:thrustConstr}
     T \times V \leq \eta_{prop} P_{shaft}
 \end{equation}
 
-We expect that thrust ($T$) and shaft power ($P_{shaft}$) occur
+We expect that thrust ($T$) and shaft power ($P_{shaft}$) variables exist
 in \textit{Engine Performance}. Since our model has no model for propeller efficiency ($\eta_{prop}$), we treat it
-as a static variable in \textbf{Engine}. And velocity ($V$) is a variable in \textbf{\textit{Aircraft {Performance}}}.
+as a static parameter in \textbf{Engine}. Velocity ($V$) is a variable in \textbf{\textit{Aircraft {Performance}}}.
 As a result, the constraint for thrust power would logically reside in the \textbf{\textit{Aircraft {Performance}}}
 model, the highest level in the hierarchy as shown in Figure~\ref{f:thrustConstr}. Since this model is vectorized,
 the constraint would be vectorized by the number of flight segments we create.
@@ -401,7 +403,7 @@ into a composite objective function through a cost index $C$ for boundedness,
 and divide $W_{f_m}$ by newtons to achieve uniform units (non-dimensional).
 Another method to achieve proper boundedness is to add an arbitrary large upper bound. However
 this will result in the bounding constraint being tight and giving unphysical results, and so
-this thesis will implement the objective in~\ref{e:missionobj} instead.
+this thesis will implement the objective in Equation~\ref{e:missionobj} instead.
 Cost index $\mathrm{C}$ is defined as a separate parameter so that we can observe the sensitivity
 of the variable post-optimization.
 
@@ -492,8 +494,8 @@ since no fuel is allocated in the fuselage towards the lower right of the graph.
 For composite objective functions, it can be difficult to have intuitions about how sensitivities
 to parameters can affect the design, since the parameters act on multiple variables of interest. A way
 to attempt to decouple these is to plot both the cost of a variable in the objective and its relevant
-sensitivity next to each other, as shown in Figure~\ref{f:compobjsens}. Taking a look at point [4000N,4000km],
-we can follow the yellow contour to see all of the missions with the same time cost as this mission
+sensitivity next to each other, as shown in Figure~\ref{f:compobjsens}. Taking a look at point [4000N,3500km],
+we can follow the time cost ($2 \times 10^3$) contour to see all of the missions with the same time cost as this mission
 (same average flight speed),
 and see how the fraction of time cost versus total cost varies through the sensitivity to the time cost index.
 This can help a designer gain intuition about the relative importance of different components of cost.
@@ -545,7 +547,7 @@ We can see this by observing the sensitivities in Table~\ref{t:sens}.
     \end{table}
 
 As we can see, variables internal to the engine model, such as \BSFC and $\eta_{prop}$ have
-large sensitivities (0.59 and -0.65 respectively). The objective of the model
+large sensitivities (0.59 [cumulative] and -0.65 respectively). The objective of the model
 is as sensitive to these variables as mission input variables such as range and payload, so
 these variables require refinement.
 
@@ -555,7 +557,8 @@ regardless of altitude. The maximum power of naturally aspirated piston engines 
 with altitude; adding a lapse rate will improve how much we trust the engine model.
 The second weakness is the lack of an engine \BSFC model. Empirical data shows that the
 \BSFC of an engine deteriorates at low power outputs.
-In Sections~\ref{s:lapse} and \ref{s:BSFC}, these improvements will be implemented using more data-based modeling.
+In Sections~\ref{s:lapse} and \ref{s:BSFC}, more data-based modeling will be used
+to capture BSFC behavior at all throttle ranges.
 
 \subsection{Engine lapse rate model}
 \label{s:lapse}
@@ -573,8 +576,8 @@ posynomial inequality expression below:
 
 Since the \BSFC of a normally aspirated piston engine would be expected to improve
 as the $P_{shaft} \xrightarrow[]{} P_{shaft,alt}$, the maximum shaft
-power at altitude has downward pressure on it from the fuel burn objective. This means that the
-inequality doesn't adequately lower-bound the $P_{shaft,alt}$. If we try to flip the inequality in
+power at altitude ($P_{shaft,alt}$) has downward pressure on it from the fuel burn objective. This means that the
+inequality doesn't adequately lower-bound $P_{shaft,alt}$. If we try to flip the inequality in
 Constraint~\ref{e:lapse}, then $P_{shaft,alt}$ is upper-unbounded, so with our current parametrization
 of the shaft power, we must use a signomial equality.
 
@@ -657,7 +660,7 @@ hierarchy to do multimission design. Now we vectorize the mission models flown b
     \label{f:multimission}
 \end{figure}
 
-Now the vectorization has gone down two levels, where each performance model is vectorized $N_{segments} \times N_{missions}$ times,
+The vectorization has gone down two levels, where each performance model is vectorized $N_{segments} \times N_{missions}$ times,
 and each mission model is vectorized $N_{missions}$ times. The single instance of \textbf{Aircraft}
 is passed on as an argument to all of these models, which ensures that both its
 static and performance constraints are satisfied for each flight segment
@@ -729,8 +732,8 @@ The multimission aircraft represents a compromise aircraft that performs both mi
 with relatively high performance.
 
 \begin{center}
-    \captionof{table}{Results of the single- and multi- mission solutions. Italicized values
-    have been post-processed.}
+    \captionof{table}[Results of the single- and multi-mission solutions.] {Results of the single-
+    and multi-mission solutions. Italicized values have been post-processed.}
     \input{tables/mmtable.tex}
     \label{t:mmoutputs}
 \end{center}
@@ -741,9 +744,9 @@ fuel volume. When performing this kind of multimission design, we ensure that th
 feasible for each mission,
 meaning it is able to perform all of the missions under the sets of static and performance constraints.
 
-Furthermore, there is evidence to suggest that the solve time of an \gls{SP} scales sub-linearly with the number of
+Furthermore, there is evidence to suggest that the solve time of a \gls{SP} scales sub-linearly with the number of
 variables and constraints. So it might be interesting for a designer to input the entire variety of missions that
-they expect the design the perform into a single multimission framework to ensure feasibility, especially if the
+they expect the design to perform into a single multimission framework to ensure feasibility, especially if the
 mission parameters vary significantly.
 
 \subsection{Potential extensions of multimission design}
