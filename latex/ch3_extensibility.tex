@@ -240,15 +240,15 @@ uni-directional graph as shown in Figure~\ref{f:missiongraph}.
 Figure~\ref{f:missiongraph} represents a model with two flight segments, where the
 models enclosed in rectangles contain the set of constraints that are vectorized
 by the number of flight segments, $N_{segments} = 2$. Each
-one of the performance models contain variables that change between flight segments.
+one of the performance models contains variables that change between flight segments.
 Note that the fuselage is the only subcomponent not to have a performance model.
-This is because the only performance variable of the fuselage is its drag
-coefficient, which is assumed to not change between flight segments, making it static.
+This is because the drag
+coefficient of the fuselage is assumed to be constant between flight segments, making it static.
 A \textbf{\textit{Mission}} model that links flight segments together has been added,
 as well as an \textit{Atmosphere} model, which describes the conditions in which the aircraft
 operates.
 
-The static aircraft model and the atmospheric state are passed as an argument to multiple
+The static aircraft model and the atmospheric state are passed as arguments to multiple
 performance models within this framework. To transform our previously static model to
 the performance-static model hierarchy we have identified,
 we have to determine which variables
@@ -416,7 +416,7 @@ we can map out the entire design space with respect to mission parameters.
 Please refer to~\cite{power_of_log} for details on the computational advantages of the \gls{GP}
 and \gls{SP} compared to other non-linear optimization methods.
 
-In this case, the SimPleAC has been optimized
+In this case, the SimPleAC has been optimized (for $N_{segments} = 4$)
 over a range of payload weight (1000-10000 N) and range (1000-5000km), and the mission fuel weight
 and total weight have been plotted in contour plots in Figure~\ref{f:pareto}. Note that
 every point in the design space represents a fully optimized aircraft. The full list of inputs
@@ -546,7 +546,7 @@ We can see this by observing the sensitivities in Table~\ref{t:sens}.
         \label{t:sens}
     \end{table}
 
-As we can see, variables internal to the engine model, such as \BSFC and $\eta_{prop}$ have
+As we can see, variables internal to the engine model, such as \BSFC~and $\eta_{prop}$ have
 large sensitivities (0.59 [cumulative] and -0.65 respectively). The objective of the model
 is as sensitive to these variables as mission input variables such as range and payload, so
 these variables require refinement.
@@ -555,10 +555,10 @@ The following sections will take a two-pronged approach to improved engine model
 The first weakness of the current model is the fact that the engine can supply the same amount of power
 regardless of altitude. The maximum power of naturally aspirated piston engines drops
 with altitude; adding a lapse rate will improve how much we trust the engine model.
-The second weakness is the lack of an engine \BSFC model. Empirical data shows that the
-\BSFC of an engine deteriorates at low power outputs.
+The second weakness is the lack of an engine \BSFC~model. Empirical data shows that the
+\BSFC~of an engine deteriorates at low power outputs.
 In Sections~\ref{s:lapse} and \ref{s:BSFC}, more data-based modeling will be used
-to capture BSFC behavior at all throttle ranges.
+to capture \BSFC~behavior at all throttle ranges.
 
 \subsection{Environmental effects: engine lapse rate model}
 \label{s:lapse}
@@ -574,22 +574,22 @@ posynomial inequality expression below:
     1 \geq L + \frac{P_{shaft,alt}}{P_{shaft,max}}
 \end{equation}
 
-Since the \BSFC of a normally aspirated piston engine would be expected to improve
+Since the \BSFC~of a normally aspirated piston engine would be expected to improve
 as the $P_{shaft} \xrightarrow[]{} P_{shaft,alt}$, the maximum shaft
 power at altitude ($P_{shaft,alt}$) has downward pressure on it from the fuel burn objective. This means that the
 inequality doesn't adequately lower-bound $P_{shaft,alt}$. If we try to flip the inequality in
 Constraint~\ref{e:lapse}, then $P_{shaft,alt}$ is upper-unbounded, so with our current parametrization
 of the shaft power, we must use a signomial equality.
 
-\subsection{Making use of sensitivities: engine \BSFC model}
+\subsection{Making use of sensitivities: engine \BSFC~model}
 \label{s:BSFC}
 
-The \BSFC is one of the variables that the model is most sensitive to (total sensitivity over all mission segments of 0.59),
+The \BSFC~is one of the variables that the model is most sensitive to (total sensitivity over all mission segments of 0.59),
 and it has yet to be modeled. As
-stated in Section~\ref{s:lapse}, the \BSFC of a naturally-aspirated piston engine improves as the engine
+stated in Section~\ref{s:lapse}, the \BSFC~of a naturally-aspirated piston engine improves as the engine
 puts out more power relative to its maximum power at a given altitude.
 
-BSFC has downward pressure due to the objective function, and therefore must be lower-bounded. This makes
+\BSFC~has downward pressure due to the objective function, and therefore must be lower-bounded. This makes
 it amenable to posynomial fits.
 A monomial fit of the $\frac{\BSFC}{\BSFC_{min}}$ versus $\frac{P_{shaft}}{P_{shaft,alt}}$ was created.
 The result is shown by the dashed line in Figure~\ref{f:P_BSFC}.
@@ -607,8 +607,8 @@ Although the RMS error of the fit is low (0.028) due to the small number of data
 there is a significant deterioration in the quality of the
 fit as $\frac{P_{shaft}}{P_{shaft,alt}} \xrightarrow[]{} 1$,
 and increasing the number of posynomial terms in the fit does not alleviate this problem.
-What we can do is put a lower bound on the \BSFC of the engine that depends on the actual
-lowest \BSFC achieved by the engine. The final \BSFC relation is shown in Equation~\ref{e:BSFCfit}.
+What we can do is put a lower bound on the \BSFC~of the engine that depends on the actual
+lowest \BSFC~achieved by the engine. The final \BSFC~relation is shown in Equation~\ref{e:BSFCfit}.
 
 \begin{equation}
     \label{e:BSFCfit}
@@ -620,7 +620,7 @@ lowest \BSFC achieved by the engine. The final \BSFC relation is shown in Equati
 \label{s:multimission}
 
 Having created a mission profile for the SimPleAC, it only takes one extra level of
-hierarchy to do multimission design. Now we vectorize the mission models flown by the same aircraft.
+hierarchy to do multimission design. Now we vectorize the missions flown by the same aircraft.
 
 \begin{figure}[!h]
     \centering\small\sffamily
@@ -670,7 +670,7 @@ of every mission.
 
 The objective function of the \textbf{\textit{Multimission}} model has to be
 a posynomial that puts pressure on the variables in every \textbf{\textit{Mission}} model. For example, knowing that
-$W_{f_m} \frac{1}{\mathrm{N}} + C \times t_{m}$ is a valid objective functions to the single mission,
+$W_{f_m} \frac{1}{\mathrm{N}} + C \times t_{m}$ is a valid objective function to the single mission,
 the objective function below for $N_{missions}$
 
 \begin{equation}
@@ -696,7 +696,7 @@ for mission time for the first mission or fuel burn for the second mission.
 
 \subsection{Multimission optimization results}
 
-The SimPleAC was optimized for the 3 different mission scenarios:
+The SimPleAC ($N_{segments} = 4$) was optimized for the 3 different mission scenarios:
 
 \begin{enumerate}
     \item M1: A single mission minimizing fuel burn ($W_{f_m}$).

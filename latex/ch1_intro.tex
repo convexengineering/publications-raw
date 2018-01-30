@@ -27,8 +27,8 @@ in the field of convex optimization (\cite{gpintro},\cite{duffingp}) and much of
 (\cite{gp_ac_design},\cite{power_of_log},\cite{sp_ac_design},\cite{sp_engine}) have demonstrated that
 geometric programming and its non-log-convex extension signomial programming
 are useful for certain kinds of
-optimization problems, but have yet to formalize why it
-facilitates design.
+optimization problems, but have yet to formalize why they
+facilitate design.
 
 The mathematical restrictions on the form of constraints in the \gls{GP} formulation
 remain the biggest
@@ -104,7 +104,7 @@ By these definitions, both design and
 optimization explore feasible and infeasible sets, but differ in a fundamental way.
 Design is based on feasibility, whereas optimization seeks optimality.
 This observation gives insight as to why there is a barrier
-to entry for optimization methods, and especially so for more restrictive forms.
+to using optimization in design.
 The distinction allows design to be performed
 in non-restrictive mathematical forms, since non-linear feasibility problems are
 much easier to solve than non-linear optimization problems. Optimization is
@@ -114,7 +114,7 @@ an impediment for designers unfamiliar with optimization to use it.
 
 \section{Unifying design and optimization with GP}
 
-\gls{GP} has developed "in response to a need to solve problems in the actual
+Geometric programming has developed "in response to a need to solve problems in the actual
 world"~\cite{duffingp}. \gls{GP}s and other convex optimization methods have been
 in development since the 1960's, but have come into the limelight thanks to the development of
 polynomial-time algorithms for convex programming~\cite{interior_point} and
@@ -129,7 +129,7 @@ for three primary reasons.
 
     \item \textit{Inequalities help engineering understanding.}
 
-    The mathematical constraints of \gls{GP} force designers to have a proper grasp
+    The mathematical constraints of the \gls{GP} force designers to have a proper grasp
     of the fundamental tradeoffs and pressures in a design.
     Traditionally, physical relations are expressed as equalities. But there is an
     almost-seamless transition from fundamental physics to GP-compatible
@@ -221,7 +221,7 @@ for three primary reasons.
         \label{f:optflow}
     \end{figure*}
 
-    A big advantage of the convexity of \gls{GP} is the low-cost computation of constraint and variable
+    A big advantage of the convexity of the \gls{GP} is the low-cost computation of constraint and variable
     sensitivities by leveraging Lagrange duality~\cite{hoburg_thesis}.
     This helps determine which parts of the
     model yield the greatest returns in terms of fidelity to improved modeling, so engineers can target

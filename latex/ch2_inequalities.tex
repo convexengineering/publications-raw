@@ -32,7 +32,7 @@ monomial equality with respect to $x$ and $y$, and constrain the sum of the vari
 \end{aligned}
 \end{equation*}
 
-We can draw the feasibility set of the above problem in both linear and log space,
+We can draw the feasibility set of the above problem in both linear and log-space,
 as shown in Figure~\ref{f:feas_moneq}. One expects that, given only two variables
 related through an equality and bounded by an inequality, the feasibility space is
 a finite line segment in log-space, and a finite exponential function in linear space.
@@ -465,7 +465,7 @@ Even with the demonstrated strengths of \gls{GP}s in solving certain classes of
 problems, it is important to recognize that the mathematical framework has limits.
 The three distinct types of~\gls{GP}-incompatibility in design problems are detailed
 by Hoburg~ \cite{hoburg_thesis}, which are discreteness,
-quasi-convexity, and multi-modality. Discreteness in \gls{GP} can be approached
+quasi-convexity, and multi-modality. Discreteness in the \gls{GP} can be approached
 by coupling discrete programming methods such as branch-and-bound into a sequential
 \gls{GP}. This is outside of the scope of this thesis.
 Quasi-convexity and to a certain extent multimodality can
@@ -608,7 +608,7 @@ both the geometry and loading. The surface weight expression is straightforward.
 \begin{equation} W_{w_{surf}} \geq W_{w_{coeff2}} S \label{e:wwsurf} \end{equation}
 
 We would like wing structural weight to account for the loading distribution and the geometry
-of the wing. The wing will have to sustain a maximum bending load (I will neglect shear, since
+of the wing. The wing will have to sustain a maximum bending load (we will neglect shear, since
 the two are coupled) due to maximum takeoff weight,
 multiplied by an ultimate structural factor $N_{ult}$ for maneuvering.
 I have borrowed the wing weight model from \cite{gp_ac_design}, and adapted it through a
