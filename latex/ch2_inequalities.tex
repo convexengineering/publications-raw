@@ -143,7 +143,7 @@ In the basic example, we will choose not to model engines,
 and leave this as an exercise
 to complete in Section~\ref{s:engine} to improve the model.
 
-\section{GP Modeling from Physics}
+\section{GP modeling from physics}
 
 Optimization model creation often starts haphazardly, with the designer having a
 vague idea about the set of physics that govern a problem, and some basic
@@ -153,7 +153,7 @@ sure each variable is adequately bounded later. Each subsection is intended
 to introduce the reader to an important aspect of \gls{GP} modeling,
 accompanied by examples in implementation.
 
-\subsection{Free and fixed variables: modeling weight and lift}
+\subsection{Free and fixed variables: weight and lift model}
 \label{s:wl}
 
 For this particular design problem, we start by modeling
@@ -233,7 +233,7 @@ is appropriately bounded.
         $W_p$ & 6250 & $~\mathrm{N}$ & payload weight \\
         \bottomrule
     \end{tabular}
-    \caption{Variables introduced in weight vs. lift model.}
+    \caption{Variables introduced in the weight and lift model.}
     \label{t:vars_WandL}
 \end{table} \end{footnotesize}
 
@@ -243,7 +243,7 @@ to be constant. The behavior of these variables with altitude
 will be modeled in more detail in Section~\ref{s:mission} when we
 introduce an aircraft flight profile.
 
-\subsection{Alternate objectives: adding performance metrics}
+\subsection{Alternate objectives: more performance metrics}
 \label{s:altobj}
 
 As multi-objective designers, we may also be interested in knowing about
@@ -432,7 +432,7 @@ The new variables are detailed in Table~\ref{t:vars_TandD}.
         $V_{f_{fuse}}$ & $ \ldots $ & $\mathrm{m^3}$ & fuel volume in the fuselage \\
         \bottomrule
     \end{tabular}
-    \caption{Variables introduced in thrust and drag model.}
+    \caption{Variables introduced in the thrust and drag model.}
     \label{t:vars_TandD}
 \end{table} \end{footnotesize}
 
@@ -452,13 +452,13 @@ These variables will need to be properly bounded to complete the SimPleAC model.
             $W_w$ & $~\mathrm{N}$  & $0$ \\
             \bottomrule
         \end{tabular}
-        \caption{Unbounded variables with GP-compatible formulation.}
+        \caption{Unbounded variables in the GP-compatible formulation.}
         \label{t:WLTD_unbounded}
     \end{center}
     \end{table}
 \end{footnotesize}
 
-\section{Limits of GP and Convexity, and SP modeling}
+\section{Limits of GP and convexity, and SP modeling}
 \label{s:GPlimits}
 
 Even with the demonstrated strengths of \gls{GP}s in solving certain classes of
@@ -480,7 +480,7 @@ the loss of the mathematical guarantees. Kirschen~\cite{kirschen_thesis} describ
 detail how
 signomial constraints are often required to capture fundamental design tradeoffs.
 
-\subsection{Signomial constraints: adding fuel volume model}
+\subsection{Signomial constraints: fuel volume model}
 \label{s:fuel}
 
 In an attempt to put a lower bound $V_{f_{fuse}}$, we will
@@ -666,7 +666,7 @@ so these benefits will not be featured here. However, the values of the free var
 and the sensitivities of the fixed parameters are presented for the reader.
 
 \begin{center}
-\captionof{table}{Values of the free variables in the SimPleAC model.}
+\captionof{table}{Values of free variables in the SimPleAC model.}
 \input{tables/SimPleAC_results.tex}
     \label{t:SimPleAC_results}
 \end{center}

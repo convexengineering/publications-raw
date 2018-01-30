@@ -11,7 +11,7 @@ coupled with the object-oriented modeling framework of GPkit, allows
 This section will demonstrate common methods used to extend the capability
 and improve the fidelity of \gls{GP}- and \gls{SP}-compatible models.
 
-\section{Improving fidelity: Adding a simple engine model}
+\section{Modularization and improved fidelity: engine model}
 \label{s:engine}
 
 The aircraft currently has an engine that weighs nothing and magically supplies
@@ -163,7 +163,7 @@ required for SimPleAC to fly one flight segment.
         [\textbf{Engine}]
         ]
     \end{forest}
-    \caption{Variable and constraint hierarchy of the single mission segment SimPleAC model}
+    \caption{Variable and constraint hierarchy of the SimPleAC model for a single flight segment.}
     \label{forest:submodels}
 \end{figure}
 
@@ -229,8 +229,8 @@ uni-directional graph as shown in Figure~\ref{f:missiongraph}.
         \node[draw,rectangle,fit={(aircraftP2) (atmos2) (engineP2) (wingP2)},label=Segment 2] {};
         \node[draw,rectangle,fit={(aircraftP1) (atmos1) (engineP1) (wingP1)},label=Segment 1] {};
     \end{forest}
-    \caption[Variable and constraint hierarchy of the SimPleAC model, for two flight
-    segments.]{Variable and constraint hierarchy of the presented aircraft model, for two flight
+    \caption[Variable and constraint hierarchy of the SimPleAC static+performance model for two flight
+    segments.]{Variable and constraint hierarchy of the SimPleAC static+performance model for two flight
     segments. Models that include sizing variables are
     bolded while models that include performance variables are italicized.
     There are models that contain both kinds of variables.}
@@ -261,7 +261,7 @@ have been renamed (e.g.\ $T_{flight} \rightarrow t_m$ and $W_f \rightarrow W_{f_
 to clarify their purpose within this framework.
 
 \begin{center}
-    \captionof{table}{Variables of SimPleAC in performance modeling, detailed in the
+    \captionof{table}{Variables of SimPleAC in static+performance modeling, detailed in the
     variable and constraint hierarchy.}
     \input{tables/SimPleAC_missionvars.tex}
     \label{t:missionvars}
@@ -388,7 +388,7 @@ variables are inextricably coupled to performance. Another good example of envir
 in \gls{GP} is performed by Burton~\cite{gassolar}, where wind speeds are integrated into
 a loitering aircraft optimization problem.
 
-\subsection{Objective of the mission model}
+\subsection{Mission objectives}
 \label{s:missionobj}
 
 Recalling from Section~\ref{s:altobj}, upper-unbounded performance metrics often have to
@@ -410,9 +410,9 @@ of the variable post-optimization.
 \section{Design exploration through mission design}
 
 There are a few interesting methods that we can use to explore
-potential designs using~\gls{GP}s. So instead of showing the single optimum of the
-SimPleAC with a full mission profile, leveraging the speed of convex optimization,
-we can map out the entire design space with respect to variables of interest.
+potential designs using~\gls{GP}s. So instead of showing the optimum of the
+SimPleAC for a single mission, leveraging the speed of convex optimization,
+we can map out the entire design space with respect to mission parameters.
 Please refer to~\cite{power_of_log} for details on the computational advantages of the \gls{GP}
 and \gls{SP} compared to other non-linear optimization methods.
 
@@ -512,23 +512,23 @@ We can see this by observing the sensitivities in Table~\ref{t:sens}.
         \begin{tabular}{l c l}
             \toprule
             Variable/Model & Sensitivity & Variable description \\ \midrule
-            \multicolumn{3}{l}{\textbf{Mission}} \\
+            \multicolumn{3}{l}{\textit{\textbf{Mission}}} \\
             $Range$ & +1.1 & aircraft range \\
             $V_{min}$ & -0.67 & takeoff speed \\
             $C$ & +0.46 & hourly cost index \\
             $W_p$ & +0.45 & payload weight \\
             $h_{cruise}$ & +0.12 & minimum cruise altitude \\
             & & \\
-            \multicolumn{3}{l}{\textbf{Mission/SimPleAC}} \\
+            \multicolumn{3}{l}{\textit{\textbf{Mission}}/\textbf{SimPleAC}} \\
             $g$ & +0.54 & gravitational acceleration \\
             $\rho_f$ & -0.042 & density of fuel \\
             & & \\
-            \multicolumn{3}{l}{\textbf{Mission/SimPleAC/Engine}} \\
+            \multicolumn{3}{l}{\textit{\textbf{Mission}}/\textbf{SimPleAC}/\textbf{Engine}} \\
             $\eta_{prop}$ & -0.65 & propeller efficiency \\
             $P_{shaft,ref}$ & -0.067 & reference MSL maximum shaft power \\
             $W_{e,ref}$ & +0.044 & reference engine weight \\
             & & \\
-            \multicolumn{3}{l}{\textbf{Mission/SimPleAC/Wing}} \\
+            \multicolumn{3}{l}{\textit{\textbf{Mission}}/\textbf{SimPleAC}/\textbf{Wing}} \\
             $(\frac{S}{S_{wet}})$ & +0.45 & wetted area ratio \\
             $k$ & +0.45 & form factor \\
             $C_{L,max}$ & -0.33 & lift coefficient at stall \\
@@ -538,11 +538,11 @@ We can see this by observing the sensitivities in Table~\ref{t:sens}.
             $N_{ult}$ & +0.07 & ultimate load factor \\
             $W_{w_{coeff1}}$ & +0.07 & wing weight coefficient 1 \\
             & & \\
-            \multicolumn{3}{l}{\textbf{Mission/SimPleACP/EngineP}} \\
+            \multicolumn{3}{l}{\textit{\textbf{Mission}}/\textit{\textbf{SimPleACP}}/\textit{EngineP}} \\
             $BSFC$ & [ +0.16 +0.14 +0.14 +0.14    ] & brake specific fuel consumption \\
             \bottomrule
         \end{tabular}
-        \caption{A selection of sensitivities of the solution to design parameters.}
+        \caption{A selection of sensitivities to design parameters.}
         \label{t:sens}
     \end{table}
 
@@ -560,7 +560,7 @@ The second weakness is the lack of an engine \BSFC model. Empirical data shows t
 In Sections~\ref{s:lapse} and \ref{s:BSFC}, more data-based modeling will be used
 to capture BSFC behavior at all throttle ranges.
 
-\subsection{Engine lapse rate model}
+\subsection{Environmental effects: engine lapse rate model}
 \label{s:lapse}
 
 Data-based modeling techniques have been detailed in Section~\ref{s:datafit}.
