@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 # Importing models
 from atmosphere import Atmosphere
 
+# SimPleAC with mission design and flight segments, and lapse rate and BSFC model (3.4.2)
+
 class SimPleAC(Model):
     def setup(self):
         self.engine = Engine()

@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 from SimPleAC_mission4 import Mission, SimPleAC
 from atmosphere import Atmosphere
 
+# SimPleAC with multimission design (3.5)
+
 class Multimission(Model):
     def setup(self,aircraft,Nmissions,Nsegments):
         self.aircraft = aircraft
@@ -16,7 +18,7 @@ class Multimission(Model):
             self.missions.append(Mission(self.aircraft,Nsegments))
 
         # Multimission objective variables
-        W_f_mm = Variable('W_{f_{mm}}','N','Multimission fuel weight')
+        W_f_mm = Variable('W_{f_{mm}}','N','multimission fuel weight')
 
         with Vectorize(Nmissions):
             # Mission variables

@@ -2,6 +2,8 @@ from gpkit import Model, Variable, SignomialsEnabled, VarKey, units
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Most basic SimPleAC model (end of Ch2.)
+
 class SimPleAC(Model):
     def setup(self):
         # Env. constants

@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 # Importing models
 from atmosphere import Atmosphere
 
+# SimPleAC with mission design and flight segments (3.2.1)
+
 class SimPleAC(Model):
     def setup(self):
         self.engine = Engine()

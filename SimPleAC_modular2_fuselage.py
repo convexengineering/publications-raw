@@ -3,6 +3,8 @@ from gpkit.constraints.bounded import Bounded
 import numpy as np
 import matplotlib.pyplot as plt
 
+# SimPleAC model, fully modularized (3.1.3)
+
 class SimPleAC(Model):
     def setup(self):
         self.engine = Engine()
