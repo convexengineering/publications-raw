@@ -1,0 +1,660 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6210 64-bit) (preloaded format=pdflatex 2017.4.7)  24 MAY 2018 15:45
+entering extended mode
+**./main.tex
+(main.tex
+LaTeX2e <2017/01/01> patch level 1
+Babel <3.9r> and hyphenation patterns for 75 language(s) loaded.
+("C:\Program Files\MiKTeX 2.9\tex\latex\aiaa\aiaa-tc.cls"
+Document Class: aiaa-tc 2004/04/03 v3.5 AIAA technical conference paper
+Unknown option: passing ``journal" option on to the standard LaTeX article clas
+s.
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\article.cls"
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\size10.clo"
+File: size10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\geometry\geometry.sty"
+Package: geometry 2010/09/12 v5.6 Page Geometry
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\keyval.sty"
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks14
+)
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\ifpdf.sty"
+Package: ifpdf 2016/05/14 v3.1 Provides the ifpdf switch
+)
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\ifvtex.sty"
+Package: ifvtex 2016/05/16 v1.6 Detect VTeX and its facilities (HO)
+Package ifvtex Info: VTeX not detected.
+)
+("C:\Program Files\MiKTeX 2.9\tex\generic\ifxetex\ifxetex.sty"
+Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
+)
+\Gm@cnth=\count87
+\Gm@cntv=\count88
+\c@Gm@tempcnt=\count89
+\Gm@bindingoffset=\dimen103
+\Gm@wd@mp=\dimen104
+\Gm@odd@mp=\dimen105
+\Gm@even@mp=\dimen106
+\Gm@layoutwidth=\dimen107
+\Gm@layoutheight=\dimen108
+\Gm@layouthoffset=\dimen109
+\Gm@layoutvoffset=\dimen110
+\Gm@dimlist=\toks15
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\geometry\geometry.cfg"))
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\graphicx.sty"
+Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\graphics.sty"
+Package: graphics 2016/10/09 v1.0u Standard LaTeX Graphics (DPC,SPQR)
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\trig.sty"
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics-cfg\graphics.cfg"
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 99.
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics-def\pdftex.def"
+File: pdftex.def 2017/01/12 v0.06k Graphics/color for pdfTeX
+
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\infwarerr.sty"
+Package: infwarerr 2016/05/16 v1.4 Providing info/warning/error messages (HO)
+)
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\ltxcmds.sty"
+Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
+)
+\Gread@gobject=\count90
+))
+\Gin@req@height=\dimen111
+\Gin@req@width=\dimen112
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\tools\array.sty"
+Package: array 2016/10/06 v2.4d Tabular extension package (FMi)
+\col@sep=\dimen113
+\extrarowheight=\dimen114
+\NC@list=\toks16
+\extratabsurround=\skip43
+\backup@length=\skip44
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\cite\overcite.sty"
+Package: overcite 2003/05/27  v 4.0
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\cite\cite.sty"
+LaTeX Info: Redefining \cite on input line 302.
+LaTeX Info: Redefining \nocite on input line 332.
+Package: cite 2015/02/27  v 5.5
+LaTeX Info: Redefining \cite on input line 441.
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\lastpage\lastpage.sty"
+Package: lastpage 2015/03/29 v1.2m Refers to last page's name (HMM; JPG)
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\fancyhdr\fancyhdr.sty"
+Package: fancyhdr 2016/09/06 3.8 Extensive control of page headers and footers
+\fancy@headwidth=\skip45
+\f@ncyO@elh=\skip46
+\f@ncyO@erh=\skip47
+\f@ncyO@olh=\skip48
+\f@ncyO@orh=\skip49
+\f@ncyO@elf=\skip50
+\f@ncyO@erf=\skip51
+\f@ncyO@olf=\skip52
+\f@ncyO@orf=\skip53
+)
+\c@aiaa@cthanks=\count91
+\c@aiaa@cfootnote=\count92
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\amssymb.sty"
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\amsfonts.sty"
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\@emptytoks=\toks17
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+))
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsmath.sty"
+Package: amsmath 2016/11/05 v2.16a AMS math features
+\@mathmargin=\skip54
+
+For additional information on amsmath, use the `?' option.
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amstext.sty"
+Package: amstext 2000/06/29 v2.01 AMS text
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsgen.sty"
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks18
+\ex@=\dimen115
+))
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsbsy.sty"
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen116
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsopn.sty"
+Package: amsopn 2016/03/08 v2.02 operator names
+)
+\inf@bad=\count93
+LaTeX Info: Redefining \frac on input line 213.
+\uproot@=\count94
+\leftroot@=\count95
+LaTeX Info: Redefining \overline on input line 375.
+\classnum@=\count96
+\DOTSCASE@=\count97
+LaTeX Info: Redefining \ldots on input line 472.
+LaTeX Info: Redefining \dots on input line 475.
+LaTeX Info: Redefining \cdots on input line 596.
+\Mathstrutbox@=\box26
+\strutbox@=\box27
+\big@size=\dimen117
+LaTeX Font Info:    Redeclaring font encoding OML on input line 712.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 713.
+\macc@depth=\count98
+\c@MaxMatrixCols=\count99
+\dotsspace@=\muskip10
+\c@parentequation=\count100
+\dspbrk@lvl=\count101
+\tag@help=\toks19
+\row@=\count102
+\column@=\count103
+\maxfields@=\count104
+\andhelp@=\toks20
+\eqnshift@=\dimen118
+\alignsep@=\dimen119
+\tagshift@=\dimen120
+\tagwidth@=\dimen121
+\totwidth@=\dimen122
+\lineht@=\dimen123
+\@envbody=\toks21
+\multlinegap=\skip55
+\multlinetaggap=\skip56
+\mathdisplay@stack=\toks22
+LaTeX Info: Redefining \[ on input line 2817.
+LaTeX Info: Redefining \] on input line 2818.
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\multirow\multirow.sty"
+Package: multirow 2016/11/25 v2.2 Span multiple rows of a table
+\multirow@colwidth=\skip57
+\multirow@cntb=\count105
+\multirow@dima=\skip58
+\bigstrutjot=\dimen124
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\tools\multicol.sty"
+Package: multicol 2016/04/07 v1.8p multicolumn formatting (FMi)
+\c@tracingmulticols=\count106
+\mult@box=\box28
+\multicol@leftmargin=\dimen125
+\c@unbalance=\count107
+\c@collectmore=\count108
+\doublecol@number=\count109
+\multicoltolerance=\count110
+\multicolpretolerance=\count111
+\full@width=\dimen126
+\page@free=\dimen127
+\premulticols=\dimen128
+\postmulticols=\dimen129
+\multicolsep=\skip59
+\multicolbaselineskip=\skip60
+\partial@page=\box29
+\last@line=\box30
+\maxbalancingoverflow=\dimen130
+\mult@rightbox=\box31
+\mult@grightbox=\box32
+\mult@gfirstbox=\box33
+\mult@firstbox=\box34
+\@tempa=\box35
+\@tempa=\box36
+\@tempa=\box37
+\@tempa=\box38
+\@tempa=\box39
+\@tempa=\box40
+\@tempa=\box41
+\@tempa=\box42
+\@tempa=\box43
+\@tempa=\box44
+\@tempa=\box45
+\@tempa=\box46
+\@tempa=\box47
+\@tempa=\box48
+\@tempa=\box49
+\@tempa=\box50
+\@tempa=\box51
+\c@columnbadness=\count112
+\c@finalcolumnbadness=\count113
+\last@try=\dimen131
+\multicolovershoot=\dimen132
+\multicolundershoot=\dimen133
+\mult@nat@firstbox=\box52
+\colbreak@box=\box53
+\mc@col@check@num=\count114
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\float\float.sty"
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count115
+\float@exts=\toks23
+\float@box=\box54
+\@float@everytoks=\toks24
+\@floatcapt=\box55
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\caption\caption.sty"
+Package: caption 2016/02/21 v3.3-144 Customizing captions (AR)
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\caption\caption3.sty"
+Package: caption3 2016/05/22 v1.7-166 caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 67.
+\captionmargin=\dimen134
+\captionmargin@=\dimen135
+\captionwidth=\dimen136
+\caption@tempdima=\dimen137
+\caption@indent=\dimen138
+\caption@parindent=\dimen139
+\caption@hangindent=\dimen140
+Package caption Info: Unknown document class (or package),
+(caption)             standard defaults will be used.
+)
+
+Package caption Warning: Unsupported document class (or package) detected,
+(caption)                usage of the caption package is not recommended.
+See the caption package documentation for explanation.
+
+Package caption Info: \@makecaption = \long macro:#1#2->\vskip \abovecaptionski
+p \sbox \@tempboxa {\footnotesize \bfseries #1.~~#2}\ifdim \wd \@tempboxa >\hsi
+ze \footnotesize \bfseries #1.~~#2\par \else \global \@minipagefalse \hb@xt@ \h
+size {\hfil \box \@tempboxa \hfil }\fi \vskip \belowcaptionskip .
+\c@ContinuedFloat=\count116
+Package caption Info: float package is loaded.
+) ("C:\Program Files\MiKTeX 2.9\tex\latex\caption\subcaption.sty"
+Package: subcaption 2016/05/22 v1.1-161 Sub-captions (AR)
+\c@subfigure=\count117
+\c@subtable=\count118
+)
+
+LaTeX Warning: Unused global option(s):
+    [journal].
+
+(main.aux)
+\openout1 = `main.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 81.
+LaTeX Font Info:    ... okay on input line 81.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 81.
+LaTeX Font Info:    ... okay on input line 81.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 81.
+LaTeX Font Info:    ... okay on input line 81.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 81.
+LaTeX Font Info:    ... okay on input line 81.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 81.
+LaTeX Font Info:    ... okay on input line 81.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 81.
+LaTeX Font Info:    ... okay on input line 81.
+
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: <default>
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(72.26999pt, 469.75502pt, 72.26999pt)
+* v-part:(T,H,B)=(54.2025pt, 668.4975pt, 72.26999pt)
+* \paperwidth=614.295pt
+* \paperheight=794.96999pt
+* \textwidth=469.75502pt
+* \textheight=668.4975pt
+* \oddsidemargin=0.0pt
+* \evensidemargin=0.0pt
+* \topmargin=-55.06749pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=10.0pt
+* \footskip=30.0pt
+* \marginparwidth=65.0pt
+* \marginparsep=11.0pt
+* \columnsep=10.0pt
+* \skip\footins=9.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+("C:\Program Files\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count119
+\scratchdimen=\dimen141
+\scratchbox=\box56
+\nofMPsegments=\count120
+\nofMParguments=\count121
+\everyMPshowfont=\toks25
+\MPscratchCnt=\count122
+\MPscratchDim=\dimen142
+\MPnumerator=\count123
+\makeMPintoPDFobject=\count124
+\everyMPtoPDFconversion=\toks26
+) ("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\pdftexcmds.sty"
+Package: pdftexcmds 2016/05/21 v0.22 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\ifluatex.sty"
+Package: ifluatex 2016/05/16 v1.4 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\epstopdf-base.sty"
+Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\grfext.sty"
+Package: grfext 2016/05/16 v1.2 Manage graphics extensions (HO)
+
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\kvdefinekeys.sty"
+Package: kvdefinekeys 2016/05/16 v1.4 Define keys (HO)
+))
+("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\kvoptions.sty"
+Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
+
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\kvsetkeys.sty"
+Package: kvsetkeys 2016/05/16 v1.17 Key value parser (HO)
+
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\etexcmds.sty"
+Package: etexcmds 2016/05/16 v1.6 Avoid name clashes with e-TeX commands (HO)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+)))
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+38.
+Package grfext Info: Graphics extension search list:
+(grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
+G,.JBIG2,.JB2,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 456.
+)
+Package lastpage Info: Please have a look at the pageslts package at
+(lastpage)             https://www.ctan.org/pkg/pageslts
+(lastpage)             ! on input line 81.
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: End \AtBeginDocument code.
+LaTeX Font Info:    Try loading font information for U+msa on input line 83.
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 83.
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 83.
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\omscmr.fd"
+File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <8> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 83.
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <6> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 83.
+ [1
+
+{C:/Users/Berk/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
+<takeoffVehicle.png, id=14, 451.6875pt x 282.05376pt>
+File: takeoffVehicle.png Graphic file (type png)
+ <use takeoffVehicle.png>
+Package pdftex.def Info: takeoffVehicle.png used on input line 134.
+(pdftex.def)             Requested size: 234.87885pt x 146.6688pt.
+
+<missionProfileLabeled.png, id=16, 710.15312pt x 364.86313pt>
+File: missionProfileLabeled.png Graphic file (type png)
+
+<use missionProfileLabeled.png>
+Package pdftex.def Info: missionProfileLabeled.png used on input line 141.
+(pdftex.def)             Requested size: 352.32333pt x 181.017pt.
+ <conops.png, id=17, 644.90938pt x 394.47375pt>
+File: conops.png Graphic file (type png)
+
+<use conops.png>
+Package pdftex.def Info: conops.png used on input line 151.
+(pdftex.def)             Requested size: 352.31001pt x 215.49857pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[2 <./takeoffVehicle.png> <./missionProfileLabeled.png>]
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 170.
+ [3 <./conops.png>]
+<wind_profiles.pdf, id=30, 545.71776pt x 314.41324pt>
+File: wind_profiles.pdf Graphic file (type pdf)
+ <use wind_profiles.pdf>
+Package pdftex.def Info: wind_profiles.pdf used on input line 196.
+(pdftex.def)             Requested size: 190.24632pt x 109.6097pt.
+
+<wind_map.pdf, id=31, 381.77954pt x 245.51915pt>
+File: wind_map.pdf Graphic file (type pdf)
+ <use wind_map.pdf>
+Package pdftex.def Info: wind_map.pdf used on input line 201.
+(pdftex.def)             Requested size: 169.11366pt x 108.75554pt.
+ [4 <./wind_profiles.pdf> <./wind_map.pdf>] <features.png, id=60, 726.715pt x 2
+97.11pt>
+File: features.png Graphic file (type png)
+
+<use features.png>
+Package pdftex.def Info: features.png used on input line 245.
+(pdftex.def)             Requested size: 352.32327pt x 144.04376pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[5] <powervsweight.pdf, id=70, 670.29836pt x 456.83328pt>
+File: powervsweight.pdf Graphic file (type pdf)
+
+<use powervsweight.pdf>
+Package pdftex.def Info: powervsweight.pdf used on input line 268.
+(pdftex.def)             Requested size: 305.3442pt x 208.10344pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<BSFC_P_shaftvsRPM.pdf, id=71, 409.73808pt x 316.94662pt>
+File: BSFC_P_shaftvsRPM.pdf Graphic file (type pdf)
+
+<use BSFC_P_shaftvsRPM.pdf>
+Package pdftex.def Info: BSFC_P_shaftvsRPM.pdf used on input line 279.
+(pdftex.def)             Requested size: 211.38947pt x 163.51709pt.
+
+<P_shaftvsh_station.pdf, id=72, 395.81345pt x 317.0262pt>
+File: P_shaftvsh_station.pdf Graphic file (type pdf)
+
+<use P_shaftvsh_station.pdf>
+Package pdftex.def Info: P_shaftvsh_station.pdf used on input line 283.
+(pdftex.def)             Requested size: 211.3927pt x 169.31467pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[6 <./features.png>] [7 <./powervsweight.pdf> <./BSFC_P_shaftvsRPM.pdf> <./P_sh
+aftvsh_station.pdf>] <4_JH01_Polars.pdf, id=141, 794.97pt x 614.295pt>
+File: 4_JH01_Polars.pdf Graphic file (type pdf)
+
+<use 4_JH01_Polars.pdf>
+Package pdftex.def Info: 4_JH01_Polars.pdf used on input line 325.
+(pdftex.def)             Requested size: 352.3231pt x 272.24966pt.
+ <5_JH01_maxCl.pdf, id=142, 794.97pt x 614.295pt>
+File: 5_JH01_maxCl.pdf Graphic file (type pdf)
+
+<use 5_JH01_maxCl.pdf>
+Package pdftex.def Info: 5_JH01_maxCl.pdf used on input line 334.
+(pdftex.def)             Requested size: 230.18361pt x 177.86916pt.
+ <6_JH01_minCL.pdf, id=143, 794.97pt x 614.295pt>
+File: 6_JH01_minCL.pdf Graphic file (type pdf)
+
+<use 6_JH01_minCL.pdf>
+Package pdftex.def Info: 6_JH01_minCL.pdf used on input line 338.
+(pdftex.def)             Requested size: 230.18361pt x 177.86916pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[8 <./4_JH01_Polars.pdf, page is rotated 90 degrees>]
+<fuselageLabeled.png, id=150, 596.72937pt x 345.79187pt>
+File: fuselageLabeled.png Graphic file (type png)
+
+<use fuselageLabeled.png>
+Package pdftex.def Info: fuselageLabeled.png used on input line 361.
+(pdftex.def)             Requested size: 352.31311pt x 204.15788pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<pylon.PNG, id=151, 591.20876pt x 277.53688pt>
+File: pylon.PNG Graphic file (type png)
+ <use pylon.PNG>
+Package pdftex.def Info: pylon.PNG used on input line 373.
+(pdftex.def)             Requested size: 469.76515pt x 220.52641pt.
+
+<frontLandingGear.png, id=152, 303.63437pt x 219.31938pt>
+File: frontLandingGear.png Graphic file (type png)
+
+<use frontLandingGear.png>
+Package pdftex.def Info: frontLandingGear.png used on input line 388.
+(pdftex.def)             Requested size: 158.54404pt x 114.51859pt.
+
+<rearLandingGear.png, id=153, 281.05pt x 286.57062pt>
+File: rearLandingGear.png Graphic file (type png)
+
+<use rearLandingGear.png>
+Package pdftex.def Info: rearLandingGear.png used on input line 393.
+(pdftex.def)             Requested size: 158.54051pt x 161.65471pt.
+ [9 <./5_JH01_maxCl.pdf, page is rotated 90 degrees> <./6_JH01_minCL.pdf, page 
+is rotated 90 degrees>]
+<tvsmtow.pdf, id=162, 578.16pt x 433.62pt>
+File: tvsmtow.pdf Graphic file (type pdf)
+ <use tvsmtow.pdf>
+Package pdftex.def Info: tvsmtow.pdf used on input line 421.
+(pdftex.def)             Requested size: 258.36108pt x 193.77081pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<dimensions.png, id=163, 633.36626pt x 408.52625pt>
+File: dimensions.png Graphic file (type png)
+ <use dimensions.png>
+Package pdftex.def Info: dimensions.png used on input line 438.
+(pdftex.def)             Requested size: 352.32458pt x 227.25214pt.
+
+[10 <./fuselageLabeled.png>] [11 <./pylon.PNG> <./frontLandingGear.png> <./rear
+LandingGear.png>] <WeightBreakdown.png, id=174, 376.40625pt x 195.22937pt>
+File: WeightBreakdown.png Graphic file (type png)
+
+<use WeightBreakdown.png>
+Package pdftex.def Info: WeightBreakdown.png used on input line 448.
+(pdftex.def)             Requested size: 305.35835pt x 158.37918pt.
+ [12 <./tvsmtow.pdf> <./dimensions.png>] [13 <./WeightBreakdown.png>] <Vwind_vs
+_tstation.png, id=225, 476.78125pt x 370.88562pt>
+File: Vwind_vs_tstation.png Graphic file (type png)
+
+<use Vwind_vs_tstation.png>
+Package pdftex.def Info: Vwind_vs_tstation.png used on input line 477.
+(pdftex.def)             Requested size: 305.34993pt x 237.5301pt.
+ <tvsw_pay.png, id=226, 504.88625pt x 367.87437pt>
+File: tvsw_pay.png Graphic file (type png)
+
+<use tvsw_pay.png>
+Package pdftex.def Info: tvsw_pay.png used on input line 490.
+(pdftex.def)             Requested size: 305.33769pt x 222.47766pt.
+ <ppay_vs_tstation.png, id=227, 482.30188pt x 373.395pt>
+File: ppay_vs_tstation.png Graphic file (type png)
+
+<use ppay_vs_tstation.png>
+Package pdftex.def Info: ppay_vs_tstation.png used on input line 500.
+(pdftex.def)             Requested size: 305.34573pt x 236.3967pt.
+ [14 <./Vwind_vs_tstation.png>] [15 <./tvsw_pay.png> <./ppay_vs_tstation.png>] 
+<blockdiag.pdf, id=238, 794.97pt x 614.295pt>
+File: blockdiag.pdf Graphic file (type pdf)
+
+<use blockdiag.pdf>
+Package pdftex.def Info: blockdiag.pdf used on input line 532.
+(pdftex.def)             Requested size: 352.3231pt x 272.24966pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[16] <avbay.png, id=242, 632.3625pt x 455.7025pt>
+File: avbay.png Graphic file (type png)
+ <use avbay.png>
+Package pdftex.def Info: avbay.png used on input line 552.
+(pdftex.def)             Requested size: 234.87747pt x 169.2609pt.
+
+<BSFCvalidation.png, id=243, 528.47438pt x 418.56375pt>
+File: BSFCvalidation.png Graphic file (type png)
+
+<use BSFCvalidation.png>
+Package pdftex.def Info: BSFCvalidation.png used on input line 565.
+(pdftex.def)             Requested size: 234.87602pt x 186.02716pt.
+ <modularity.png, id=244, 657.95813pt x 409.53pt>
+File: modularity.png Graphic file (type png)
+
+<use modularity.png>
+Package pdftex.def Info: modularity.png used on input line 579.
+(pdftex.def)             Requested size: 234.87689pt x 146.19339pt.
+ [17 <./blockdiag.pdf>] [18 <./avbay.png> <./BSFCvalidation.png>] (main.bbl) 
+AED: lastpage setting LastPage
+[19 <./modularity.png>] (main.aux) ) 
+Here is how much of TeX's memory you used:
+ 4789 strings out of 493333
+ 70052 string characters out of 3139198
+ 145795 words of memory out of 3000000
+ 8199 multiletter control sequences out of 15000+200000
+ 13750 words of font info for 52 fonts, out of 3000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 39i,11n,45p,963b,582s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Program Files/MiKTeX 2.9/fonts/type1/pu
+blic/amsfonts/cm/cmbx10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/ams
+fonts/cm/cmbx12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm
+/cmbx6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx8.pf
+b><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx9.pfb><C:/Pro
+gram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Program Fil
+es/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTe
+X 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Program Files/MiKTeX 2.9/fon
+ts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/
+public/amsfonts/cm/cmmi7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/am
+sfonts/cm/cmmi8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm
+/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pf
+b><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr5.pfb><C:/Prog
+ram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Program Files/
+MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files/MiKTeX 2.9
+/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program Files/MiKTeX 2.9/fonts/typ
+e1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/publi
+c/amsfonts/cm/cmsy6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfont
+s/cm/cmsy7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy
+8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><C
+:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti8.pfb>
+Output written on main.pdf (19 pages, 4262348 bytes).
+PDF statistics:
+ 362 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 131 words of extra memory for PDF output out of 10000 (max. 10000000)
+

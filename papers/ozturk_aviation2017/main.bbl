@@ -1,0 +1,32 @@
+\begin{thebibliography}{1}
+\newcommand{\enquote}[1]{``#1''}
+
+\bibitem{costGlobalHawk}
+sUASNews Press, \enquote{Cost of flying Northrop's Global Hawk down over 50\%,}
+  http://www.suasnews.com/2013/09/cost-of-flying-northrops-global-hawk-down-over-50-sources/,
+  09 2013.
+
+\bibitem{FAIrecords}
+\enquote{Federation Aeronautique Internationale (FAI) Records,} 2016.
+
+\bibitem{costeco}
+Wei, W. and Hansen, M., \enquote{Cost Economics of Aircraft Size,} {\em Journal
+  of Transport Economics and Policy\/}, Vol.~37, 2003, pp.~279--296.
+
+\bibitem{GPkit}
+Hoburg, W. and Abbeel, P., \enquote{Geometric Programming for Aircraft Design
+  Optimization,} {\em AIAA\/}, 2014.
+
+\bibitem{smallengines}
+of~North~Dakota, U. A. S. L.~U., \enquote{Engine Reference,}
+  http://media.aero.und.edu/uasresearch.org/documents/195-197 Reference-Section
+  Engines.pdf, feb 2016.
+
+\bibitem{XFOIL}
+Drela, M., \enquote{XFOIL Subsonic Airfoil Development System,}
+  http://web.mit.edu/drela/Public/web/xfoil/, 2013.
+
+\bibitem{sullivan}
+Vehicle, S.~U., \enquote{S676-300F-01 Alternator,} .
+
+\end{thebibliography}
