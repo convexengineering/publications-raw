@@ -1,6 +1,0 @@
-\tau
-V_{f_{wing}}
-g
-V_f
-V_{f_{avail}}
-\rho_f

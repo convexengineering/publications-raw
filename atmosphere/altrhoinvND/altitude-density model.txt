@@ -1,8 +1,0 @@
-GP model is as follows: 
-rho_rat**-0.003452148205426599 = 0.003663116111726823 * (alt_rat)**1.114511378350907 + 1.00009482269489 * (alt_rat)**1.765604014936035e-05
-
-rho == rho_rat*rho_ground
-rho_ground == 1.2 kg/m^3
-
-alt == alt_rat*alt_ref
-alt_ref == 10000 m
